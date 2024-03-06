@@ -7,6 +7,8 @@ import com.ushirikeduc.studentservice.repository.ParentRepository;
 import com.ushirikeduc.studentservice.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public record StudentService(StudentRepository studentRepository, ParentRepository parentRepository) {
 
@@ -26,5 +28,10 @@ public record StudentService(StudentRepository studentRepository, ParentReposito
                 .parent(parent)
                 .build();
         studentRepository.save(student);
+    }
+
+    public Optional<Student> getStudentById(Integer studentId) {
+
+        return studentRepository.findById(studentId);
     }
 }

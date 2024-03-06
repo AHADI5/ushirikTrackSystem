@@ -28,6 +28,6 @@ public class Parent {
     private  String lastName ;
     private  String email;
     private  String phone ;
-    @OneToMany(mappedBy = "parent")
-    private List<Student> studentList;
+//    @OneToMany(mappedBy = "parent")
+//    private List<Student> studentList;
 }
