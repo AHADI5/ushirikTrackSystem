@@ -14,6 +14,7 @@
   <url>https://www.ushirikeduc .com</url>
   <modules>
     <module>school-service</module>
+      <module>rules-service</module>
   </modules>
 
   <properties>
