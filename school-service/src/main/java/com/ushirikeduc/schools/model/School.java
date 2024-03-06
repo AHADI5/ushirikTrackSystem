@@ -3,6 +3,9 @@ package com.ushirikeduc.schools.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -25,5 +28,10 @@ public class School {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id",referencedColumnName ="idAddress")
     private Address address;
+    @OneToMany(mappedBy = "school",cascade = CascadeType.ALL)
+    private List<SchoolRules> rules = new ArrayList<>() ;
+    //todo: Classes school
+    //todo: Students list
+    //todo: teachers list
 
 }
