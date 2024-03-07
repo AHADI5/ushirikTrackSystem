@@ -1,0 +1,18 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: teacher-service
+  datasource:
+    username: ushirik-educ
+    url: jdbc:postgresql://localhost:5432/Teachers
+    password: 'password'
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true

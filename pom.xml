@@ -16,6 +16,7 @@
     <module>school-service</module>
       <module>rules-service</module>
     <module>student-service</module>
+    <module>teacher-service</module>
   </modules>
 
   <properties>
