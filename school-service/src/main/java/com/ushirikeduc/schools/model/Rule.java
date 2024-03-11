@@ -1,21 +1,14 @@
 package com.ushirikeduc.schools.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Data
 @Entity
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class SchoolRules {
-
+@AllArgsConstructor
+public class Rule {
     @Id
     @SequenceGenerator(
             name = "rule_id_sequence",
@@ -25,12 +18,10 @@ public class SchoolRules {
             strategy = GenerationType.SEQUENCE,
             generator = "rule_id_sequence"
     )
-
-    private Integer Id ;
     private Integer ruleId ;
-    @ManyToOne()
-    @JoinColumn(name = "school_id")
-    private School school;
+    private String title ;
+    private String content ;
+
 
 
 }

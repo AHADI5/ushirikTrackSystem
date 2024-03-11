@@ -1,18 +1,14 @@
 package com.ushirikeduc.schools.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@Builder
 @Entity
-@AllArgsConstructor
+@Data
+@ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class Address {
-
     @Id
     @SequenceGenerator(
             name = "address_id_sequence",
@@ -23,9 +19,13 @@ public class Address {
             generator = "address_id_sequence"
     )
 
-    private  Integer idAddress;
-    private  Integer idSchool;
-    private  String quarter ;
-    private  String avenue ;
-    private  String commune;
+    private Integer addressID;
+    private String quarter ;
+    private String avenue ;
+    private String houseNumber ;
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "address")
+    private School school;
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "address")
+    private Director director ;
+
 }

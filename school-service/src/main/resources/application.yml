@@ -6,7 +6,7 @@ spring:
     name: school-service
   datasource:
     username: ushirik-educ
-    url: jdbc:postgresql://localhost:5432/Schools
+    url: jdbc:postgresql://localhost:5432/school
     password: 'password'
   jpa:
     properties:
