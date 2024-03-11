@@ -23,9 +23,5 @@ public class Address {
     private String quarter ;
     private String avenue ;
     private String houseNumber ;
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "address")
-    private School school;
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "address")
-    private Director director ;
 
 }

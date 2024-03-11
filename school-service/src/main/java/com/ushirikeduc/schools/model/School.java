@@ -1,5 +1,6 @@
 package com.ushirikeduc.schools.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,13 +22,19 @@ public class School {
             generator = "school_id_sequence"
     )
     private  Integer schoolID;
-    private  String schoolName ;
-    private  String schoolPostalBox;
+
+    private  String name ;
+    private String  email ;
+    private  String postalBox;
+
     @OneToOne
     private Address address;
+
     @OneToOne
     private Director director;
-    //Address
-    //Director
+
+    // Other fields and annotations..
 
 }
+
+

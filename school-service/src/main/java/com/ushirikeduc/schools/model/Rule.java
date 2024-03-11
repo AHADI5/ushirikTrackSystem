@@ -19,7 +19,9 @@ public class Rule {
             generator = "rule_id_sequence"
     )
     private Integer ruleId ;
+
     private String title ;
+
     private String content ;
 
 
