@@ -1,8 +1,8 @@
 package com.ushirikeduc.schools.service;
 
-import com.ushirikeduc.schools.interfaces.AddressInterface;
-import com.ushirikeduc.schools.interfaces.DirectorInterface;
-import com.ushirikeduc.schools.interfaces.SchoolInterface;
+import com.ushirikeduc.schools.interfaces.AddressRepository;
+import com.ushirikeduc.schools.interfaces.DirectorRepository;
+import com.ushirikeduc.schools.interfaces.SchoolRepository;
 import com.ushirikeduc.schools.model.Address;
 import com.ushirikeduc.schools.model.Director;
 import com.ushirikeduc.schools.model.School;
@@ -12,19 +12,19 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public record SchoolService(SchoolInterface schoolInterface,
-                            AddressInterface addressInterface,
-                            DirectorInterface directorInterface
+public record SchoolService(SchoolRepository schoolRepository,
+                            AddressRepository addressRepository,
+                            DirectorRepository directorRepository
                             ) {
     public School registerSchool(SchoolRegistrationRequest request) {
         Address address = request.address();
-        address = addressInterface.save(address);
+        address = addressRepository.save(address);
         Address directorAddress = request.director().getAddress();
-        addressInterface.save(directorAddress);
+        addressRepository.save(directorAddress);
 
         Director director = request.director();
 
-        director = directorInterface.save(director);
+        director = directorRepository.save(director);
 
         School school = School.builder()
                 .name(request.name())
@@ -33,16 +33,16 @@ public record SchoolService(SchoolInterface schoolInterface,
                 .address(address)
                 .director(director)
                 .build();
-        return schoolInterface.save(school);
+        return schoolRepository.save(school);
 
     }
 
 public Optional<School> getSchool(int schoolId) {
-        return  schoolInterface.findById(schoolId);
+        return  schoolRepository.findById(schoolId);
 }
 
 public Director getDirector(int schoolId) {
-        Optional<School> schoolOptional = schoolInterface.findById(schoolId);
+        Optional<School> schoolOptional = schoolRepository.findById(schoolId);
         School school = schoolOptional.get();
     return school.getDirector();
 }
