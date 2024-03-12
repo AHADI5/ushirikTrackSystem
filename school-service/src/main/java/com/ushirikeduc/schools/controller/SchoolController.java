@@ -5,6 +5,7 @@ import com.ushirikeduc.schools.model.Director;
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.ClassRegistrationRequest;
 import com.ushirikeduc.schools.requests.SchoolRegistrationRequest;
+import com.ushirikeduc.schools.requests.TeacherRequest;
 import com.ushirikeduc.schools.service.ClassesService;
 import com.ushirikeduc.schools.service.SchoolService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,23 +20,36 @@ import java.util.Optional;
 @RequestMapping("api/v1/school")
 public record SchoolController(SchoolService schoolService,
                                ClassesService classesService ) {
-    @PostMapping
+    @PostMapping("/register-school")
     public School registerSchool(@RequestBody  SchoolRegistrationRequest request) {
         return schoolService.registerSchool(request);
     }
+
+    @PostMapping("/register-class")
+    public Classes registerClass(@RequestBody ClassRegistrationRequest request)  {
+        return  classesService.registerClass(request);
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSchoolWithDetails(@PathVariable("id") Integer schoolId) {
         Optional<School> school = schoolService.getSchool(schoolId);
         return ResponseEntity.ok(school);
     }
+
     @GetMapping(value = "/director/{schoolID}")
     public Director getSchoolDirector(@PathVariable("schoolID") Integer schoolID){
         return schoolService.getDirector(schoolID);
     }
-    @PostMapping
-    public Classes registerClass(@RequestBody ClassRegistrationRequest request)  {
-        return  classesService.registerClass(request);
+
+    @PostMapping("/{classID}/teacher")
+    public ResponseEntity<?> assignTeacherClass(
+            @PathVariable Integer classID,
+            @RequestBody  TeacherRequest teacherRequest
+            ){
+        classesService.assignTeacherToClass(classID , teacherRequest);
+        return  ResponseEntity.ok("Teacher Assigned to class Successfully");
+
     }
 
-
 }
+

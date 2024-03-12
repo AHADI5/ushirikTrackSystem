@@ -2,20 +2,17 @@ package com.ushirikeduc.schools.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Data
-@ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssignedTeacher {
     @Id
     private int id;
     private int TeacherID ;
-
+    private String name ;
 
 }
