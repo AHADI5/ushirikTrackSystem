@@ -1,15 +1,19 @@
-package com.ushirikeduc.schools.model;
+package com.ushirikeduc.teacherservice.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Address {
     @Id
+
     @SequenceGenerator(
             name = "address_id_sequence",
             sequenceName = "address_id_sequence"
@@ -18,10 +22,10 @@ public class Address {
             strategy = GenerationType.SEQUENCE,
             generator = "address_id_sequence"
     )
-
-    private Integer addressID;
-    private String quarter ;
+    private int id;
+    private String quarter;
     private String avenue ;
     private String houseNumber ;
+
 
 }

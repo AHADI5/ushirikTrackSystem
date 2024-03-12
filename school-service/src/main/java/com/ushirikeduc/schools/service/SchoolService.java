@@ -25,6 +25,9 @@ public record SchoolService(SchoolRepository schoolRepository,
         Director director = request.director();
 
         director = directorRepository.save(director);
+        // Calling User service for user Account creation
+        System.out.println(director.getAddress());
+
 
         School school = School.builder()
                 .name(request.name())
