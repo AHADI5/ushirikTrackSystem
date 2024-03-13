@@ -5,7 +5,6 @@ import com.ushirikeduc.schools.model.Director;
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.ClassRegistrationRequest;
 import com.ushirikeduc.schools.requests.SchoolRegistrationRequest;
-import com.ushirikeduc.schools.requests.TeacherRequest;
 import com.ushirikeduc.schools.service.ClassesService;
 import com.ushirikeduc.schools.service.SchoolService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,14 +40,6 @@ public record SchoolController(SchoolService schoolService,
         return schoolService.getDirector(schoolID);
     }
 
-    @PostMapping("/assign-teacher")
-    public ResponseEntity<?> assignTeacherClass(
-              TeacherRequest teacherRequest
-    ){
-        classesService.assignTeacherToClass( teacherRequest);
-        return  ResponseEntity.ok("Teacher Assigned to class Successfully");
-
-    }
 
 }
 

@@ -1,6 +1,7 @@
 package com.ushirikeduc.teacherservice.service;
 
-import com.ushirikeduc.teacherservice.events.TeacherEvent;
+
+import Dto.TeacherEvent;
 import com.ushirikeduc.teacherservice.kafka.TeacherProducer;
 import com.ushirikeduc.teacherservice.model.Address;
 import com.ushirikeduc.teacherservice.model.Teacher;
@@ -8,9 +9,7 @@ import com.ushirikeduc.teacherservice.repository.AddressRepository;
 import com.ushirikeduc.teacherservice.repository.TeacherRepository;
 import com.ushirikeduc.teacherservice.request.TeacherRegistrationRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Slf4j
@@ -37,19 +36,27 @@ public record TeacherService(TeacherRepository teacherRepository,
         Teacher savedTeacher = teacherRepository.save(teacher);
 
         //Get the registered Teacher with his ID and assigned Class
+
+        TeacherEvent teacherEvent = getTeacherEvent(savedTeacher);
+
+        //publish teacher creation
+        teacherProducer.sendMessage(teacherEvent);
+
+        return savedTeacher;
+    }
+
+    private static TeacherEvent getTeacherEvent(Teacher savedTeacher) {
+        String teacherName = savedTeacher.getName() + " "
+                + savedTeacher.getFirstName() + " "
+                + savedTeacher.getLastName();
         Long teacherId = savedTeacher.getId();
         int  classId = savedTeacher.getClassID();
 
         //Set the teacher event
         TeacherEvent teacherEvent = new TeacherEvent();
         teacherEvent.setTeacherID(teacherId);
-        teacherEvent.setMessage("Creating Teacher");
         teacherEvent.setClassID((long) classId);
-        teacherEvent.setTeacher(teacher);
-
-        //publish teacher creation
-        teacherProducer.sendMessage(teacherEvent);
-
-        return savedTeacher;
+        teacherEvent.setName((teacherName));
+        return teacherEvent;
     }
 }

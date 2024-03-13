@@ -16,3 +16,16 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+    #Kafka configuration
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: teacher
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    topic:
+      name: create-teacher

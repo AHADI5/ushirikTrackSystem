@@ -1,6 +1,4 @@
 package com.ushirikeduc.schools.model;
-
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,15 +15,13 @@ public class Classes {
             sequenceName = "class_id_sequence"
     )
     @GeneratedValue(
-            strategy = GenerationType.TABLE,
+            strategy = GenerationType.SEQUENCE,
             generator = "class_id_sequence"
     )
-
-
-    private int classesID;
+    private long classesID;
     private String name ;
     private Long level ;
     @OneToOne
-    private AssignedTeacher teacher;
+    private Teacher teacher;
 
 }

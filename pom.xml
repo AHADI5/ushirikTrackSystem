@@ -15,6 +15,7 @@
   <modules>
     <module>school-service</module>
     <module>teacher-service</module>
+      <module>base-domains</module>
   </modules>
 
   <properties>

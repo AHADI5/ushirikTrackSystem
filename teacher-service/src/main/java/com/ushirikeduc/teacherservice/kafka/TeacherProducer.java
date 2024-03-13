@@ -1,7 +1,8 @@
 package com.ushirikeduc.teacherservice.kafka;
 
 
-import com.ushirikeduc.teacherservice.events.TeacherEvent;
+
+import Dto.TeacherEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.kafka.core.KafkaTemplate;
