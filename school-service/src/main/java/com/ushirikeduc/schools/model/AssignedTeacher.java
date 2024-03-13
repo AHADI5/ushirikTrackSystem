@@ -1,7 +1,6 @@
 package com.ushirikeduc.schools.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -11,8 +10,18 @@ import lombok.*;
 @AllArgsConstructor
 public class AssignedTeacher {
     @Id
+    @SequenceGenerator(
+            name = "teacher_id_sequence",
+            sequenceName = "teacher_id_sequence"
+    )
+    @GeneratedValue(
+            strategy = GenerationType.TABLE,
+            generator = "teacher_id_sequence"
+    )
+
     private int id;
     private int TeacherID ;
+    private  int classID;
     private String name ;
 
 }

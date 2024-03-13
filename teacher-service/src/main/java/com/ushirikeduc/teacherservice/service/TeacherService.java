@@ -6,10 +6,14 @@ import com.ushirikeduc.teacherservice.repository.AddressRepository;
 import com.ushirikeduc.teacherservice.repository.TeacherRepository;
 import com.ushirikeduc.teacherservice.request.TeacherRegistrationRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -17,8 +21,12 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public record TeacherService (TeacherRepository teacherRepository,
-                              AddressRepository addressRepository , WebClient client) {
+public record TeacherService(TeacherRepository teacherRepository,
+                             AddressRepository addressRepository
+
+                             ) {
+
+    private static final RestTemplate restTemplate = new RestTemplate();
 
     public Teacher saveTeacher(TeacherRegistrationRequest request) {
         Address address = request.address();
@@ -31,28 +39,35 @@ public record TeacherService (TeacherRepository teacherRepository,
                 .address(address)
                 .email(request.email())
                 .build();
+//        webClientBuilder.baseUrl("http://localhost:8081").build();
         Teacher savedTeacher = teacherRepository.save(teacher);
-      //todo : make a post request to assigned teacher
-
 
         String teacherName = savedTeacher.getName();
-        int teacherId = savedTeacher.getClassID();
-        MultiValueMap<String , String> requestBOdy = new LinkedMultiValueMap<>();
-        requestBOdy.add("id" , String.valueOf(teacherId));
-        requestBOdy.add("name",teacherName);
-        Mono<Void> responseMono = client.post()
-                .uri("http://localhost:8081//{classID}/teacher")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .bodyValue(requestBOdy)
-                .retrieve()
-                .bodyToMono(Void.class);
-        responseMono.block();
+        Long teacherId = savedTeacher.getId();
+        int  classId = savedTeacher.getClassID();
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("TeacherID", String.valueOf(teacherId));
+        requestBody.add("classID" , String.valueOf(classId));
+        requestBody.add("name",teacherName);
+
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<Void> responseEntity = restTemplate.postForEntity(
+                "http://localhost:8081/api/v1/school/assign-teacher",
+                requestBody,
+                Void.class
+        );
 
 
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            System.out.println("Teacher assigned to class successfully.");
+        } else {
+            System.err.println("Error assigning teacher to class.");
+        }
 
-        return  savedTeacher;
+        return savedTeacher;
     }
-
-
-
 }

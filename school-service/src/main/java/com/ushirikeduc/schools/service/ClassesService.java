@@ -14,23 +14,23 @@ import java.util.Optional;
 public record ClassesService(ClassRepository classRepository,
                              TeacherRepository teacherRepository) {
 
-    public void assignTeacherToClass(Integer classID,
-                                     TeacherRequest teacherRequest) {
+    public void assignTeacherToClass(TeacherRequest teacherRequest) {
         AssignedTeacher assignedTeacher = AssignedTeacher.builder()
                 .name(teacherRequest.name())
+
+                .classID(teacherRequest.classID())
                 .TeacherID(teacherRequest.TeacherID())
                 .build();
-        teacherRepository.save(assignedTeacher);
+        AssignedTeacher teacher =teacherRepository.save(assignedTeacher);
 
         // Assigning Class to teacher
-        Optional<Classes> selectedClass = this.getClassById(classID);
+        Optional<Classes> selectedClass = this.getClassById(teacher.getClassID());
         selectedClass.get().setTeacher(assignedTeacher);
     }
     public Classes registerClass(ClassRegistrationRequest Request) {
         Classes classe = Classes.builder()
-                .classesID(Request.teacherID())
                 .name(Request.name())
-                .level(Long.valueOf(Request.Level()))
+                .level((long) Request.level())
                 .build();
         return classRepository.save(classe);
     }

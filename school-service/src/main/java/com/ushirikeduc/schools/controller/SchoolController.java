@@ -41,12 +41,11 @@ public record SchoolController(SchoolService schoolService,
         return schoolService.getDirector(schoolID);
     }
 
-    @PostMapping("/{classID}/teacher")
+    @PostMapping("/assign-teacher")
     public ResponseEntity<?> assignTeacherClass(
-            @PathVariable Integer classID,
-            @RequestBody  TeacherRequest teacherRequest
-            ){
-        classesService.assignTeacherToClass(classID , teacherRequest);
+              TeacherRequest teacherRequest
+    ){
+        classesService.assignTeacherToClass( teacherRequest);
         return  ResponseEntity.ok("Teacher Assigned to class Successfully");
 
     }

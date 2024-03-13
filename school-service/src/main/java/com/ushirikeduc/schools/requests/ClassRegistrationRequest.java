@@ -1,9 +1,12 @@
 package com.ushirikeduc.schools.requests;
 
+import com.ushirikeduc.schools.model.AssignedTeacher;
+
 public record ClassRegistrationRequest (
-        int teacherID ,
+
         String name ,
-        String Level
+        int level,
+        AssignedTeacher teacher
 ) {
 
 }
