@@ -7,9 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="school-service" />
         <module name="base-domains" />
         <module name="teacher-service" />
+        <module name="school-service" />
+        <module name="sudent-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -21,6 +22,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="base-domains" options="-parameters" />
       <module name="school-service" options="-parameters" />
+      <module name="sudent-service" options="-parameters" />
       <module name="teacher-service" options="-parameters" />
     </option>
   </component>
