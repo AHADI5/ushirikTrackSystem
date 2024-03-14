@@ -1,5 +1,6 @@
 package com.ushirikeduc.schools.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +33,9 @@ public class School {
 
     @OneToOne
     private Director director;
+    @JsonIgnore
+    @OneToMany(mappedBy = "school" , cascade = CascadeType.ALL)
+    private List<Classes> classes;
 
     // Other fields and annotations..
 

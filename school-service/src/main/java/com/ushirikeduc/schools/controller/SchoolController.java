@@ -30,6 +30,17 @@ public record SchoolController(SchoolService schoolService,
         return  classesService.registerClass(request);
     }
 
+    //Register A list of Classes
+
+    @PostMapping("/classes/{schoolId}")
+    public ResponseEntity<String> addClassesToSchool(@PathVariable Integer schoolId,
+                                                     @RequestBody List<Classes> classesList) {
+
+        return classesService.addClassesToSchool(schoolId ,classesList);
+    }
+
+
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSchoolWithDetails(@PathVariable("id") Integer schoolId) {
         Optional<School> school = schoolService.getSchool(schoolId);
@@ -44,6 +55,10 @@ public record SchoolController(SchoolService schoolService,
     // todo : Getting classes per school instead
     public List<Classes> getClasses() {
         return classesService.getAllClasses();
+    }
+    @GetMapping("/classes/{schoolID}")
+    public ResponseEntity<List<Classes>> getSchoolClasses(@PathVariable Integer schoolID){
+      return  classesService.getClassesBySchoolId(schoolID);
     }
 
 
