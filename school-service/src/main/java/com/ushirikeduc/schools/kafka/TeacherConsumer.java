@@ -15,7 +15,8 @@ import java.util.Optional;
 @Service
 @Slf4j
 public record TeacherConsumer(TeacherRepository teacherRepository,
-                              ClassesService classesService) {
+                              ClassesService classesService
+                              ) {
 
     @KafkaListener(
             topics = "${spring.kafka.topic.name}",
@@ -30,11 +31,11 @@ public record TeacherConsumer(TeacherRepository teacherRepository,
                 .teacherID(event.getTeacherID())
                 .name(event.getName())
                 .build();
-        Teacher savaedTeacher = teacherRepository.save(teacher);
+        Teacher savedTeacher = teacherRepository.save(teacher);
+//        log.info("Class Assigned Successfully" + savedTeacher);
 
-        Optional<Classes> targetedClass = classesService.getClassById(savaedTeacher.getClassID());
-        targetedClass.get().setTeacher(teacher);
-        log.info("Class Assigned Successfully");
+        // todo : calling assign teacher to class
+        classesService.assignTeacherToClass(savedTeacher);
 
     }
     @Bean

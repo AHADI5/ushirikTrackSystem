@@ -26,6 +26,4 @@ public class Teacher {
     private Long classID ;
     private String name;
 
-
-
 }

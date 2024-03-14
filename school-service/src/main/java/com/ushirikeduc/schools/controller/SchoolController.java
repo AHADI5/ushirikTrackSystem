@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +39,11 @@ public record SchoolController(SchoolService schoolService,
     @GetMapping(value = "/director/{schoolID}")
     public Director getSchoolDirector(@PathVariable("schoolID") Integer schoolID){
         return schoolService.getDirector(schoolID);
+    }
+    @GetMapping( value = "/classes")
+    // todo : Getting classes per school instead
+    public List<Classes> getClasses() {
+        return classesService.getAllClasses();
     }
 
 

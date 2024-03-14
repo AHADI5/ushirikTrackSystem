@@ -24,4 +24,9 @@ public class Classes {
     @OneToOne
     private Teacher teacher;
 
+    //Assign Class to teacher
+    public  void assignTeacher(Teacher teacher) {
+        this.setTeacher(teacher);
+    }
+
 }
