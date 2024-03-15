@@ -2,8 +2,10 @@ package com.ushirikeduc.schools.controller;
 
 import com.ushirikeduc.schools.model.Classes;
 import com.ushirikeduc.schools.model.Director;
+import com.ushirikeduc.schools.model.EnrolledStudent;
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.ClassRegistrationRequest;
+import com.ushirikeduc.schools.requests.ClassStudentsResponse;
 import com.ushirikeduc.schools.requests.SchoolRegistrationRequest;
 import com.ushirikeduc.schools.service.ClassesService;
 import com.ushirikeduc.schools.service.SchoolService;
@@ -59,6 +61,12 @@ public record SchoolController(SchoolService schoolService,
     @GetMapping("/classes/{schoolID}")
     public ResponseEntity<List<Classes>> getSchoolClasses(@PathVariable Integer schoolID){
       return  classesService.getClassesBySchoolId(schoolID);
+    }
+
+    @GetMapping ("/{classId}/students")
+    public ResponseEntity<List<ClassStudentsResponse>> getStudentsInClass(@PathVariable
+                                                 Long classId){
+        return  classesService.getStudentInClass(classId);
     }
 
 

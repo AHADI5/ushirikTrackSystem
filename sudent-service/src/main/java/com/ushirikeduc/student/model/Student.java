@@ -36,6 +36,6 @@ public class Student {
     @JoinColumn(name = "parent_id")
     private Parent parent ;
 
-    @OneToOne
+    @OneToOne(  cascade = CascadeType.ALL)
     private Address address;
 }

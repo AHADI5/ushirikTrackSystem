@@ -1,0 +1,33 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: user-management-service
+  datasource:
+    username: ushirik-educ
+    url: jdbc:postgresql://localhost:5432/users
+    password: 'password'
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+    #Kafka configuration
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: teacher
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    topics:
+      topic1: create-teacher
+      topic2: create-student
+      topic3: create-director

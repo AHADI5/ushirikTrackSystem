@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="base-domains" />
         <module name="teacher-service" />
+        <module name="users-management-service" />
         <module name="school-service" />
         <module name="sudent-service" />
       </profile>
@@ -24,6 +25,7 @@
       <module name="school-service" options="-parameters" />
       <module name="sudent-service" options="-parameters" />
       <module name="teacher-service" options="-parameters" />
+      <module name="users-management-service" options="-parameters" />
     </option>
   </component>
 </project>

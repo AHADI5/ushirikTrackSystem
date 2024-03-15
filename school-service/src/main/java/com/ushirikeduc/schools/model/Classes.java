@@ -1,7 +1,10 @@
 package com.ushirikeduc.schools.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -31,6 +34,10 @@ public class Classes {
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
+    @JsonIgnore
+    @OneToMany(mappedBy = "studentClass", cascade = CascadeType.ALL)
+    private List<EnrolledStudent> students = new ArrayList<>();
+
 
     //Assign Class to teacher
     public  void assignTeacher(Teacher teacher) {

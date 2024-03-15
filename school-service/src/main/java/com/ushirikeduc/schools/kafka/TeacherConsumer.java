@@ -1,7 +1,6 @@
 package com.ushirikeduc.schools.kafka;
 import Dto.TeacherEvent;
 import com.ushirikeduc.schools.interfaces.TeacherRepository;
-import com.ushirikeduc.schools.model.Classes;
 import com.ushirikeduc.schools.model.Teacher;
 import com.ushirikeduc.schools.service.ClassesService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +18,12 @@ public record TeacherConsumer(TeacherRepository teacherRepository,
                               ) {
 
     @KafkaListener(
-            topics = "${spring.kafka.topic.name}",
+            topics = "create-teacher",
             groupId = "${spring.kafka.consumer.group-id}"
     )
 
     public  void  consume(TeacherEvent event) {
-        log.info(String.format("Order Event received in school service => %s", event.toString()));
+        log.info(String.format("Teacher  Event received in school service => %s", event.toString()));
         // save the teacher in the database
         Teacher teacher = Teacher.builder()
                 .classID(event.getClassID())

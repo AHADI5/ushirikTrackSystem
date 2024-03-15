@@ -17,6 +17,7 @@
     <module>teacher-service</module>
       <module>base-domains</module>
       <module>sudent-service</module>
+      <module>users-management-service</module>
   </modules>
 
   <properties>
