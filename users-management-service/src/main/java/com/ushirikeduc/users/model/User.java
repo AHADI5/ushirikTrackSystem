@@ -22,8 +22,9 @@ import java.util.List;
 
 public class User implements UserDetails {
     @Id
-    Integer parentUserID ;
-    String userName ;
+
+    String firstName;
+    String lastName ;
     String password ;
     String email ;
     //Roles in the system
