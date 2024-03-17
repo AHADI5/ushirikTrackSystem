@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeacherEvent {
-    private Long teacherID ;
-    private Long classID ;
-    private String name;
+    private int teacherID;
+    private  int classID;
+    private String firstName;
+    private String lastName ;
+    private String password ;
+    private String email ;
 }

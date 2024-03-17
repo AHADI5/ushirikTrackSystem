@@ -27,10 +27,10 @@ public class Parent {
             generator = "parent_id_sequence"
     )
     private Long parentID;
-    private String name ;
+    private String firstName;
     private String lastName ;
-    private String email ;
     private String phone ;
+    private String email ;
 
     @JsonIgnore
     @OneToMany(mappedBy = "parent" ,

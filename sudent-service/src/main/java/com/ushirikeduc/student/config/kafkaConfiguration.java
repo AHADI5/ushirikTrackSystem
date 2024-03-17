@@ -7,14 +7,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class kafkaConfiguration {
-    @Value("${spring.kafka.topic.name}")
-    private String topicName ;
+    @Value("create-student")
+    private String studentTopic ;
+    @Value("create-parent")
+    private String parentTopic ;
 
     //Spring bran for kafka topic
     @Bean
-    public NewTopic topic() {
-        return TopicBuilder.name(topicName)
+    public NewTopic studentTopic() {
+        return TopicBuilder.name(studentTopic)
                 .build();
 
     }
+    @Bean
+    public NewTopic parentTopic() {
+        return TopicBuilder.name(parentTopic)
+                .build();
+
+    }
+
 }

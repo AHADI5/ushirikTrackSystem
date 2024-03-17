@@ -1,6 +1,8 @@
 package com.ushirikeduc.student.services;
 
+import Dto.ParentEvent;
 import Dto.StudentEvent;
+import com.ushirikeduc.student.kafka.ParentProducer;
 import com.ushirikeduc.student.kafka.StudentProducer;
 import com.ushirikeduc.student.model.Address;
 import com.ushirikeduc.student.model.Parent;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +25,8 @@ public record StudentService(
         StudentRepository studentRepository,
         ParentRepository parentRepository,
         AddressRepository addressRepository,
-        StudentProducer studentProducer
+        StudentProducer studentProducer,
+        ParentProducer parentProducer
 ) {
 
     public ResponseEntity<Student> registerNewStudent(StudentRegistrationRequest request) {
@@ -43,6 +47,11 @@ public record StudentService(
             Parent parent = createParent(request);
             parentRepository.save(parent);
 
+            //Create a parent Event
+            ParentEvent parentEvent = getParentEvent(parent);
+            parentProducer.sendMessage(parentEvent);
+
+
             // Create a new student and associate with the new parent
             Student student = createStudent(request, parent);
             StudentEvent studentEvent = getStudentEvent(student);
@@ -57,6 +66,26 @@ public record StudentService(
 
     }
 
+    private ParentEvent getParentEvent(Parent parent) {
+        String password = generatePassword(parent);
+        ParentEvent parentEvent= new ParentEvent();
+        parentEvent.setFirstName(parent.getFirstName());
+        parentEvent.setLastName(parent.getLastName());
+        parentEvent.setEmail(parent.getEmail());
+        parentEvent.setPassword(password);
+
+        return  parentEvent;
+    }
+    private static String generatePassword(Parent parent) {
+        //Generate a random number between 10 - 100
+        int randomNumber = new Random().nextInt(91)+10;
+        String firstName = parent.getFirstName();
+        String lastName = parent.getLastName();
+        //Combine teacher information with the generated random number to form teacher's password
+        return firstName.substring(0,3) + lastName.substring(0,3) +randomNumber;
+
+    }
+
     private StudentEvent getStudentEvent (Student student) {
         StudentEvent studentEvent = new StudentEvent();
         studentEvent.setStudentID(student.getStudentID());
@@ -68,7 +97,7 @@ public record StudentService(
     }
     private Parent createParent(StudentRegistrationRequest parentRequest) {
         return Parent.builder()
-                .name(parentRequest.parent().getName())
+                .firstName(parentRequest.parent().getFirstName())
                 .lastName(parentRequest.parent().getLastName())
                 .phone(parentRequest.parent().getPhone())
                 .email(parentRequest.parent().getEmail())

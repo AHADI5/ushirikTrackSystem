@@ -26,9 +26,9 @@ public record TeacherConsumer(TeacherRepository teacherRepository,
         log.info(String.format("Teacher  Event received in school service => %s", event.toString()));
         // save the teacher in the database
         Teacher teacher = Teacher.builder()
-                .classID(event.getClassID())
-                .teacherID(event.getTeacherID())
-                .name(event.getName())
+                .classID((long) event.getClassID())
+                .teacherID((long) event.getTeacherID())
+                .name(event.getFirstName() + " " + event.getLastName())
                 .build();
         Teacher savedTeacher = teacherRepository.save(teacher);
 //        log.info("Class Assigned Successfully" + savedTeacher);

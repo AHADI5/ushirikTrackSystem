@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public record StudentProducer(
-        NewTopic topic,
+        NewTopic studentTopic,
         KafkaTemplate<String , StudentEvent> kafkaTemplate
 ) {
     public void sendMessage(StudentEvent studentEvent) {
@@ -22,7 +22,7 @@ public record StudentProducer(
         //Creating the message
         Message<StudentEvent> message = MessageBuilder
                 .withPayload(studentEvent)
-                .setHeader(KafkaHeaders.TOPIC,topic.name() )
+                .setHeader(KafkaHeaders.TOPIC,studentTopic.name() )
                 .build();
         kafkaTemplate.send(message);
     }

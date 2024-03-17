@@ -11,6 +11,8 @@ import com.ushirikeduc.teacherservice.request.TeacherRegistrationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 @Slf4j
 public record TeacherService(TeacherRepository teacherRepository,
@@ -25,7 +27,6 @@ public record TeacherService(TeacherRepository teacherRepository,
         Address address = request.address();
         addressRepository.save(address);
         Teacher teacher = Teacher.builder()
-                .name(request.name())
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .classID(request.classID())
@@ -46,17 +47,27 @@ public record TeacherService(TeacherRepository teacherRepository,
     }
 
     private static TeacherEvent getTeacherEvent(Teacher savedTeacher) {
-        String teacherName = savedTeacher.getName() + " "
-                + savedTeacher.getFirstName() + " "
-                + savedTeacher.getLastName();
-        Long teacherId = savedTeacher.getId();
-        int  classId = savedTeacher.getClassID();
-
+       //Generate Default password
+        String password = generatePassword(savedTeacher);
         //Set the teacher event
         TeacherEvent teacherEvent = new TeacherEvent();
-        teacherEvent.setTeacherID(teacherId);
-        teacherEvent.setClassID((long) classId);
-        teacherEvent.setName((teacherName));
+        teacherEvent.setFirstName(savedTeacher.getFirstName());
+        teacherEvent.setLastName(savedTeacher.getLastName());
+        teacherEvent.setEmail(savedTeacher.getEmail());
+        teacherEvent.setTeacherID(Math.toIntExact(savedTeacher.getId()));
+        teacherEvent.setClassID(savedTeacher.getClassID());
+        //Set the teacher-event  password
+        teacherEvent.setPassword(password);
         return teacherEvent;
+    }
+
+    private static String generatePassword(Teacher teacher) {
+        //Generate a random number between 10 - 100
+        int randomNumber = new Random().nextInt(91)+10;
+        String firstName = teacher.getFirstName();
+        String lastName = teacher.getLastName();
+        //Combine teacher information with the generated random number to form teacher's password
+        return firstName.substring(0,3) + lastName.substring(0,3) +randomNumber;
+
     }
 }
