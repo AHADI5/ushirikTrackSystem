@@ -7,6 +7,7 @@ public record StudentRegistrationRequest(
       String name ,
       String lastName ,
       String firstName ,
+      String gender ,
       int classID,
       Parent parent,
       Address address

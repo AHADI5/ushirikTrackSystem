@@ -1,12 +1,9 @@
 package com.ushirikeduc.users.config;
 
 import com.ushirikeduc.users.model.Role;
-import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,7 +19,7 @@ public class SecurityConfiguration {
 
 
 
-    private final JwtAuthentificationFilter jwtAuthFilter;
+    private final JitAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean

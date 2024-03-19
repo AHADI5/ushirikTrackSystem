@@ -10,19 +10,27 @@
         <module name="base-domains" />
         <module name="teacher-service" />
         <module name="users-management-service" />
+        <module name="class-service" />
         <module name="school-service" />
         <module name="sudent-service" />
+        <module name="service-registry" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="eureka-server" target="21" />
       <module name="rules-service" target="21" />
+      <module name="service-register" target="21" />
       <module name="student-service" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="base-domains" options="-parameters" />
+      <module name="class-service" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
       <module name="school-service" options="-parameters" />
+      <module name="service-register" options="-parameters" />
+      <module name="service-registry" options="-parameters" />
       <module name="sudent-service" options="-parameters" />
       <module name="teacher-service" options="-parameters" />
       <module name="users-management-service" options="-parameters" />

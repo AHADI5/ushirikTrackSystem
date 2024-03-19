@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class StudentEvent {
     private Integer studentID;
     private String name ;
-    private Integer classID ;
+    private int classID ;
+    private String gender;
 
 }

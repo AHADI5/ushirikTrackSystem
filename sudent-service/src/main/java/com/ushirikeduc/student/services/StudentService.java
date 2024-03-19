@@ -89,7 +89,9 @@ public record StudentService(
     private StudentEvent getStudentEvent (Student student) {
         StudentEvent studentEvent = new StudentEvent();
         studentEvent.setStudentID(student.getStudentID());
-        studentEvent.setName(student.getName());
+        studentEvent.setGender(student.getGender());
+        studentEvent.setName(student.getName() + " " + student.getFirstName() + " " + student.getLastName());
+        studentEvent.setGender(studentEvent.getGender());
         studentEvent.setClassID(student.getClassID());
         return studentEvent;
 
@@ -111,6 +113,7 @@ public record StudentService(
                 .name(request.name())
                 .firstName(request.firstName())
                 .lastName(request.lastName())
+                .gender(request.gender())
                 .classID(request.classID())
                 .parent(parent)
                 .address(address)

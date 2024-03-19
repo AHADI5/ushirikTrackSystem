@@ -31,6 +31,7 @@ public class Student {
     private String lastName ;
     private String firstName ;
     private int classID ;
+    private String gender;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
