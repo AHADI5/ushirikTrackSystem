@@ -1,4 +1,4 @@
-package com.ushirikeduc.serviceregistry;
+package com.ushirikeduc.Eurekaserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,10 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 @SpringBootApplication
 @EnableEurekaServer
-public class ServiceRegistryApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(ServiceRegistryApplication.class,args);
-    }
+public class EurekaServerApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(EurekaServerApplication.class, args);
+	}
+
 }

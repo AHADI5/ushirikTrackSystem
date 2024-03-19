@@ -13,18 +13,20 @@
         <module name="class-service" />
         <module name="school-service" />
         <module name="sudent-service" />
-        <module name="service-registry" />
+        <module name="Eureka-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="eureka-server" target="21" />
       <module name="rules-service" target="21" />
       <module name="service-register" target="21" />
+      <module name="service-registry" target="21" />
       <module name="student-service" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Eureka-server" options="-parameters" />
       <module name="base-domains" options="-parameters" />
       <module name="class-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />

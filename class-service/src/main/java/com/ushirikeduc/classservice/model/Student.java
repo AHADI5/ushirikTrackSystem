@@ -6,6 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Data
 @Entity
 @Builder
@@ -29,6 +34,13 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "class_id")
     private ClassRoom studentClass;
+
+    @ManyToMany(mappedBy = "students")
+    private Set<ClassWork> classWorks = new HashSet<>();
+
+    @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Score> scores = new ArrayList<>();
+
 
 
 

@@ -38,4 +38,15 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "classroom_id")
     private ClassRoom classRoom;
+
+    @OneToMany(mappedBy = "course",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ClassWork> classWorks = new ArrayList<>();
+
+
+
+
+
+
 }
