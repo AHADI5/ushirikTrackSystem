@@ -42,4 +42,13 @@ public record CoursesService (
         return  classRoom.getCourses();
     }
 
+    public Course getcourseByIdInClassRoom(Long classRoomId, int courseId) {
+        ClassRoom classRoom = classRoomRepository.findById(classRoomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Class Not found"));
+        return  classRoom.getCourses().stream()
+                .filter(course -> course.getCourseID()==(courseId))
+                .findFirst().orElseThrow(() -> new ResourceNotFoundException("Course Not found"));
+
+    }
+
 }

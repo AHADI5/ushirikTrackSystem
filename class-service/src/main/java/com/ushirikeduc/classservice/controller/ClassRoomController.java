@@ -38,6 +38,14 @@ public record ClassRoomController(
         return  coursesService.courseByClassID(classRoomId);
     }
 
+    @GetMapping("/{classRoomId}/courses/{courseId}")
+    public Course getSpecieCourseInClassRoom(
+            @PathVariable int classRoomId, @PathVariable int courseId
+    ) {
+        return coursesService.getcourseByIdInClassRoom((long) classRoomId, courseId);
+
+    }
+
 
 
 }

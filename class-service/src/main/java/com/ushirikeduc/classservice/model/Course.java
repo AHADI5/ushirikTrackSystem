@@ -20,7 +20,7 @@ import java.util.Set;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private  long courseID ;
+    private  int courseID ;
     private String name ;
     private String description ;
     @ManyToMany(cascade = CascadeType.ALL)
@@ -34,6 +34,7 @@ public class Course {
     @JoinColumn(name = "couse_id")
     private List<Requirement> requirements = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "classroom_id")
     private ClassRoom classRoom;

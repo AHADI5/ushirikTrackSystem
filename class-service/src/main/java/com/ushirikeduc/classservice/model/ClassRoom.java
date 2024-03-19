@@ -35,7 +35,7 @@ public class ClassRoom {
     @OneToMany(mappedBy = "studentClass", cascade = CascadeType.ALL)
     private List<Student> students = new ArrayList<>();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL)
     private List<Course> courses = new ArrayList<>();
 
