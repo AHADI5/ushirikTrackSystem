@@ -19,9 +19,8 @@
     <module>sudent-service</module>
     <module>Eureka-server</module>
     <module>users-management-service</module>
-
     <module>class-service</module>
-      <module>courses-service</module>
+    <module>courses-service</module>
   </modules>
 
   <properties>

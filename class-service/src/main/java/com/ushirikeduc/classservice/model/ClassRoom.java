@@ -39,7 +39,6 @@ public class ClassRoom {
     @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL)
     private List<Course> courses = new ArrayList<>();
 
-
     //Assign Class to teacher
     public  void assignTeacher(Teacher teacher) {
         this.setTeacher(teacher);

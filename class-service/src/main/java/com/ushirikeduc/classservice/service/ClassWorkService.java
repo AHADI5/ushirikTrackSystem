@@ -1,9 +1,7 @@
 package com.ushirikeduc.classservice.service;
 
-import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
 import com.ushirikeduc.classservice.dto.ClassWorkRegistrationRequest;
 import com.ushirikeduc.classservice.model.ClassRoom;
-import com.ushirikeduc.classservice.model.ClassWork;
 import com.ushirikeduc.classservice.model.Course;
 import com.ushirikeduc.classservice.model.Student;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
@@ -14,7 +12,6 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j

@@ -35,11 +35,7 @@ public class Student {
     @JoinColumn(name = "class_id")
     private ClassRoom studentClass;
 
-    @ManyToMany(mappedBy = "students")
-    private Set<ClassWork> classWorks = new HashSet<>();
 
-    @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Score> scores = new ArrayList<>();
 
 
 

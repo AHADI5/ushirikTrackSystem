@@ -30,3 +30,4 @@ spring:
     topics:
       topic1: create-teacher
       topic2: create-student
+      topic3: create-course

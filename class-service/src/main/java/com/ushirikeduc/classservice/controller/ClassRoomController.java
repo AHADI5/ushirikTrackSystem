@@ -22,11 +22,6 @@ public record ClassRoomController(
         return classRoomService.registerClassRoom(classRoom);
 
     }
-    @PostMapping("/{classRoomId}/courses")
-    public Course createCourse(@PathVariable Long classRoomId,
-                               @RequestBody Course course){
-        return coursesService.registerCourse(classRoomId, course);
-    }
 
     @GetMapping("/{courseID}")
     public Course getCourseByID(@PathVariable int courseID) {

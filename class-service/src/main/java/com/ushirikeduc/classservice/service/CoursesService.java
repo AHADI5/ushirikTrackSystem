@@ -1,5 +1,6 @@
 package com.ushirikeduc.classservice.service;
 
+import Dto.CourseEvent;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Course;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
@@ -18,13 +19,17 @@ public record CoursesService (
         CourseRepository courseRepository
 ) {
 
-    public Course registerCourse(long classRoomID , Course course  ) {
+    public void registerCourse(CourseEvent courseEvent) {
         //fetching the classroom from the database
-        ClassRoom classRoom = classRoomRepository.findById(classRoomID)
+        ClassRoom classRoom = classRoomRepository.findById((long) courseEvent.getClassId())
                 .orElseThrow(() -> new ResourceNotFoundException("ClassRoom Not found"));
-        course.setClassRoom(classRoom);
+        Course course = Course.builder()
+                .name(courseEvent.getName())
+                .classRoom(classRoom)
+                .courseID(courseEvent.getCourseID())
+                .build();
 
-        return courseRepository.save(course);
+        courseRepository.save(course);
     }
 
     public List<Course> getAllCourses() {

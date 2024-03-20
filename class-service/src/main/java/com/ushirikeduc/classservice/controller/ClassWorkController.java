@@ -2,8 +2,6 @@ package com.ushirikeduc.classservice.controller;
 
 import com.ushirikeduc.classservice.dto.ClassWorkRegistrationRequest;
 import com.ushirikeduc.classservice.dto.ScoreRegistrationRequest;
-import com.ushirikeduc.classservice.model.ClassWork;
-import com.ushirikeduc.classservice.model.Score;
 import com.ushirikeduc.classservice.model.Student;
 import com.ushirikeduc.classservice.service.ClassWorkService;
 import com.ushirikeduc.classservice.service.CoursesService;
