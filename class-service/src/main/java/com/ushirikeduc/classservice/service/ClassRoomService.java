@@ -27,9 +27,8 @@ public record ClassRoomService(ClassRoomRepository classRepository,
                                CourseRepository courseRepository
 ) {
 
-
     public ClassRoom registerClassRoom(ClassRegistrationRequest Request) {
-        //Register a signle class
+        //Register a single class
         ClassRoom classe = ClassRoom.builder()
                 .name(Request.name())
                 .schoolID(Request.schoolID())

@@ -1,12 +1,15 @@
 package com.ushirikeduc.classservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,15 +23,21 @@ public class ClassWork {
     private int classWorkID;
     private String name ;
     private String description ;
-    private String credits;
+    private String type ;
+    private int credits;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
+
 
     @ManyToMany
     @JoinTable(name = "classwork_student",
     joinColumns = @JoinColumn(name = "classword_id"),
     inverseJoinColumns = @JoinColumn(name = "student_id"))
-    private Set<Student> students = new HashSet<>();
+    private List<Student> students = new ArrayList<>();
+
+    @OneToMany(mappedBy = "classwork" , cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Score> scores = new ArrayList<>();
 
 }

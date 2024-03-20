@@ -1,7 +1,6 @@
 package com.ushirikeduc.classservice.controller;
 
 import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
-import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Course;
 import com.ushirikeduc.classservice.service.ClassRoomService;
 import com.ushirikeduc.classservice.service.CoursesService;
@@ -19,7 +18,7 @@ public record ClassRoomController(
 ) {
 
     @PostMapping("/newClassRoom")
-    public ClassRoom registerClassRoom(@RequestBody ClassRegistrationRequest classRoom) {
+    public com.ushirikeduc.classservice.model.ClassRoom registerClassRoom(@RequestBody ClassRegistrationRequest classRoom) {
         return classRoomService.registerClassRoom(classRoom);
 
     }
@@ -45,6 +44,7 @@ public record ClassRoomController(
         return coursesService.getcourseByIdInClassRoom((long) classRoomId, courseId);
 
     }
+
 
 
 

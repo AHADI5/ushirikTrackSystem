@@ -14,6 +14,7 @@
         <module name="school-service" />
         <module name="sudent-service" />
         <module name="Eureka-server" />
+        <module name="courses-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -29,6 +30,7 @@
       <module name="Eureka-server" options="-parameters" />
       <module name="base-domains" options="-parameters" />
       <module name="class-service" options="-parameters" />
+      <module name="courses-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="school-service" options="-parameters" />
       <module name="service-register" options="-parameters" />
