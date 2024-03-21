@@ -9,6 +9,8 @@ import org.springframework.kafka.config.TopicBuilder;
 public class kafkaConfiguration {
     @Value("create-course")
     private String courseTopic ;
+    @Value("create-classwork")
+    private String classWorkTopic ;
 
 
     //Spring bean for kafka topic
@@ -18,6 +20,13 @@ public class kafkaConfiguration {
                 .build();
 
     }
+    @Bean
+    public NewTopic classWorkTopic() {
+        return TopicBuilder.name(classWorkTopic)
+                .build();
+
+    }
+
 
 
 }

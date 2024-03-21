@@ -39,8 +39,4 @@ public record ClassRoomController(
         return coursesService.getcourseByIdInClassRoom((long) classRoomId, courseId);
 
     }
-
-
-
-
 }

@@ -8,7 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Slf4j
@@ -39,4 +42,9 @@ public class Student {
 
     @OneToOne(  cascade = CascadeType.ALL)
     private Address address;
+    @ManyToMany(mappedBy = "students")
+    private Set<ClassWorksAssigned> classwork = new HashSet<>();
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Score> scores = new ArrayList<>();
+
 }
