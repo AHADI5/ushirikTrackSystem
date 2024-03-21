@@ -43,8 +43,8 @@ public class Student {
     @OneToOne(  cascade = CascadeType.ALL)
     private Address address;
     @ManyToMany(mappedBy = "students")
-    private Set<ClassWorksAssigned> classwork = new HashSet<>();
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Score> scores = new ArrayList<>();
+    private List<ClassWorksAssigned> classwork = new ArrayList<>();
+
+
 
 }

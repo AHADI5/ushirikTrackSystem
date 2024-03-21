@@ -22,7 +22,8 @@ spring:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    topic:
-      name: create-course
+    topics:
+      topic1: create-course
+      topic2: create-classwork
 
 

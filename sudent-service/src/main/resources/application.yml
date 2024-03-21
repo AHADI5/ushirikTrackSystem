@@ -18,35 +18,31 @@ spring:
     show-sql: true
 
     #Kafka configuration
-  kafka:
-    binder:
-      brokers : localhost:902
-      autoCreateTopics: true
-      autoAddPartitions: true
-    bindings :
-      input:
-        consumer:
-            bootstrap-servers: localhost:9092
-            group-id: teacher
-            auto-offset-reset: earliest
-            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            properties:
-              spring.json.trusted.packages: '*'
-            topics:
-              topic1: classwork-created
-
-      output:
-        producer:
-          bootstrap-servers: localhost:9092
-          key-serializer: org.apache.kafka.common.serialization.StringSerializer
-          value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+kafka:
+  binder:
+    brokers: localhost:902
+    autoCreateTopics: true
+    autoAddPartitions: true
+  bindings:
+    input:
+      consumer:
+        bootstrap-servers: localhost:9092
+        group-id: classwork
+        auto-offset-reset: earliest
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        properties:
+          spring.json.trusted.packages: '*'
         topics:
-          student: create-student
-          parent: create-parent
+          - create-classwork
+    output:
+      producer:
+        bootstrap-servers: localhost:9092
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      topics:
+        - create-student
+        - create-parent
 
 
-
-
-    consumer:
 

@@ -53,6 +53,8 @@ public record ClassWorkService (
     private ClassWorkEvent createClassWorkEvent(ClassWork classWork) {
         ClassWorkEvent  classWorkEvent = new ClassWorkEvent();
         classWorkEvent.setCourseID(classWork.getCourse().getCourseID());
+        classWorkEvent.setCourseName(classWork.getCourse().getName());
+        classWorkEvent.setClassWorkID(classWorkEvent.getClassWorkID());
         classWorkEvent.setTitle(classWork.getName());
 
         return classWorkEvent;
