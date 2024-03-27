@@ -27,7 +27,13 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
         spring.json.trusted.packages: '*'
+      topics:
+        topic1: create-teacher
+        topic2: create-student
+        topic3: create-course
+
+    producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     topics:
-      topic1: create-teacher
-      topic2: create-student
-      topic3: create-course
+        student: create-classroom

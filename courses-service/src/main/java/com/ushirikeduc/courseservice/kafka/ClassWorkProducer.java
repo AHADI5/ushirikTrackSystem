@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public record ClassWorkProducer(
         NewTopic classWorkTopic,
-        KafkaTemplate<String , CourseEvent> kafkaTemplate
+        KafkaTemplate<String , ClassWorkEvent> kafkaTemplate
 ) {
     public void sendMessage(ClassWorkEvent classWorkEvent) {
-        log.info(String.format("course  Event => %s",
+        log.info(String.format(" classWork Event => %s",
                 classWorkEvent.toString()));
         //Creating the message
         Message<ClassWorkEvent> message = MessageBuilder

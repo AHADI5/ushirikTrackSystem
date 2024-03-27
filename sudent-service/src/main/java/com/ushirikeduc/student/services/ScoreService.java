@@ -7,6 +7,7 @@ import com.ushirikeduc.student.repository.ClassWorkAssignedRepository;
 import com.ushirikeduc.student.repository.StudentRepository;
 import com.ushirikeduc.student.repository.StudentScoreRepository;
 import com.ushirikeduc.student.request.ScoreRequest;
+import com.ushirikeduc.student.request.ScoreResponse;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -38,11 +39,39 @@ public record ScoreService(
                     .build();
            savedScoreRequests.add(studentScoreRepository.save(studentScore));
         }
-
         return savedScoreRequests;
+    }
 
+    public List<ScoreResponse> getScoreByStudentID(int studentID){
+        Student student = studentRepository.findById(studentID)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found"));
+        List<Score> studentScore = studentScoreRepository.getScoreByStudent(student);
+        List<ScoreResponse> studentScoreList =new ArrayList<>() ;
 
+        for (Score score : studentScore) {
+            int ScoreID = Math.toIntExact(score.getId());
+            //find Real Score
+            Score realScore = studentScoreRepository.findById(ScoreID)
+                    .orElseThrow(() -> new ResourceNotFoundException("Score Not found"));
+
+            ScoreResponse scoreResponse = new ScoreResponse(
+                    realScore.getClasswork().getCourseName(),realScore.getClasswork().getTitle(), realScore.getScore()
+            );
+            studentScoreList.add(scoreResponse);
+
+        }
+        return  studentScoreList;
 
     }
+
+//    public Course getcourseByIdInClassRoom(Long classRoomId, int courseId) {
+//        ClassRoom classRoom = classRoomRepository.findById(classRoomId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Class Not found"));
+//        return  classRoom.getCourses().stream()
+//                .filter(course -> course.getCourseID()==(courseId))
+//                .findFirst().orElseThrow(() -> new ResourceNotFoundException("Course Not found"));
+//
+//    }
+
 
 }

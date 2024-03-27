@@ -1,9 +1,11 @@
 package com.ushirikeduc.classservice.service;
 
+import Dto.ClassRoomEvent;
 import Dto.StudentEvent;
 import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
 import com.ushirikeduc.classservice.dto.ClassStudentsResponse;
 import com.ushirikeduc.classservice.dto.EnrolledStudentResponse;
+import com.ushirikeduc.classservice.kafka.ClassRoomProducer;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Student;
 import com.ushirikeduc.classservice.model.Teacher;
@@ -24,17 +26,31 @@ public record ClassRoomService(ClassRoomRepository classRepository,
                                TeacherRepository teacherRepository,
 
                                EnrolledStudentRepository enrolledStudentRepository,
-                               CourseRepository courseRepository
+                               CourseRepository courseRepository,
+                               ClassRoomProducer classRoomProducer
 ) {
 
     public ClassRoom registerClassRoom(ClassRegistrationRequest Request) {
         //Register a single class
-        ClassRoom classe = ClassRoom.builder()
+        ClassRoom classRoom = ClassRoom.builder()
                 .name(Request.name())
                 .schoolID(Request.schoolID())
                 .level((long) Request.level())
                 .build();
-        return classRepository.save(classe);
+        ClassRoom savedClassRoom =classRepository.save(classRoom) ;
+        ClassRoomEvent classRoomEvent = getClassRoomEvent(classRoom);
+        classRoomProducer.sendMessage(classRoomEvent);
+        return savedClassRoom;
+    }
+
+    private ClassRoomEvent getClassRoomEvent(ClassRoom classRoom) {
+        ClassRoomEvent classRoomEvent = new ClassRoomEvent();
+        classRoomEvent.setClassesID(classRoom.getClassesID()) ;
+        classRoomEvent.setLevel(classRoomEvent.getLevel());
+        classRoomEvent.setSchoolID(classRoomEvent.getSchoolID());
+        classRoomEvent.setName(classRoomEvent.getName());
+        classRoomEvent.setTeacherName(classRoom.getTeacher().getName());
+        return  classRoomEvent;
     }
 
     public List<ClassRoom> getAllClasses() {
@@ -58,6 +74,7 @@ public record ClassRoomService(ClassRoomRepository classRepository,
                 c -> {
                     c.assignTeacher(teacher);
                     classRepository.save(c);
+                    //Send teacher update
                 }
         );
 
@@ -74,6 +91,7 @@ public record ClassRoomService(ClassRoomRepository classRepository,
         enrolledStudent.setStudentID(studentEvent.getStudentID());
         enrolledStudent.setStudentClass(getClassIfExists(studentEvent.getClassID()));
         enrolledStudentRepository.save(enrolledStudent);
+        //Publish student with class
         return ResponseEntity.ok(enrolledStudent);
     }
 

@@ -2,8 +2,8 @@ package com.ushirikeduc.student.controller;
 
 import com.ushirikeduc.student.model.Score;
 import com.ushirikeduc.student.model.Student;
-import com.ushirikeduc.student.repository.StudentScoreRepository;
 import com.ushirikeduc.student.request.ScoreRequest;
+import com.ushirikeduc.student.request.ScoreResponse;
 import com.ushirikeduc.student.request.StudentRegistrationRequest;
 import com.ushirikeduc.student.request.StudentResponse;
 import com.ushirikeduc.student.services.ClassWorkAssignedService;
@@ -42,7 +42,10 @@ public record StudentController(
 
         return scoreService.recordScore(classworkId ,scores);
 
+    }
 
-
+    @GetMapping("/{studentID}/score")
+    public List<ScoreResponse> getScoresByStudentID(@PathVariable int studentID) {
+        return  scoreService.getScoreByStudentID(studentID);
     }
 }

@@ -1,5 +1,5 @@
 server:
-  port: 8748
+  port: 8749
 
 spring:
   application:

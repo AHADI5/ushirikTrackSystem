@@ -26,3 +26,12 @@ spring:
     topics:
       student: create-student
       parent: create-parent
+    consumer:
+      group-id: classwork
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+      topic :
+        name: create-classwork

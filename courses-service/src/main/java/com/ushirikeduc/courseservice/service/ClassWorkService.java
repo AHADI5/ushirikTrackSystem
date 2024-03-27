@@ -54,7 +54,7 @@ public record ClassWorkService (
         ClassWorkEvent  classWorkEvent = new ClassWorkEvent();
         classWorkEvent.setCourseID(classWork.getCourse().getCourseID());
         classWorkEvent.setCourseName(classWork.getCourse().getName());
-        classWorkEvent.setClassWorkID(classWorkEvent.getClassWorkID());
+        classWorkEvent.setClassWorkID(classWork.getClassWorkID());
         classWorkEvent.setTitle(classWork.getName());
 
         return classWorkEvent;

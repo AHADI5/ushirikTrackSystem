@@ -42,8 +42,13 @@ public class Student {
 
     @OneToOne(  cascade = CascadeType.ALL)
     private Address address;
-    @ManyToMany(mappedBy = "students")
-    private List<ClassWorksAssigned> classwork = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "student_classwork",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "classwork_id")
+    )
+    private List<ClassWorksAssigned> classwork;
 
 
 

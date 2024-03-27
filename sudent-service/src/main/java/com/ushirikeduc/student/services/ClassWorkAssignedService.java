@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public record ClassWorkAssignedService(
-        ClassWorkAssignedService classWorkService,
         ClassWorkAssignedRepository classWorkRepo
 
 ) {

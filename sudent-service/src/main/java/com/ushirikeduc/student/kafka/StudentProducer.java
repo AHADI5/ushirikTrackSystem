@@ -26,6 +26,7 @@ public record StudentProducer(
                 .build();
         kafkaTemplate.send(message);
     }
+
 }
 
 
