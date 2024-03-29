@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="base-domains" />
+        <module name="discipline-service" />
         <module name="teacher-service" />
         <module name="users-management-service" />
         <module name="class-service" />
@@ -33,6 +34,7 @@
       <module name="class-service" options="-parameters" />
       <module name="classwork-service" options="-parameters" />
       <module name="courses-service" options="-parameters" />
+      <module name="discipline-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="school-service" options="-parameters" />
       <module name="service-register" options="-parameters" />

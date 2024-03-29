@@ -21,6 +21,7 @@
     <module>users-management-service</module>
     <module>class-service</module>
     <module>courses-service</module>
+      <module>discipline-service</module>
   </modules>
 
   <properties>

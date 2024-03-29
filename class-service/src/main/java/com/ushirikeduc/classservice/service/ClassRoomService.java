@@ -74,7 +74,7 @@ public record ClassRoomService(ClassRoomRepository classRepository,
                 c -> {
                     c.assignTeacher(teacher);
                     classRepository.save(c);
-                    //Send teacher update
+                    //todo Send teacher update
                 }
         );
 
@@ -91,7 +91,8 @@ public record ClassRoomService(ClassRoomRepository classRepository,
         enrolledStudent.setStudentID(studentEvent.getStudentID());
         enrolledStudent.setStudentClass(getClassIfExists(studentEvent.getClassID()));
         enrolledStudentRepository.save(enrolledStudent);
-        //Publish student with class
+
+        //todo Publish student with class
         return ResponseEntity.ok(enrolledStudent);
     }
 
