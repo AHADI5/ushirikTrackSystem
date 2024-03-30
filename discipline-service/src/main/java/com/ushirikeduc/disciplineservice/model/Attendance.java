@@ -2,6 +2,7 @@ package com.ushirikeduc.disciplineservice.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,8 @@ public class Attendance {
     private Long attendanceID;
     private Date date ;
     private boolean isPresent;
+    @ManyToOne
+    private Discipline discipline;
 
 
 

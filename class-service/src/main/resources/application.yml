@@ -2,6 +2,8 @@ server:
   port: 8746
 
 spring:
+  main:
+    allow-circular-references: false
   application:
     name: classroom-service
   datasource:
@@ -36,4 +38,6 @@ spring:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer
         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     topics:
-        student: create-classroom
+      student: create-classroom
+
+

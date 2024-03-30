@@ -12,10 +12,14 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("api/v1/classRoom")
-public record ClassRoomController(
-        ClassRoomService classRoomService,
-        CoursesService coursesService
-) {
+public class ClassRoomController {
+    private final ClassRoomService classRoomService;
+    private final CoursesService coursesService;
+
+    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService) {
+        this.classRoomService = classRoomService;
+        this.coursesService = coursesService;
+    }
 
     @PostMapping("/newClassRoom")
     public com.ushirikeduc.classservice.model.ClassRoom registerClassRoom(@RequestBody ClassRegistrationRequest classRoom) {

@@ -13,9 +13,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public record TeacherConsumer(TeacherRepository teacherRepository,
-                              ClassRoomService classesService
-                              ) {
+public class TeacherConsumer {
+    private final TeacherRepository teacherRepository;
+    private final ClassRoomService classesService;
+
+    public TeacherConsumer(TeacherRepository teacherRepository,
+                           ClassRoomService classRoomService,
+                           ClassRoomService classesService) {
+        this.teacherRepository = teacherRepository;
+        this.classesService = classesService;
+
+    }
 
     @KafkaListener(
             topics = "create-teacher",

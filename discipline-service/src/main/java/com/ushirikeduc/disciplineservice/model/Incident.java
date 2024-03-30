@@ -2,6 +2,7 @@ package com.ushirikeduc.disciplineservice.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,7 @@ public class Incident {
     private String place ;
     private Date date ;
     private  String description ;
+
+    @ManyToOne
+    private Discipline discipline;
 }

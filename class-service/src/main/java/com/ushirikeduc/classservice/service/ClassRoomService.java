@@ -10,10 +10,9 @@ import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Student;
 import com.ushirikeduc.classservice.model.Teacher;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
-import com.ushirikeduc.classservice.repository.CourseRepository;
 import com.ushirikeduc.classservice.repository.EnrolledStudentRepository;
-import com.ushirikeduc.classservice.repository.TeacherRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +21,20 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public record ClassRoomService(ClassRoomRepository classRepository,
-                               TeacherRepository teacherRepository,
+public class ClassRoomService{
+    final ClassRoomRepository classRepository;
 
-                               EnrolledStudentRepository enrolledStudentRepository,
-                               CourseRepository courseRepository,
-                               ClassRoomProducer classRoomProducer
-) {
+    final EnrolledStudentRepository enrolledStudentRepository;
+
+    final ClassRoomProducer classRoomProducer;
+
+    public ClassRoomService(ClassRoomRepository classRepository,
+                            EnrolledStudentRepository enrolledStudentRepository,
+                            @Lazy  ClassRoomProducer classRoomProducer) {
+        this.classRepository = classRepository;
+        this.enrolledStudentRepository = enrolledStudentRepository;
+        this.classRoomProducer = classRoomProducer;
+    }
 
     public ClassRoom registerClassRoom(ClassRegistrationRequest Request) {
         //Register a single class
@@ -64,9 +70,6 @@ public record ClassRoomService(ClassRoomRepository classRepository,
     }
 
     //Add classes to a school
-
-
-
     //Assign the teacher to the class
     public void assignTeacherToClass(Teacher teacher) {
         Optional<ClassRoom> classes = getClassById(teacher.getClassID());
@@ -116,7 +119,6 @@ public record ClassRoomService(ClassRoomRepository classRepository,
         return ResponseEntity.ok(studentResponses);
     }
 
-
     public ClassStudentsResponse createSimpleClassList(Student student) {
         return new  ClassStudentsResponse(
                 student.getStudentClass().getTeacher(),
@@ -127,15 +129,10 @@ public record ClassRoomService(ClassRoomRepository classRepository,
                         .toList()
         );
     }
-
     public EnrolledStudentResponse createSimpleStudent(Student student){
         return  new EnrolledStudentResponse(
                 (int) student.getStudentID(),
                 student.getName()
         );
-
     }
-
-
-
 }
