@@ -15,4 +15,10 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("student-created")
                 .build();
     }
+
+    @Bean
+    public NewTopic ParentTopic() {
+        return TopicBuilder.name("parent-created")
+                .build();
+    }
 }

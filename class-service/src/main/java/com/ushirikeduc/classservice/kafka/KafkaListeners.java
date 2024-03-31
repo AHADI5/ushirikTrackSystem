@@ -76,7 +76,10 @@ public class KafkaListeners {
         classRoomService.assignTeacherToClass(savedTeacher);
     }
 
-    //todo course Listener
+    /***
+     *
+     * Consuming courseEvent
+     */
     @KafkaListener(
             topics = "course-created",
             groupId = "course"

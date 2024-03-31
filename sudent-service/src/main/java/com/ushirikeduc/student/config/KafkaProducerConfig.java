@@ -1,5 +1,6 @@
 package com.ushirikeduc.student.config;
 
+import Dto.ParentEvent;
 import Dto.StudentEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
@@ -22,7 +23,12 @@ import java.util.Map;
 public class KafkaProducerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private  String boostrapServers;
-    public Map<String , Object> producerConfig() {
+
+    /***
+     *
+     * producing Student Event
+     */
+    public Map<String , Object> producerConfigStudent() {
         HashMap<String , Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -30,13 +36,36 @@ public class KafkaProducerConfig {
         return props ;
     }
     @Bean
-    public ProducerFactory<String , StudentEvent> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+    public ProducerFactory<String , StudentEvent> producerFactoryStudent() {
+        return new DefaultKafkaProducerFactory<>(producerConfigStudent());
 
     }
     @Bean
-    public KafkaTemplate<String , StudentEvent> kafkaTemplate(
+    public KafkaTemplate<String , StudentEvent> kafkaTemplateStudent(
     ) {
-        return  new KafkaTemplate<>(producerFactory());
+        return  new KafkaTemplate<>(producerFactoryStudent());
+    }
+
+    /***
+     *
+     * producing Parent Event
+     */
+
+    public Map<String , Object> producerConfigParent() {
+        HashMap<String , Object> propsParent = new HashMap<>();
+        propsParent.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsParent.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        propsParent.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return propsParent ;
+    }
+    @Bean
+    public ProducerFactory<String , ParentEvent> producerFactoryParent() {
+        return new DefaultKafkaProducerFactory<>(producerConfigParent());
+
+    }
+    @Bean
+    public KafkaTemplate<String , ParentEvent> kafkaTemplateParent(
+    ) {
+        return  new KafkaTemplate<>(producerFactoryParent());
     }
 }

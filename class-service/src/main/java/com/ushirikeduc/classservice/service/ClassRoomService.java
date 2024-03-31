@@ -5,7 +5,6 @@ import Dto.StudentEvent;
 import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
 import com.ushirikeduc.classservice.dto.ClassStudentsResponse;
 import com.ushirikeduc.classservice.dto.EnrolledStudentResponse;
-import com.ushirikeduc.classservice.kafka.ClassRoomProducer;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Student;
 import com.ushirikeduc.classservice.model.Teacher;
