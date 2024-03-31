@@ -55,7 +55,7 @@ public class ClassRoomService{
         classRoomEvent.setLevel(classRoomEvent.getLevel());
         classRoomEvent.setSchoolID(classRoomEvent.getSchoolID());
         classRoomEvent.setName(classRoomEvent.getName());
-        classRoomEvent.setTeacherName(classRoom.getTeacher().getName());
+//        classRoomEvent.setTeacherName(classRoom.getTeacher().getName());
         return  classRoomEvent;
     }
 
@@ -65,7 +65,7 @@ public class ClassRoomService{
 
     public Optional<ClassRoom> getClassById(Long classID ) {
         //Get the class by its id
-        return classRepository.findById(Long.valueOf(Math.toIntExact(classID)));
+        return classRepository.findById((long) Math.toIntExact(classID));
 
     }
 

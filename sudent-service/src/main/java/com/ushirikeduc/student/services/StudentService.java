@@ -2,8 +2,9 @@ package com.ushirikeduc.student.services;
 
 import Dto.ParentEvent;
 import Dto.StudentEvent;
-import com.ushirikeduc.student.kafka.ParentProducer;
-import com.ushirikeduc.student.kafka.StudentProducer;
+import com.ushirikeduc.student.controller.MessageController;
+//import com.ushirikeduc.student.kafka.ParentProducer;
+//import com.ushirikeduc.student.kafka.StudentProducer;
 import com.ushirikeduc.student.model.Address;
 import com.ushirikeduc.student.model.Parent;
 import com.ushirikeduc.student.model.Student;
@@ -25,8 +26,9 @@ public record StudentService(
         StudentRepository studentRepository,
         ParentRepository parentRepository,
         AddressRepository addressRepository,
-        StudentProducer studentProducer,
-        ParentProducer parentProducer
+        //StudentProducer studentProducer,
+        MessageController messageController
+//        ParentProducer parentProducer
 ) {
 
     public ResponseEntity<Student> registerNewStudent(StudentRegistrationRequest request) {
@@ -36,11 +38,11 @@ public record StudentService(
         if (existingParent.isPresent()) {
             // Parent exists, associate student with existing parent
             Student student = createStudent(request, existingParent.get());
-            studentRepository.save(student);
+            Student newStudent = studentRepository.save(student);
 
             //Publish Student creation event
-            StudentEvent studentEvent = getStudentEvent(student);
-            studentProducer.sendMessage(studentEvent);
+
+            messageController.publish(newStudent);
             return ResponseEntity.ok(student);
         } else {
             // Parent doesn't exist, create a new parent
@@ -49,16 +51,20 @@ public record StudentService(
 
             //Create a parent Event
             ParentEvent parentEvent = getParentEvent(parent);
-            parentProducer.sendMessage(parentEvent);
+//            parentProducer.sendMessage(parentEvent);
 
 
             // Create a new student and associate with the new parent
             Student student = createStudent(request, parent);
-            StudentEvent studentEvent = getStudentEvent(student);
+
+            //Publish created Student
+
 
             //Publish student creation Event
-            studentProducer.sendMessage(studentEvent);
-            studentRepository.save(student);
+//            studentProducer.sendMessage(studentEvent);
+//            messageController.publish(studentEvent);
+            Student newStudent = studentRepository.save(student);
+            messageController.publish(newStudent);
             return ResponseEntity.ok(student);
         }
 
@@ -86,17 +92,7 @@ public record StudentService(
 
     }
 
-    private StudentEvent getStudentEvent (Student student) {
-        StudentEvent studentEvent = new StudentEvent();
-        studentEvent.setStudentID(student.getStudentID());
-        studentEvent.setGender(student.getGender());
-        studentEvent.setName(student.getName() + " " + student.getFirstName() + " " + student.getLastName());
-        studentEvent.setGender(studentEvent.getGender());
-        studentEvent.setClassID(student.getClassID());
-        return studentEvent;
 
-
-    }
     private Parent createParent(StudentRegistrationRequest parentRequest) {
         return Parent.builder()
                 .firstName(parentRequest.parent().getFirstName())

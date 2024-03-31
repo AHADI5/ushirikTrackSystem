@@ -28,8 +28,5 @@ public record TeacherConsumer(AuthenticationService authenticationService) {
         teacherRequest.setPassword(teacherEvent.getPassword());
         authenticationService.register(teacherRequest, role);
     }
-    @Bean
-    public StringJsonMessageConverter jsonConverter() {
-        return new StringJsonMessageConverter();
-    }
+
 }

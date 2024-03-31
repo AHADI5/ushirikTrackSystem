@@ -1,8 +1,10 @@
 package com.ushirikeduc.teacherservice;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
@@ -14,5 +16,11 @@ public class TeacherApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TeacherApplication.class, args);
+    }
+
+    CommandLineRunner commandLineRunner(KafkaTemplate<String ,String> kafkaTemplate){
+        return args -> {
+            kafkaTemplate.send("student-created" , "");
+        };
     }
 }

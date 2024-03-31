@@ -17,13 +17,13 @@ spring:
       ddl-auto: update
     show-sql: true
     #Kafka configurations ,as this is an Event Producer
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    topics:
-      topic1: create-course
-      topic2: create-classwork
+#  kafka:
+#    producer:
+#      bootstrap-servers: localhost:9092
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    topics:
+#      topic1: create-course
+#      topic2: create-classwork
 
 

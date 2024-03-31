@@ -1,8 +1,7 @@
 package com.ushirikeduc.courseservice.service;
 
 
-import Dto.CourseEvent;
-import com.ushirikeduc.courseservice.kafka.CourseProducer;
+import com.ushirikeduc.courseservice.controller.MessageController;
 import com.ushirikeduc.courseservice.model.Course;
 import com.ushirikeduc.courseservice.repository.CourseRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +14,15 @@ import java.util.List;
 @Slf4j
 public record CoursesService(
         CourseRepository courseRepository,
-        CourseProducer courseProducer
+        MessageController messageController
 
 ) {
 
     public Course registerCourse( Course course  ) {
         //Saving the course
         Course newCourse = courseRepository.save(course);
-        CourseEvent courseEvent = getCourseEvent(newCourse);
+        messageController.publishCourse(newCourse);
 
-        //Publish course-created event
-        courseProducer.sendMessage(courseEvent);
         return newCourse;
     }
 
@@ -37,11 +34,5 @@ public record CoursesService(
                 () -> new ResourceNotFoundException("not found")
         );
     }
-    private CourseEvent getCourseEvent(Course newCourse) {
-        CourseEvent courseEvent = new CourseEvent() ;
-        courseEvent.setCourseID(newCourse.getCourseID());
-        courseEvent.setClassId(newCourse.getClassRoomID());
-        courseEvent.setName(newCourse.getName());
-        return courseEvent;
-    }
+
 }

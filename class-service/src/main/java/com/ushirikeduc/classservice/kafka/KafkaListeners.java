@@ -1,0 +1,92 @@
+package com.ushirikeduc.classservice.kafka;
+
+import Dto.CourseEvent;
+import Dto.StudentEvent;
+import Dto.TeacherEvent;
+import com.ushirikeduc.classservice.model.Teacher;
+import com.ushirikeduc.classservice.repository.ClassRoomRepository;
+import com.ushirikeduc.classservice.repository.TeacherRepository;
+import com.ushirikeduc.classservice.service.ClassRoomService;
+import com.ushirikeduc.classservice.service.CoursesService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.support.converter.StringJsonMessageConverter;
+import org.springframework.stereotype.Component;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@Component
+@Slf4j
+public class KafkaListeners {
+    final  ClassRoomService classRoomService ;
+    final ClassRoomRepository classRoomRepository;
+    final TeacherRepository teacherRepository ;
+
+    final CoursesService coursesService ;
+
+    public KafkaListeners(ClassRoomService classRoomService,
+                          ClassRoomRepository classRoomRepository,
+                          TeacherRepository teacherRepository,
+                          CoursesService coursesService) {
+        this.classRoomService = classRoomService;
+        this.classRoomRepository = classRoomRepository;
+        this.teacherRepository = teacherRepository;
+        this.coursesService = coursesService;
+    }
+
+
+    /*
+    * Student Listener
+    * */
+    @KafkaListener(
+            topics = "student-created",
+            groupId = "student"
+//            containerFactory = "kafkaListenerContainerFactory"
+
+    )
+
+    void listener(StudentEvent studentEvent) {
+        log.info("Event received in ClassRoom  service %s" + studentEvent.toString() );
+        classRoomService.createStudent(studentEvent);
+    }
+
+    /*
+     * Teacher Listener
+     *
+     */
+    @KafkaListener(
+            topics = "teacher-created",
+            groupId = "teacher"
+//            containerFactory = "kafkaListenerContainerFactory"
+
+    )
+
+    void listener(TeacherEvent teacherEvent) {
+        log.info(String.format("Teacher  Event received in school service => %s",teacherEvent.toString()));
+        // save the teacher in the database
+        Teacher teacher = Teacher.builder()
+                .classID((long) teacherEvent.getClassID())
+                .teacherID((long) teacherEvent.getTeacherID())
+                .name(teacherEvent.getFirstName() + " " + teacherEvent.getLastName())
+                .build();
+        Teacher savedTeacher = teacherRepository.save(teacher);
+        log.info("Class Assigned Successfully" + savedTeacher);
+
+        //singing teacher to the selected ClassRoom
+        classRoomService.assignTeacherToClass(savedTeacher);
+    }
+
+    //todo course Listener
+    @KafkaListener(
+            topics = "course-created",
+            groupId = "course"
+//            containerFactory = "kafkaListenerContainerFactory"
+
+    )
+
+    void listener(CourseEvent courseEvent) {
+        log.info(String.format("Teacher  Event received in school service => %s",courseEvent.toString()));
+        coursesService.registerCourse(courseEvent);
+    }
+
+}

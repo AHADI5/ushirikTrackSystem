@@ -1,5 +1,5 @@
 server:
-  port: 8083
+  port: 8783
 
 spring:
   application:
@@ -17,21 +17,30 @@ spring:
       ddl-auto: update
     show-sql: true
 
+
+
     #Kafka configuration
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    topics:
-      student: create-student
-      parent: create-parent
-    consumer:
-      group-id: classwork
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      properties:
-        spring.json.trusted.packages: '*'
-      topic :
-        name: create-classwork
+#  kafka:
+#    producer:
+#      bootstrap-servers: localhost:9092
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    topics: create-student, create-parent
+
+#    consumer:
+#      enable-auto-commit: true
+#      bootstrap-servers: localhost:9092
+#      group-id: class-work
+#      auto-offset-reset: earliest
+#      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+#      properties:
+#        spring:
+#          json:
+#            trusted:
+#              packages: '*'
+#        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+#        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+#      topics:
+#        name: create-classwork;
+

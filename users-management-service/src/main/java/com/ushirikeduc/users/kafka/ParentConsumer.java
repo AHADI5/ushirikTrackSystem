@@ -5,7 +5,9 @@ import com.ushirikeduc.users.dtoRequests.RegisterRequest;
 import com.ushirikeduc.users.model.Role;
 import com.ushirikeduc.users.service.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -25,5 +27,8 @@ public record ParentConsumer(AuthenticationService usersService) {
         parentRequest.setPassword(parentEvent.getPassword());
         usersService.register(parentRequest,role);
     }
-
 }
+
+
+
+

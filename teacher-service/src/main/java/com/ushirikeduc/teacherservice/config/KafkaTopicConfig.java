@@ -1,21 +1,18 @@
 package com.ushirikeduc.teacherservice.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
+
+//Topic configuration : this will be used all over the system
+
 @Configuration
-public class kafkaConfiguration {
-    @Value("${spring.kafka.topic.name}")
-    private String topicName ;
-
-    //Spring bran for kafka topic
+public class KafkaTopicConfig {
     @Bean
-    public NewTopic topic() {
-        return TopicBuilder.name(topicName)
+    public NewTopic teacherTopic() {
+        return TopicBuilder.name("teacher-created")
                 .build();
-
     }
 }

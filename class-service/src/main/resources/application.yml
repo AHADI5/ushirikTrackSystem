@@ -20,24 +20,30 @@ spring:
     show-sql: true
 
     #Kafka configuration
-  kafka:
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: teacher
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      properties:
-        spring.json.trusted.packages: '*'
-      topics:
-        topic1: create-teacher
-        topic2: create-student
-        topic3: create-course
+#  kafka:
+#    consumer:
+#      enable-auto-commit: true
+#      bootstrap-servers: localhost:9092
+#      group-id: classroom
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer : org.springframework.kafka.support.serializer.JsonDeserializer
+#      properties:
+#        spring:
+#          json:
+#            trusted:
+#              packages: '*'
+#        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+#        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+#      topics:
+#        name: create-teacher , create-student, create-course
+#
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    topics:
+#      name: create-classroom
 
-    producer:
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer
-        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    topics:
-      student: create-classroom
+
 
 

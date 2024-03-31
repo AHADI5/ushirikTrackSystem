@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 8846
 
 spring:
   application:
@@ -20,14 +20,21 @@ spring:
     #Kafka configuration
   kafka:
     consumer:
+      enable-auto-commit: true
       bootstrap-servers: localhost:9092
       group-id: user
       auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
-        spring.json.trusted.packages: '*'
-    topics:
-      topic1: create-teacher
-      topic2: create-parent
-      topic3: create-director
+        spring:
+          json:
+            trusted:
+              packages: '*'
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+      topics:
+        name : create-parent, create-director, create-teacher;
+
+
+

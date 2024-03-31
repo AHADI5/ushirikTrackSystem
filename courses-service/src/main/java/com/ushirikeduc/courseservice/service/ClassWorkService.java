@@ -3,7 +3,6 @@ package com.ushirikeduc.courseservice.service;
 import Dto.ClassWorkEvent;
 import com.ushirikeduc.courseservice.dto.ClassWorkRegistrationRequest;
 import com.ushirikeduc.courseservice.dto.ClassWorkRegistrationResponse;
-import com.ushirikeduc.courseservice.kafka.ClassWorkProducer;
 import com.ushirikeduc.courseservice.model.ClassWork;
 import com.ushirikeduc.courseservice.model.Course;
 import com.ushirikeduc.courseservice.repository.ClassWorkRepository;
@@ -18,8 +17,8 @@ import java.util.List;
 @Slf4j
 public record ClassWorkService (
         CourseRepository courseRepository,
-        ClassWorkRepository classWorkRepository,
-        ClassWorkProducer classWorkProducer
+        ClassWorkRepository classWorkRepository
+
 ) {
 
     public ClassWorkRegistrationResponse registerNewClassWork(int courseID, ClassWorkRegistrationRequest request) {
@@ -42,7 +41,7 @@ public record ClassWorkService (
 
         //Publishing classWork to subscribers
         ClassWorkEvent classWorkEvent =  createClassWorkEvent(savedClassWork);
-        classWorkProducer.sendMessage(classWorkEvent);
+
         //saving the course with classWorks added
         courseRepository.save(course);
         return simpleResponse(savedClassWork);
