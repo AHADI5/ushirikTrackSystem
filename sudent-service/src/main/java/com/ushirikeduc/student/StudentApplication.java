@@ -12,9 +12,5 @@ public class StudentApplication {
         SpringApplication.run(StudentApplication.class, args);
     }
 
-    CommandLineRunner commandLineRunner(KafkaTemplate<String ,String> kafkaTemplate){
-        return args -> {
-            kafkaTemplate.send("student-created" , "");
-        };
-    }
+
 }

@@ -1,6 +1,6 @@
-package com.ushirikeduc.users.kafka;
-
-import Dto.*;
+package com.ushirikeduc.users.kafkaconfig;
+import Dto.ParentEvent;
+import Dto.TeacherEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ public class KafkaConsumerConfig {
 
     /*
     *
-    * Consuming Parent event
+    * Consuming Student event
     * */
     public Map<String , Object> consumerConfigParent() {
         return getStringObjectMap();
@@ -46,7 +46,7 @@ public class KafkaConsumerConfig {
 
     }
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String ,ParentEvent> kafkaListenerContainerFactoryParent(){
+    public ConcurrentKafkaListenerContainerFactory<String ,ParentEvent> kafkaListenerContainerFactory(){
         ConcurrentKafkaListenerContainerFactory<String , ParentEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryParent());
@@ -80,27 +80,27 @@ public class KafkaConsumerConfig {
     }
 
     /*
-     * Consuming Director Event
+     * Consuming Course Event
      */
-    public Map<String , Object> consumerConfigDirector() {
-        return getStringObjectMap();
-    }
-
-    @Bean
-    public ConsumerFactory<String , DirectorEvent> consumerFactoryCourse() {
-        return new DefaultKafkaConsumerFactory<>(
-                consumerConfigDirector(),
-                new StringDeserializer(),
-                new JsonDeserializer<>(DirectorEvent.class)
-        );
-
-    }
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String ,DirectorEvent> kafkaListenerContainerFactoryCourse(){
-        ConcurrentKafkaListenerContainerFactory<String , DirectorEvent> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactoryCourse());
-        return factory;
-    }
+//    public Map<String , Object> consumerConfigCourse() {
+//        return getStringObjectMap();
+//    }
+//
+//    @Bean
+//    public ConsumerFactory<String , CourseEvent> consumerFactoryCourse() {
+//        return new DefaultKafkaConsumerFactory<>(
+//                consumerConfigCourse(),
+//                new StringDeserializer(),
+//                new JsonDeserializer<>(CourseEvent.class)
+//        );
+//
+//    }
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String ,CourseEvent> kafkaListenerContainerFactoryCourse(){
+//        ConcurrentKafkaListenerContainerFactory<String , CourseEvent> factory =
+//                new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(consumerFactoryCourse());
+//        return factory;
+//    }
 
 }

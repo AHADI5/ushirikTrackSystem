@@ -12,6 +12,7 @@ public class ClassWorkEvent {
     private int courseID ;
     private String courseName ;
     private int classWorkID ;
+    private String classWorkType ;
 
 
 }

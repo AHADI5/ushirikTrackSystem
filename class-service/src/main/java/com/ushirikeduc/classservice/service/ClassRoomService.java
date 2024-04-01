@@ -25,14 +25,14 @@ public class ClassRoomService{
 
     final EnrolledStudentRepository enrolledStudentRepository;
 
-    final ClassRoomProducer classRoomProducer;
+//    final ClassRoomProducer classRoomProducer;
 
     public ClassRoomService(ClassRoomRepository classRepository,
-                            EnrolledStudentRepository enrolledStudentRepository,
-                            @Lazy  ClassRoomProducer classRoomProducer) {
+                            EnrolledStudentRepository enrolledStudentRepository
+                          ) {
         this.classRepository = classRepository;
         this.enrolledStudentRepository = enrolledStudentRepository;
-        this.classRoomProducer = classRoomProducer;
+//        this.classRoomProducer = classRoomProducer;
     }
 
     public ClassRoom registerClassRoom(ClassRegistrationRequest Request) {
@@ -44,7 +44,7 @@ public class ClassRoomService{
                 .build();
         ClassRoom savedClassRoom =classRepository.save(classRoom) ;
         ClassRoomEvent classRoomEvent = getClassRoomEvent(classRoom);
-        classRoomProducer.sendMessage(classRoomEvent);
+//        classRoomProducer.sendMessage(classRoomEvent);
         return savedClassRoom;
     }
 

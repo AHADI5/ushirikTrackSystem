@@ -34,7 +34,6 @@ public class KafkaListeners {
         this.coursesService = coursesService;
     }
 
-
     /*
     * Student Listener
     * */

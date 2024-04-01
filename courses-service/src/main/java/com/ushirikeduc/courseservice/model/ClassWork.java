@@ -18,6 +18,7 @@ public class ClassWork {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int classWorkID ;
+    private  ClassworkType classworkType;
     private  String name ;
     private String description ;
     private  int credits;

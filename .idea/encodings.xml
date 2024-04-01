@@ -23,12 +23,16 @@
     <file url="file://$PROJECT_DIR$/service-registry/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/student-max-manamgement/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/student-max-manamgement/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/student-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/student-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sudent-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sudent-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/teacher-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/teacher-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-management-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-management-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/users-management-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/users-management-service/src/main/resources" charset="UTF-8" />
   </component>

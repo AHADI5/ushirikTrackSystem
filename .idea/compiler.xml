@@ -11,11 +11,13 @@
         <module name="discipline-service" />
         <module name="teacher-service" />
         <module name="users-management-service" />
+        <module name="user-management-service" />
         <module name="class-service" />
         <module name="school-service" />
         <module name="sudent-service" />
         <module name="Eureka-server" />
         <module name="courses-service" />
+        <module name="student-max-manamgement" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -39,8 +41,10 @@
       <module name="school-service" options="-parameters" />
       <module name="service-register" options="-parameters" />
       <module name="service-registry" options="-parameters" />
+      <module name="student-max-manamgement" options="-parameters" />
       <module name="sudent-service" options="-parameters" />
       <module name="teacher-service" options="-parameters" />
+      <module name="user-management-service" options="-parameters" />
       <module name="users-management-service" options="-parameters" />
     </option>
   </component>

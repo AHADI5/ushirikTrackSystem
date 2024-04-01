@@ -42,56 +42,49 @@ public record StudentService(
 
             //Publish Student creation event
 
-            messageController.publish(newStudent);
+            messageController.publishStudent(newStudent);
             return ResponseEntity.ok(student);
         } else {
             // Parent doesn't exist, create a new parent
             Parent parent = createParent(request);
-            parentRepository.save(parent);
+            Parent newParent = parentRepository.save(parent);
+            messageController.publishParent(newParent);
 
             //Create a parent Event
-            ParentEvent parentEvent = getParentEvent(parent);
-//            parentProducer.sendMessage(parentEvent);
 
+//            parentProducer.sendMessage(parentEvent);
 
             // Create a new student and associate with the new parent
             Student student = createStudent(request, parent);
-
-            //Publish created Student
-
 
             //Publish student creation Event
 //            studentProducer.sendMessage(studentEvent);
 //            messageController.publish(studentEvent);
             Student newStudent = studentRepository.save(student);
-            messageController.publish(newStudent);
+            messageController.publishStudent(newStudent);
             return ResponseEntity.ok(student);
         }
-
-
-
     }
 
-    private ParentEvent getParentEvent(Parent parent) {
-        String password = generatePassword(parent);
-        ParentEvent parentEvent= new ParentEvent();
-        parentEvent.setFirstName(parent.getFirstName());
-        parentEvent.setLastName(parent.getLastName());
-        parentEvent.setEmail(parent.getEmail());
-        parentEvent.setPassword(password);
-
-        return  parentEvent;
-    }
-    private static String generatePassword(Parent parent) {
-        //Generate a random number between 10 - 100
-        int randomNumber = new Random().nextInt(91)+10;
-        String firstName = parent.getFirstName();
-        String lastName = parent.getLastName();
-        //Combine teacher information with the generated random number to form teacher's password
-        return firstName.substring(0,3) + lastName.substring(0,3) +randomNumber;
-
-    }
-
+//    private ParentEvent getParentEvent(Parent parent) {
+//        String password = generatePassword(parent);
+//        ParentEvent parentEvent= new ParentEvent();
+//        parentEvent.setFirstName(parent.getFirstName());
+//        parentEvent.setLastName(parent.getLastName());
+//        parentEvent.setEmail(parent.getEmail());
+//        parentEvent.setPassword(password);
+//
+//        return  parentEvent;
+//    }
+//    private static String generatePassword(Parent parent) {
+//        //Generate a random number between 10 - 100
+//        int randomNumber = new Random().nextInt(91)+10;
+//        String firstName = parent.getFirstName();
+//        String lastName = parent.getLastName();
+//        //Combine teacher information with the generated random number to form teacher's password
+//        return firstName.substring(0,3) + lastName.substring(0,3) +randomNumber;
+//
+//    }
 
     private Parent createParent(StudentRegistrationRequest parentRequest) {
         return Parent.builder()
@@ -124,10 +117,6 @@ public record StudentService(
                 .build();
     }
 
-
-
-
-
     public ResponseEntity<List<StudentResponse>> getStudentParent(int parentID) {
         Optional<Parent> parentOptional = parentRepository.findById(parentID);
         if (parentOptional.isPresent()) {
@@ -154,5 +143,4 @@ public record StudentService(
                 student.getClassID()
         );
     }
-
 }

@@ -22,6 +22,8 @@
     <module>class-service</module>
     <module>courses-service</module>
       <module>discipline-service</module>
+      <module>user-management-service</module>
+      <module>student-max-manamgement</module>
   </modules>
 
   <properties>

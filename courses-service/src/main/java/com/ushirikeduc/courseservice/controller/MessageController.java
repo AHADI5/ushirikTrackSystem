@@ -3,6 +3,7 @@ package com.ushirikeduc.courseservice.controller;
 import Dto.ClassWorkEvent;
 import Dto.CourseEvent;
 import Dto.StudentEvent;
+import com.ushirikeduc.courseservice.model.ClassWork;
 import com.ushirikeduc.courseservice.model.Course;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,17 @@ public class MessageController {
 
         kafkaTemplateCourse.send("course-created",courseEvent);
         log.info(String.format("Course Event Created  => %s ", courseEvent));
+    }
+
+    public void publishNewClasswork(ClassWork classWork) {
+            ClassWorkEvent  classWorkEvent = new ClassWorkEvent();
+            classWorkEvent.setCourseID(classWork.getCourse().getCourseID());
+            classWorkEvent.setCourseName(classWork.getCourse().getName());
+            classWorkEvent.setClassWorkID(classWork.getClassWorkID());
+            classWorkEvent.setClassWorkType(classWork.getClassworkType().toString());
+            classWorkEvent.setTitle(classWork.getName());
+        kafkaTemplateClasswork.send("classwork-created",classWorkEvent);
+        log.info(String.format("New Classwork Available Event Created  => %s ", classWorkEvent));
     }
 
 

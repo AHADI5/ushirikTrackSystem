@@ -22,26 +22,30 @@ import org.springframework.security.config.annotation.authentication.configurati
 @RequiredArgsConstructor
 
 public class ApplicationConfig {
-    private  final UserRepository  userRepository;
+    private final UserRepository userRepository;
+
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
-                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
     @Bean
     public AuthenticationProvider authConfigProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passWordEncoder());
-        return  authProvider;
+        return authProvider;
 
     }
+
     @Bean
 
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return  config.getAuthenticationManager();
+        return config.getAuthenticationManager();
 
     }
+
     @Bean
     public PasswordEncoder passWordEncoder() {
         return new BCryptPasswordEncoder();

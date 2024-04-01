@@ -36,16 +36,4 @@ public record StudentController(
         return  studentService.getStudentParent(parentId);
     }
 
-    @PostMapping("/{classworkId}/record")
-    public List<Score> recordStudentMax(
-            @PathVariable int classworkId , @RequestBody List<ScoreRequest> scores) {
-
-        return scoreService.recordScore(classworkId ,scores);
-
-    }
-
-    @GetMapping("/{studentID}/score")
-    public List<ScoreResponse> getScoresByStudentID(@PathVariable int studentID) {
-        return  scoreService.getScoreByStudentID(studentID);
-    }
 }

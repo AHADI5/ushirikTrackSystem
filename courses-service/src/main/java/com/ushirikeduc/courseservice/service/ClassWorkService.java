@@ -1,9 +1,11 @@
 package com.ushirikeduc.courseservice.service;
 
 import Dto.ClassWorkEvent;
+import com.ushirikeduc.courseservice.controller.MessageController;
 import com.ushirikeduc.courseservice.dto.ClassWorkRegistrationRequest;
 import com.ushirikeduc.courseservice.dto.ClassWorkRegistrationResponse;
 import com.ushirikeduc.courseservice.model.ClassWork;
+import com.ushirikeduc.courseservice.model.ClassworkType;
 import com.ushirikeduc.courseservice.model.Course;
 import com.ushirikeduc.courseservice.repository.ClassWorkRepository;
 import com.ushirikeduc.courseservice.repository.CourseRepository;
@@ -17,12 +19,23 @@ import java.util.List;
 @Slf4j
 public record ClassWorkService (
         CourseRepository courseRepository,
-        ClassWorkRepository classWorkRepository
+        ClassWorkRepository classWorkRepository,
+
+        MessageController messageController
 
 ) {
 
     public ClassWorkRegistrationResponse registerNewClassWork(int courseID, ClassWorkRegistrationRequest request) {
-       Course course = courseRepository.findById(courseID).orElseThrow(
+       //Setting classWork type , based on teacher wish
+        ClassworkType classworkType = null;
+        switch (request.classWorkType()) {
+            case "Interrogation" -> classworkType = ClassworkType.INTERROGATION;
+            case "Devoir" -> classworkType = ClassworkType.CLASSWORK;
+            case "Test" -> classworkType = ClassworkType.TEST;
+            case "Examen" -> classworkType = ClassworkType.EXAMINATION;
+        }
+
+        Course course = courseRepository.findById(courseID).orElseThrow(
                () -> new ResourceNotFoundException("Course not found")
        );
 
@@ -31,6 +44,7 @@ public record ClassWorkService (
                 .course(course)
                 .name(request.name())
                 .description(request.description())
+                .classworkType(classworkType)
                 .credits(request.credits())
                 .build();
         //saving the classwork
@@ -39,25 +53,14 @@ public record ClassWorkService (
         //add classwork to courses classWorks
         course.getClassWorks().add(savedClassWork);
 
-        //Publishing classWork to subscribers
-        ClassWorkEvent classWorkEvent =  createClassWorkEvent(savedClassWork);
 
         //saving the course with classWorks added
         courseRepository.save(course);
+
+        //Publish newClassWork Event created
+        messageController.publishNewClasswork(savedClassWork);
+
         return simpleResponse(savedClassWork);
-
-
-    }
-
-    private ClassWorkEvent createClassWorkEvent(ClassWork classWork) {
-        ClassWorkEvent  classWorkEvent = new ClassWorkEvent();
-        classWorkEvent.setCourseID(classWork.getCourse().getCourseID());
-        classWorkEvent.setCourseName(classWork.getCourse().getName());
-        classWorkEvent.setClassWorkID(classWork.getClassWorkID());
-        classWorkEvent.setTitle(classWork.getName());
-
-        return classWorkEvent;
-
     }
 
     public ClassWorkRegistrationResponse simpleResponse(ClassWork classWork) {

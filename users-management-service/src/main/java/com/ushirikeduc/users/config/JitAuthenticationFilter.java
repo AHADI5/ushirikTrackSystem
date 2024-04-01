@@ -16,35 +16,37 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 
 import java.io.IOException;
+
 @Component
 @RequiredArgsConstructor
 public class JitAuthenticationFilter extends OncePerRequestFilter {
-    private  final JwtService jwtService ;
+    private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
-            @NonNull  HttpServletResponse response,
+            @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         //the header containing the JWTOKEN
-        final String authHeader  = request.getHeader("Authorization");
-        final String jwt ;
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
         final String userEmail;
-        if (authHeader == null || authHeader.startsWith("Bearer ")){
+        if (authHeader == null || authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         //Extracting the token form the Authentication header
-        jwt = authHeader.substring(7) ;
+        jwt = authHeader.substring(7);
 
         //Extracting user email from the request
-        userEmail = jwtService.extractUsername(jwt) ;
+        userEmail = jwtService.extractUsername(jwt);
 
         //check if the user is valid
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt,userDetails)) {
+            if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -56,8 +58,6 @@ public class JitAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-
-
 
 
     }
