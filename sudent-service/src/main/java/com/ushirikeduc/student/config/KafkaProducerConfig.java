@@ -2,6 +2,8 @@ package com.ushirikeduc.student.config;
 
 import Dto.ParentEvent;
 import Dto.StudentEvent;
+import com.ushirikeduc.student.config.Serializers.ParentSerializer;
+import com.ushirikeduc.student.config.Serializers.StudentSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -32,7 +34,7 @@ public class KafkaProducerConfig {
         HashMap<String , Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StudentSerializer.class);
         return props ;
     }
     @Bean
@@ -55,7 +57,7 @@ public class KafkaProducerConfig {
         HashMap<String , Object> propsParent = new HashMap<>();
         propsParent.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
         propsParent.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        propsParent.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        propsParent.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ParentSerializer.class);
         return propsParent ;
     }
     @Bean

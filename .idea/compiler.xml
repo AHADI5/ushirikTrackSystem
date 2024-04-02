@@ -10,7 +10,6 @@
         <module name="base-domains" />
         <module name="discipline-service" />
         <module name="teacher-service" />
-        <module name="users-management-service" />
         <module name="user-management-service" />
         <module name="class-service" />
         <module name="school-service" />
@@ -27,6 +26,7 @@
       <module name="service-register" target="21" />
       <module name="service-registry" target="21" />
       <module name="student-service" target="21" />
+      <module name="users-management-service" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

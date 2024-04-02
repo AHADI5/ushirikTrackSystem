@@ -57,4 +57,6 @@ public record ScoreService(
         }
         return  studentScoreList;
     }
+
+    //Get given score for a given course
 }

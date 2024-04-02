@@ -10,8 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.converter.JsonMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @Slf4j
 public class KafkaListeners {
 
@@ -26,8 +27,8 @@ public class KafkaListeners {
     * */
     @KafkaListener(
             topics = "parent-created",
-            groupId = "parent",
-            containerFactory = "kafkaListenerContainerFactory"
+            groupId = "parent-user",
+            containerFactory = "kafkaListenerContainerFactoryParent"
 
     )
 
@@ -37,15 +38,16 @@ public class KafkaListeners {
         RegisterRequest request = new RegisterRequest();
         request.setFirstName(parentEvent.getFirstName());
         request.setLastName(parentEvent.getLastName());
-        request.setEmail(parentEvent.getPassword());
+        request.setEmail(parentEvent.getEmail());
+        request.setPassword(parentEvent.getPassword());
         authenticationService.register(request, role);
 
     }
 
     @KafkaListener(
             topics = "teacher-created",
-            groupId = "teacher"
-//            containerFactory = "kafkaListenerContainerFactory"
+            groupId = "teacher-user",
+            containerFactory = "kafkaListenerContainerFactoryTeacher"
 
     )
 
@@ -55,7 +57,8 @@ public class KafkaListeners {
         RegisterRequest request = new RegisterRequest();
         request.setFirstName(teacherEvent.getFirstName());
         request.setLastName(teacherEvent.getLastName());
-        request.setEmail(teacherEvent.getPassword());
+        request.setEmail(teacherEvent.getEmail());
+        request.setPassword(teacherEvent.getPassword());
         authenticationService.register(request, role);
 
     }

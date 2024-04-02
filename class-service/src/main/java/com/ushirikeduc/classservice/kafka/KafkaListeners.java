@@ -39,8 +39,8 @@ public class KafkaListeners {
     * */
     @KafkaListener(
             topics = "student-created",
-            groupId = "student"
-//            containerFactory = "kafkaListenerContainerFactory"
+            groupId = "student",
+            containerFactory = "kafkaListenerContainerFactoryStudent"
 
     )
 
@@ -55,11 +55,10 @@ public class KafkaListeners {
      */
     @KafkaListener(
             topics = "teacher-created",
-            groupId = "teacher"
-//            containerFactory = "kafkaListenerContainerFactory"
+            groupId = "teacher-classroom",
+            containerFactory = "kafkaListenerContainerFactoryTeacher"
 
     )
-
     void listener(TeacherEvent teacherEvent) {
         log.info(String.format("Teacher  Event received in school service => %s",teacherEvent.toString()));
         // save the teacher in the database
@@ -76,13 +75,12 @@ public class KafkaListeners {
     }
 
     /***
-     *
      * Consuming courseEvent
      */
     @KafkaListener(
             topics = "course-created",
-            groupId = "course"
-//            containerFactory = "kafkaListenerContainerFactory"
+            groupId = "course-classroom",
+            containerFactory = "kafkaListenerContainerFactoryCourse"
 
     )
 

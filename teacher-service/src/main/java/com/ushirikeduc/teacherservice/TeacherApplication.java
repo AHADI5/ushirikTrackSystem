@@ -9,18 +9,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 public class TeacherApplication {
-    @Bean
-    public WebClient webClient() {
-        return WebClient.builder().build();
-    }
+//    @Bean
+//    public WebClient webClient() {
+//        return WebClient.builder().build();
+//    }
 
     public static void main(String[] args) {
         SpringApplication.run(TeacherApplication.class, args);
     }
 
-    CommandLineRunner commandLineRunner(KafkaTemplate<String ,String> kafkaTemplate){
-        return args -> {
-            kafkaTemplate.send("student-created" , "");
-        };
-    }
+
 }
