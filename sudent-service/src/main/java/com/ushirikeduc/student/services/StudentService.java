@@ -11,8 +11,11 @@ import com.ushirikeduc.student.model.Student;
 import com.ushirikeduc.student.repository.AddressRepository;
 import com.ushirikeduc.student.repository.ParentRepository;
 import com.ushirikeduc.student.repository.StudentRepository;
+import com.ushirikeduc.student.request.StudentByParentEmailRequest;
 import com.ushirikeduc.student.request.StudentRegistrationRequest;
 import com.ushirikeduc.student.request.StudentResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public record StudentService(
         StudentRepository studentRepository,
         ParentRepository parentRepository,
@@ -132,6 +136,13 @@ public record StudentService(
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public List<Student> getStudentByParentEmail(StudentByParentEmailRequest parentEmail) {
+        Parent parent = parentRepository.findByEmail(parentEmail.email())
+                .orElseThrow(() -> new ResourceNotFoundException("Parent's Email incorrect"));
+
+        return parent.getStudents();
     }
 
     private StudentResponse createStudentResponse(Student student) {

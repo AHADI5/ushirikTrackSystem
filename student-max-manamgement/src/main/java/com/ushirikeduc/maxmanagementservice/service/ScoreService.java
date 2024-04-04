@@ -27,8 +27,8 @@ public record ScoreService(
         List<Score> savedScoreRequests = new ArrayList<>();
 
         for (ScoreRequest score : request){
-            MaxOwner student =  maxOwnerRepository.findById(score.studentID())
-                    .orElseThrow(() -> new ResourceNotFoundException("Student's Id incorrect"));
+            MaxOwner student =  maxOwnerRepository.findMaxOwnerByStudentID((long) score.studentID());
+//                    .orElseThrow(() -> new ResourceNotFoundException("Student's Id incorrect"));
             Score studentScore = Score.builder()
                     .score(score.score())
                     .student(student)
@@ -39,8 +39,8 @@ public record ScoreService(
         return savedScoreRequests;
     }
     public List<ScoreResponse> getScoreByStudentID(int studentID){
-        MaxOwner student = maxOwnerRepository.findById(studentID)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found"));
+        MaxOwner student = maxOwnerRepository.findMaxOwnerByStudentID((long) studentID);
+//                .orElseThrow(() -> new ResourceNotFoundException("Not found"));
         List<Score> studentScore = scoreRepository.getScoreByStudent(student);
         List<ScoreResponse> studentScoreList =new ArrayList<>() ;
 

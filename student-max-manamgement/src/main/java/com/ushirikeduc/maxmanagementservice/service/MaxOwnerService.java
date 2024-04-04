@@ -15,6 +15,7 @@ public record MaxOwnerService(
         MaxOwner maxOwner = MaxOwner.builder()
                 .ownerName(studentEvent.getName())
                 .studentID(Long.valueOf(studentEvent.getStudentID()))
+                .classID((long) studentEvent.getClassID())
                 .build();
         maxOwnerRepository.save(maxOwner);
     }

@@ -1,5 +1,10 @@
 package com.ushirikeduc.student.request;
 
+import lombok.AllArgsConstructor;
+
+
+
+
 public record StudentResponse (
         Integer studentID,
         String name ,

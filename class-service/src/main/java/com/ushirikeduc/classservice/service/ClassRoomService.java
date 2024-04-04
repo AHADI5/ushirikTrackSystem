@@ -2,6 +2,7 @@ package com.ushirikeduc.classservice.service;
 
 import Dto.ClassRoomEvent;
 import Dto.StudentEvent;
+import com.ushirikeduc.classservice.dto.ClassInfoResponse;
 import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
 import com.ushirikeduc.classservice.dto.ClassStudentsResponse;
 import com.ushirikeduc.classservice.dto.EnrolledStudentResponse;
@@ -11,6 +12,7 @@ import com.ushirikeduc.classservice.model.Teacher;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
 import com.ushirikeduc.classservice.repository.EnrolledStudentRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,6 @@ public class ClassRoomService{
     public Optional<ClassRoom> getClassById(Long classID ) {
         //Get the class by its id
         return classRepository.findById((long) Math.toIntExact(classID));
-
     }
 
     //Add classes to a school
@@ -107,6 +108,7 @@ public class ClassRoomService{
         return existingClass.get();
     }
 
+    // retrieve student in  a classroom
     public ResponseEntity<List<ClassStudentsResponse>> getStudentInClass(Long classId) {
         ClassRoom studentClass = classRepository.findById((long) Math.toIntExact(classId))
                 .orElseThrow(() -> new RuntimeException("Class not found"));
@@ -133,5 +135,25 @@ public class ClassRoomService{
                 (int) student.getStudentID(),
                 student.getName()
         );
+    }
+
+    // Get Class by student ID
+    public ClassInfoResponse getClassInfoByStudentID (Integer StudentID) {
+        Student student = enrolledStudentRepository.findAllByStudentID(StudentID);
+        ClassRoom classRoom = student.getStudentClass();
+
+        return  classInfoResponse(classRoom);
+
+    }
+    //Create classRoom  simple request
+    public ClassInfoResponse classInfoResponse(ClassRoom classRoom) {
+        return new ClassInfoResponse(
+                classRoom.getName(),
+                Math.toIntExact(classRoom.getLevel()),
+                classRoom.getName(),//make a call to school microservice to get School name.
+                (int) classRoom.getSchoolID()
+
+        );
+
     }
 }

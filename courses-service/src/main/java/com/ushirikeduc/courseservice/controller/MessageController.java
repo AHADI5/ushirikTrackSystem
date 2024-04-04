@@ -56,6 +56,7 @@ public class MessageController {
             classWorkEvent.setCourseName(classWork.getCourse().getName());
             classWorkEvent.setClassWorkID(classWork.getClassWorkID());
             classWorkEvent.setClassWorkType(classWork.getClassworkType().toString());
+
             classWorkEvent.setTitle(classWork.getName());
 
         kafkaTemplateClasswork.send("classwork-created" , classWorkEvent);
