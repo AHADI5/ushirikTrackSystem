@@ -59,14 +59,15 @@ public record SchoolController(
     }
 
     @PostMapping("{schoolID}/newEvent")
-    public EventResponse registerEvent (@PathVariable int schoolID, @RequestBody ) {
+    public EventResponse registerEvent (@PathVariable int schoolID,
+                                        @RequestBody EventRegisterRequest request) {
+        return  eventService.registerNewEvent(schoolID , request);
 
     }
 
     @GetMapping("{schoolID}/communications")
     public List<CommuniqueResponse> getCommuniqueBySchoolID(@PathVariable  int schoolID) {
         return  communiqueService.getAllCommuniqueBySchoolID(schoolID);
-
     }
     @GetMapping("{schoolID}/rules")
     public List<RuleResponse> getRulesBySchoolID(@PathVariable int schoolID){
@@ -75,6 +76,12 @@ public record SchoolController(
     @GetMapping("{schoolID}/events")
     public List<EventResponse> getAllEventsBySchoolID(@PathVariable int schoolID) {
         return  eventService.getSchoolEvents(schoolID);
+    }
+
+    @GetMapping("{schoolID}/upComing")
+    public List<EventResponse> getUpComingEvents (@PathVariable int schoolID) {
+        return eventService.getUpcomingEvents(schoolID);
+
     }
 }
 

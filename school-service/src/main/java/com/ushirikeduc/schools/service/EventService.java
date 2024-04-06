@@ -66,6 +66,36 @@ public record EventService (
         return eventResponses;
     }
 
+    public List<EventResponse> getUpcomingEvents (int schoolID) {
+        //Getting the school
+        School school = service.getSchool(schoolID);
+
+        //Getting the current Date
+
+        Date currentDate = new Date();
+
+        //initialize a list to store all upcoming Event
+        List<EventResponse> upComingEventsResponse = new ArrayList<>();
+
+        //Query the database for events with start time grater than the current time
+
+        List<SchoolEvent> upComingEvents  =
+                eventRepository.findSchoolEventByStartingDateAfterAndSchool(currentDate,school);
+
+        for (SchoolEvent events : upComingEvents){
+            EventResponse upComingEvent = new EventResponse(
+                    events.getTitle(),
+                    events.getDescription(),
+                    events.getStartingDate(),
+                    events.getEndingDate()
+            );
+            upComingEventsResponse.add(upComingEvent);
+        }
+
+        return upComingEventsResponse;
+
+    }
+
 //    public List<EventResponse> registerEventList(int schoolID ,
 //                                                 List<EventRegisterRequest> requests) {
 //
@@ -73,7 +103,7 @@ public record EventService (
 //    }
 
     public Date  parseDate(String dateString) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             return dateFormat.parse(dateString) ;
         } catch (ParseException e) {

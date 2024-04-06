@@ -24,6 +24,7 @@ public class SchoolEvent {
             generator = "event_id_sequence"
     )
     private Integer schoolEventId ;
+
     private Date startingDate ;
     private Date endingDate ;
     private String title ;
