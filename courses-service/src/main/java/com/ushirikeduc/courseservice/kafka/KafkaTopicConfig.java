@@ -23,4 +23,10 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("classwork-created")
                 .build();
     }
+
+    @Bean
+    public NewTopic homeworkTopic() {
+        return TopicBuilder.name("homework-created")
+                .build();
+    }
 }

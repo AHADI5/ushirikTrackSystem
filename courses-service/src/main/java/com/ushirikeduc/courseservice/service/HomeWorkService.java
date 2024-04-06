@@ -16,6 +16,7 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Service
 @Slf4j
@@ -27,6 +28,7 @@ public record HomeWorkService (
     public homeWorkResponse registerHomeWork(int classID, HomeworkRegistrationRequest request) {
         // Build the Homework object first
         Homework homework = Homework.builder()
+                .creationDate(new Date())
                 .title(request.title())
                 .classRoomID(classID)
                 .description(request.Description())

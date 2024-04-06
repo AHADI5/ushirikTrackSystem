@@ -1,7 +1,6 @@
 package com.ushirikeduc.schools.kafka;
 
 import Dto.StudentEvent;
-import com.ushirikeduc.schools.service.ClassesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

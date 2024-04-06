@@ -1,4 +1,4 @@
-package com.ushirikeduc.schools.interfaces;
+package com.ushirikeduc.schools.repository;
 
 import com.ushirikeduc.schools.model.Address;
 import org.springframework.data.jpa.repository.JpaRepository;

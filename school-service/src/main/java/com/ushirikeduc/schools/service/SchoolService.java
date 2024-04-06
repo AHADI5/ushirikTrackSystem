@@ -1,12 +1,13 @@
 package com.ushirikeduc.schools.service;
 
-import com.ushirikeduc.schools.interfaces.AddressRepository;
-import com.ushirikeduc.schools.interfaces.DirectorRepository;
-import com.ushirikeduc.schools.interfaces.SchoolRepository;
+import com.ushirikeduc.schools.repository.AddressRepository;
+import com.ushirikeduc.schools.repository.DirectorRepository;
+import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.model.Address;
 import com.ushirikeduc.schools.model.Director;
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.SchoolRegistrationRequest;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -40,8 +41,9 @@ public record SchoolService(SchoolRepository schoolRepository,
 
     }
 
-public Optional<School> getSchool(int schoolId) {
-        return  schoolRepository.findById(schoolId);
+public School getSchool(int schoolId) {
+    return schoolRepository.findById(schoolId)
+                .orElseThrow(() -> new ResourceNotFoundException(("School Not found")));
 }
 
 public Director getDirector(int schoolId) {

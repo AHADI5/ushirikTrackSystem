@@ -1,10 +1,9 @@
 package com.ushirikeduc.schools.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,11 +32,15 @@ public class School {
 
     @OneToOne
     private Director director;
-    @JsonIgnore
-    @OneToMany(mappedBy = "school" , cascade = CascadeType.ALL)
-    private List<Classes> classes;
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
+    private  List<SchoolEvent> events = new ArrayList<>();
 
-    // Other fields and annotations..
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
+    private  List<Communique> communiques = new ArrayList<>();
+
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
+    private  List<Rule> rules = new ArrayList<>();
+
 
 }
 

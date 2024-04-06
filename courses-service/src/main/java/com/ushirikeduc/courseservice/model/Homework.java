@@ -8,13 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Slf4j
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Homework {
     @Id
@@ -23,7 +24,12 @@ public class Homework {
     private String title ;
     private String description ;
     private int classRoomID ;
+    private Date creationDate ;
     @OneToMany(mappedBy = "homework" , cascade = CascadeType.ALL)
     private List<HomeWorkQuestion> questions = new ArrayList<>();
+
+    // set the creation date to the current date
+
+
 
 }

@@ -30,4 +30,7 @@ public class ProducerConfig {
     public KafkaTemplate<String , ClassWorkEvent> kafkaTemplate() {
         return  new KafkaTemplate<>(producerFactoryClasswork());
     }
+
+    //todo publish courseEvent
+    //todo publish homeworkEvent
 }
