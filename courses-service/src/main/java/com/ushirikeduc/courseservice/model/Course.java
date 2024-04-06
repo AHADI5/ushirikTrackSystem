@@ -35,8 +35,10 @@ public class Course {
     @JoinColumn(name = "couse_id")
     private List<Requirement> requirements = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany (mappedBy = "course" ,cascade = CascadeType.ALL)
     private List<ClassWork>  classWorks = new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "course" , cascade = CascadeType.ALL)
+    private  List<HomeWorkQuestion> questions = new ArrayList<>();
 }

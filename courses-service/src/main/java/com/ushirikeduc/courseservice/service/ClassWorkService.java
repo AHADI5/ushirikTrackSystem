@@ -4,6 +4,7 @@ import Dto.ClassWorkEvent;
 import com.ushirikeduc.courseservice.controller.MessageController;
 import com.ushirikeduc.courseservice.dto.ClassWorkRegistrationRequest;
 import com.ushirikeduc.courseservice.dto.ClassWorkRegistrationResponse;
+
 import com.ushirikeduc.courseservice.model.ClassWork;
 import com.ushirikeduc.courseservice.model.ClassworkType;
 import com.ushirikeduc.courseservice.model.Course;
@@ -86,4 +87,6 @@ public record ClassWorkService (
        return  course.getClassWorks();
 
     }
+
+
 }
