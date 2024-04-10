@@ -36,6 +36,7 @@ public record HomeWorkService (
 
         // Save the Homework entity
         Homework savedHomework = homeWorkRepository.save(homework);
+        log.info("Saved homework " + savedHomework);
 
         // List to hold the saved questions
         List<HomeWorkQuestion> savedQuestions = new ArrayList<>();
@@ -97,11 +98,13 @@ public record HomeWorkService (
         }
 
         //Getting simplified question object
+        log.info("the date saved is  " + homework.getCreationDate() );
 
         return new homeWorkResponse(
                 coursesInvolved ,
                 homework.getTitle(),
                 homework.getDescription(),
+                homework.getCreationDate(),
                 simpleQuestions
         );
     }

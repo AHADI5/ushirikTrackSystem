@@ -27,6 +27,7 @@ public class Communique {
     private String title;
     private String content ;
     private Date date;
+
     private CommuniqueType communiqueType ;
     @ManyToOne
     @JoinColumn(name = "school_id")

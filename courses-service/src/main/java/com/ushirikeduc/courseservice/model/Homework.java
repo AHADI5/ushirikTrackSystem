@@ -29,7 +29,4 @@ public class Homework {
     private List<HomeWorkQuestion> questions = new ArrayList<>();
 
     // set the creation date to the current date
-
-
-
 }

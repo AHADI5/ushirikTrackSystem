@@ -1,9 +1,6 @@
 package com.ushirikeduc.disciplineservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +19,7 @@ import java.util.List;
 public class Attendance {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long attendanceID;
     private Date date ;
     private boolean isPresent;

@@ -1,5 +1,6 @@
 package com.ushirikeduc.schools.service;
 
+import com.ushirikeduc.schools.controller.MessageController;
 import com.ushirikeduc.schools.model.Rule;
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.repository.RulesRepository;
@@ -8,6 +9,7 @@ import com.ushirikeduc.schools.requests.RuleRegistrationRequest;
 import com.ushirikeduc.schools.requests.RuleResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.apache.tomcat.util.digester.Rules;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +20,8 @@ import java.util.List;
 public record RuleService (
         SchoolRepository schoolRepository ,
         SchoolService schoolService ,
-        RulesRepository rulesRepository
+        RulesRepository rulesRepository ,
+        MessageController messageController
 ) {
 
     public List<RuleResponse> registerRule(int schoolID,
@@ -38,6 +41,11 @@ public record RuleService (
             rules.add(rule);
             rulesRepository.save(rule);
 
+        }
+
+        //Publish created rules
+        for (Rule rule : rules) {
+            messageController.publishRule(rule);
         }
         return  simpleRuleForm(rules);
     }

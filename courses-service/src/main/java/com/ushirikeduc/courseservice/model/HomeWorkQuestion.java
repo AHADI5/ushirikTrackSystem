@@ -26,7 +26,8 @@ public class HomeWorkQuestion {
     @JoinColumn(name = "course_id")
     private Course course ;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "homework_id")
-    private Homework homework ;
+    private Homework homework;
+
 }

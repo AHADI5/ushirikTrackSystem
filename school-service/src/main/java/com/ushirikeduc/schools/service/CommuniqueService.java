@@ -25,7 +25,7 @@ public record CommuniqueService (
         CommuniqueType communiqueType = null ;
 
         switch (request.type()) {
-            case  "Meetting" -> communiqueType = CommuniqueType.MEETING;
+            case  "Meeting" -> communiqueType = CommuniqueType.MEETING;
             case "Incident" -> communiqueType = CommuniqueType.INCIDENT;
             case "Event" -> communiqueType = CommuniqueType.EVENT;
             case "Convocation" -> communiqueType = CommuniqueType.CONVOCATION;
@@ -33,8 +33,6 @@ public record CommuniqueService (
 
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
-
-
 
         Communique communique = Communique.builder()
                 .title(request.title())
