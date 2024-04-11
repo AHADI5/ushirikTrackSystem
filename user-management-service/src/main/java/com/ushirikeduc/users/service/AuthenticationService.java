@@ -1,10 +1,7 @@
 package com.ushirikeduc.users.service;
 
 import com.ushirikeduc.users.config.JwtService;
-import com.ushirikeduc.users.dtoRequests.AuthenticationRequest;
-import com.ushirikeduc.users.dtoRequests.AuthenticationResponse;
-import com.ushirikeduc.users.dtoRequests.RefreshTokenRequest;
-import com.ushirikeduc.users.dtoRequests.RegisterRequest;
+import com.ushirikeduc.users.dtoRequests.*;
 import com.ushirikeduc.users.model.Role;
 import com.ushirikeduc.users.model.Users;
 import com.ushirikeduc.users.repository.UserRepository;
@@ -39,7 +36,7 @@ public record AuthenticationService(
 
     }
 
-    public void registerAdmin(RegisterRequest request, Role role) {
+    public AuthenticationResponseAdmin registerAdmin(RegisterRequest request, Role role) {
         Users user = Users.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -47,11 +44,14 @@ public record AuthenticationService(
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .build();
-        userRepository.save(user);
-//        var jwToken = jwtService.generateToken(user);
-//        return AuthenticationResponse.builder()
-//                .token(jwToken)
-//                .build();
+        Users savedUser = userRepository.save(user);
+        var jwToken = jwtService.generateToken(user);
+        return AuthenticationResponseAdmin.builder()
+                .firstName(savedUser.getFirstName())
+                .lastName(savedUser.getLastName())
+                .email(savedUser.getEmail())
+                .token(jwToken)
+                .build();
 
     }
 

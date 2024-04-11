@@ -1,6 +1,8 @@
 package com.ushirikeduc.schools.service;
 
+import com.ushirikeduc.schools.model.SchoolAdmin;
 import com.ushirikeduc.schools.repository.AddressRepository;
+import com.ushirikeduc.schools.repository.AdminRepository;
 import com.ushirikeduc.schools.repository.DirectorRepository;
 import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.model.Address;
@@ -15,7 +17,8 @@ import java.util.Optional;
 @Service
 public record SchoolService(SchoolRepository schoolRepository,
                             AddressRepository addressRepository,
-                            DirectorRepository directorRepository
+                            DirectorRepository directorRepository ,
+                            AdminRepository schoolAdminRepository
                             ) {
     public School registerSchool(SchoolRegistrationRequest request) {
         Address address = request.address();
@@ -29,9 +32,14 @@ public record SchoolService(SchoolRepository schoolRepository,
         // Calling User service for user Account creation
         System.out.println(director.getAddress());
 
+        //find Admin by email Address
+
+        SchoolAdmin schoolAdmin = schoolAdminRepository.findSchoolAdminByEmail(request.adminEmail());
+
 
         School school = School.builder()
                 .name(request.name())
+                .administrator(schoolAdmin)
                 .email(request.email())
                 .postalBox(request.postalBox())
                 .address(address)

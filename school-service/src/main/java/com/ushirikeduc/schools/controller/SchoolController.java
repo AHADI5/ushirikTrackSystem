@@ -4,7 +4,7 @@ import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.*;
 import com.ushirikeduc.schools.service.CommuniqueService;
 import com.ushirikeduc.schools.service.EventService;
-import com.ushirikeduc.schools.service.RuleService;
+import com.ushirikeduc.schools.service.SchoolAdminService;
 import com.ushirikeduc.schools.service.SchoolService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -18,9 +18,10 @@ import java.util.List;
 @RequestMapping("api/v1/school")
 public record SchoolController(
         SchoolService schoolService,
-        RuleService ruleService ,
+
         EventService eventService,
-        CommuniqueService communiqueService
+        CommuniqueService communiqueService ,
+        SchoolAdminService schoolAdminService
                              ) {
     @PostMapping("/register-school")
     public School registerSchool(@RequestBody  SchoolRegistrationRequest request) {
@@ -46,11 +47,7 @@ public record SchoolController(
         return ResponseEntity.ok(school);
     }
 
-    @PostMapping("{schoolID}/newRule")
-    public List<RuleResponse> registerRule (@PathVariable int schoolID ,
-                                            @RequestBody List<RuleRegistrationRequest> request){
-        return  ruleService.registerRule (schoolID , request) ;
-    }
+
 
     @PostMapping("{schoolID}/newCommunique")
     public CommuniqueResponse registerCommunique(@PathVariable int schoolID ,
@@ -69,10 +66,7 @@ public record SchoolController(
     public List<CommuniqueResponse> getCommuniqueBySchoolID(@PathVariable  int schoolID) {
         return  communiqueService.getAllCommuniqueBySchoolID(schoolID);
     }
-    @GetMapping("{schoolID}/rules")
-    public List<RuleResponse> getRulesBySchoolID(@PathVariable int schoolID){
-        return ruleService.getRulesBySchoolID(schoolID);
-    }
+    @CrossOrigin("*")
     @GetMapping("{schoolID}/events")
     public List<EventResponse> getAllEventsBySchoolID(@PathVariable int schoolID) {
         return  eventService.getSchoolEvents(schoolID);
@@ -81,6 +75,13 @@ public record SchoolController(
     @GetMapping("{schoolID}/upComing")
     public List<EventResponse> getUpComingEvents (@PathVariable int schoolID) {
         return eventService.getUpcomingEvents(schoolID);
+
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*",
+            methods = {RequestMethod.POST, RequestMethod.OPTIONS})
+    @PostMapping("/schoolAdmin")
+    public AdminResponse registerAdmin(@RequestBody RegisterAdminRequest request){
+        return schoolAdminService.registerSchoolAdmin(request);
 
     }
 }

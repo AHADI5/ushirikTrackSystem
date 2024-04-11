@@ -37,9 +37,12 @@ public class School {
 
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
     private  List<Communique> communiques = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
 
-    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
-    private  List<Rule> rules = new ArrayList<>();
+    @JoinColumn(name = "administrator_id")
+    private SchoolAdmin administrator;
+
+
 
 
 }
