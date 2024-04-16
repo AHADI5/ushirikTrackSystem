@@ -17,12 +17,13 @@
     <module>teacher-service</module>
     <module>base-domains</module>
     <module>sudent-service</module>
-    <module>Eureka-server</module>
+
     <module>class-service</module>
     <module>courses-service</module>
       <module>discipline-service</module>
       <module>user-management-service</module>
       <module>student-max-manamgement</module>
+    <module>Discovery-Service</module>
   </modules>
 
   <properties>
@@ -31,7 +32,7 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <spring.boot.maven.plugin.version>3.2.3</spring.boot.maven.plugin.version>
     <spring.boot.dependecies.version>3.2.3</spring.boot.dependecies.version>
-    <spring.cloud-version>2020.0.3</spring.cloud-version>
+    <spring.cloud-version>2023.0.0</spring.cloud-version>
   </properties>
 
   <dependencyManagement>
@@ -45,7 +46,7 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
+        <artifactId>spring-cloud-starter-parent</artifactId>
         <version>${spring.cloud-version}</version>
         <type>pom</type>
         <scope>import</scope>

@@ -12,9 +12,9 @@
         <module name="teacher-service" />
         <module name="user-management-service" />
         <module name="class-service" />
+        <module name="Discovery-Service" />
         <module name="school-service" />
         <module name="sudent-service" />
-        <module name="Eureka-server" />
         <module name="courses-service" />
         <module name="student-max-manamgement" />
       </profile>
@@ -22,6 +22,7 @@
     <bytecodeTargetLevel>
       <module name="classwork-service" target="21" />
       <module name="eureka-server" target="21" />
+      <module name="Eureka-server" target="17" />
       <module name="rules-service" target="21" />
       <module name="service-register" target="21" />
       <module name="service-registry" target="21" />
@@ -31,6 +32,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Discovery-Service" options="-parameters" />
       <module name="Eureka-server" options="-parameters" />
       <module name="base-domains" options="-parameters" />
       <module name="class-service" options="-parameters" />

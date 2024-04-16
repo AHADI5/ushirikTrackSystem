@@ -49,6 +49,7 @@ public record SchoolController(
 
 
 
+
     @PostMapping("{schoolID}/newCommunique")
     public CommuniqueResponse registerCommunique(@PathVariable int schoolID ,
                                                  @RequestBody CommuniqueRegisterRequest request) {
