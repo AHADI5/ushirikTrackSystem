@@ -5,6 +5,7 @@ import com.ushirikeduc.users.dtoRequests.*;
 import com.ushirikeduc.users.model.Role;
 import com.ushirikeduc.users.model.Users;
 import com.ushirikeduc.users.repository.UserRepository;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -82,5 +83,13 @@ public record AuthenticationService(
                     .build();
         }
         return null;
+    }
+
+    //validate token
+
+    public Boolean validateToken(String token) {
+        String userEmail = jwtService().extractUsername(token);
+        Users user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User Not found"));
+        return jwtService().isTokenValid(token , user);
     }
 }

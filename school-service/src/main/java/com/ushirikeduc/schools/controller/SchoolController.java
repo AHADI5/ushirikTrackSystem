@@ -24,7 +24,8 @@ public record SchoolController(
         SchoolAdminService schoolAdminService
                              ) {
     @PostMapping("/register-school")
-    public School registerSchool(@RequestBody  SchoolRegistrationRequest request) {
+    public SchoolResponse registerSchool(@RequestBody  SchoolRegistrationRequest request , @RequestHeader String userName) {
+        log.info(userName);
         return schoolService.registerSchool(request);
     }
 
@@ -38,9 +39,6 @@ public record SchoolController(
 //
 //        return classesService.addClassesToSchool(schoolId ,classesList);
 //    }
-
-
-
     @GetMapping(value = "/{schoolID}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSchoolWithDetails(@PathVariable("schoolID") Integer schoolId) {
         School school = schoolService.getSchool(schoolId);

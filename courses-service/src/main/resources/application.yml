@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: teacher-service
+    name: courses-service
   datasource:
     username: ushirik-educ
     url: jdbc:postgresql://localhost:5432/courses
@@ -25,5 +25,10 @@ spring:
 #    topics:
 #      topic1: create-course
 #      topic2: create-classwork
-
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
 

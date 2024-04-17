@@ -15,6 +15,7 @@
         <module name="Discovery-Service" />
         <module name="school-service" />
         <module name="sudent-service" />
+        <module name="Api-Gateway" />
         <module name="courses-service" />
         <module name="student-max-manamgement" />
       </profile>
@@ -32,6 +33,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Api-Gateway" options="-parameters" />
       <module name="Discovery-Service" options="-parameters" />
       <module name="Eureka-server" options="-parameters" />
       <module name="base-domains" options="-parameters" />

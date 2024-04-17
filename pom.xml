@@ -24,6 +24,7 @@
       <module>user-management-service</module>
       <module>student-max-manamgement</module>
     <module>Discovery-Service</module>
+      <module>Api-Gateway</module>
   </modules>
 
   <properties>

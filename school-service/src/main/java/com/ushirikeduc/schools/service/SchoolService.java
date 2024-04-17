@@ -8,7 +8,9 @@ import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.model.Address;
 import com.ushirikeduc.schools.model.Director;
 import com.ushirikeduc.schools.model.School;
+import com.ushirikeduc.schools.requests.DirectorResponse;
 import com.ushirikeduc.schools.requests.SchoolRegistrationRequest;
+import com.ushirikeduc.schools.requests.SchoolResponse;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public record SchoolService(SchoolRepository schoolRepository,
                             DirectorRepository directorRepository ,
                             AdminRepository schoolAdminRepository
                             ) {
-    public School registerSchool(SchoolRegistrationRequest request) {
+    public SchoolResponse registerSchool(SchoolRegistrationRequest request) {
         Address address = request.address();
         address = addressRepository.save(address);
         Address directorAddress = request.director().getAddress();
@@ -45,7 +47,18 @@ public record SchoolService(SchoolRepository schoolRepository,
                 .address(address)
                 .director(director)
                 .build();
-        return schoolRepository.save(school);
+        School savedSchool = schoolRepository.save(school);
+        return new SchoolResponse(
+                savedSchool.getName(),
+                savedSchool.getEmail(),
+                new DirectorResponse(
+                        savedSchool.getDirector().getName(),
+                        savedSchool.getSchoolID(),
+                        savedSchool.getDirector().getAddress()
+                ),
+                savedSchool.getAddress()
+
+        );
 
     }
 

@@ -1,0 +1,19 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-management-service
+          uri: lb://USER-MANAGEMENT-SERVICE
+          predicates:
+            - Path=/api/v1/auth/**
+
+        - id: school-service
+          uri : lb://SCHOOL-SERVICE
+          predicates:
+            - Path=/api/v1/school/**
+          filters:
+            - AuthenticationFilter

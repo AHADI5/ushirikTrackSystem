@@ -37,7 +37,7 @@ public class JwtService {
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 100 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 100 * 60 * 30))
                 .signWith(getSignInkey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -66,6 +66,10 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public void validateToken(final  String token){
+       Jwts.parser().setSigningKey(getSignInkey()).build().parseClaimsJws(token);
     }
 
     private Key getSignInkey() {
