@@ -5,14 +5,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -32,10 +35,16 @@ public class JwtService {
             Map<String, Object> extractClaims,
             UserDetails userDetails
     ) {
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        String authorityString = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
         return Jwts
                 .builder()
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
+                .claim("authorities" , authorityString)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 100 * 60 * 30))
                 .signWith(getSignInkey(), SignatureAlgorithm.HS256)
