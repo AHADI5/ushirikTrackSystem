@@ -85,5 +85,10 @@ public record SchoolController(
         return schoolAdminService.registerSchoolAdmin(request);
 
     }
+
+    @GetMapping("/admin/schools")
+    public List<SchoolResponse> getSchoolByAdminEmail(@RequestBody AdminMailRequest email) {
+        return  schoolAdminService.getSchoolByAdminEmail(email);
+    }
 }
 

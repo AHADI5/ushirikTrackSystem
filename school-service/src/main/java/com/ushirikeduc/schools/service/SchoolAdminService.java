@@ -1,12 +1,16 @@
 package com.ushirikeduc.schools.service;
 
+import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.model.SchoolAdmin;
 import com.ushirikeduc.schools.repository.AdminRepository;
 import com.ushirikeduc.schools.repository.SchoolRepository;
-import com.ushirikeduc.schools.requests.AdminResponse;
-import com.ushirikeduc.schools.requests.RegisterAdminRequest;
+import com.ushirikeduc.schools.requests.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public record SchoolAdminService (
         SchoolRepository schoolRepository,
@@ -29,4 +33,29 @@ public record SchoolAdminService (
                 AdminResponse.class);
 
     }
+
+    public List<SchoolResponse> getSchoolByAdminEmail(AdminMailRequest email) {
+        List<School> schools = schoolRepository.getSchoolByAdministrator_Email(email.email());
+
+        List<SchoolResponse> schoolResponse = new ArrayList<>();
+
+        for (School school : schools) {
+            SchoolResponse schoolResp = new SchoolResponse(
+                    school.getName(),
+                    school.getEmail(),
+                    new DirectorResponse(
+                            school.getDirector().getName(),
+                            school.getSchoolID(),
+                            school.getDirector().getAddress()
+                    ),
+                    school.getAddress()
+            );
+
+            schoolResponse.add(schoolResp);
+
+        }
+
+        return schoolResponse;
+    }
 }
+

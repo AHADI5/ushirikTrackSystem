@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface SchoolRepository extends JpaRepository<School, Integer> {
     public List<School> getSchoolByAdministrator_Email(String adminEmail);
+
 }
