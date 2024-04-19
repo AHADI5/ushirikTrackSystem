@@ -5,11 +5,30 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+
       routes:
         - id: user-management-service
           uri: lb://USER-MANAGEMENT-SERVICE
           predicates:
             - Path=/api/v1/auth/**
+          filters:
+            - AuthenticationFilter
+#          metadata:
+#            cors:
+#              allowedOrigins: '*'
+#              allowedMethods:
+#                - GET
+#                - POST
+#              allowedHeaders: '*, *'
+#              maxAge: 30
 
         - id: school-service
           uri : lb://SCHOOL-SERVICE
@@ -17,3 +36,73 @@ spring:
             - Path=/api/v1/school/**
           filters:
             - AuthenticationFilter
+#          metadata:
+#            cors:
+#              allowedOrigins: '*'
+#              allowedMethods:
+#                - GET
+#                - POST
+#              allowedHeaders: '*'
+#              maxAge: 30
+
+        - id : class-service
+          uri : lb://CLASSROOM-SERVICE
+          predicates:
+            - Path=/api/v1/classRoom/**'
+          filters:
+            - AuthenticationFilter
+#          metadata:
+#            cors:
+#              allowedOrigins: '*'
+#              allowedMethods:
+#                - GET
+#                - POST
+#              allowedHeaders: '*'
+#              maxAge: 30
+
+        - id : student-service
+          uri : lb://STUDENT-SERVICE
+          predicates:
+            - Path=/api/v1/student/**
+          filters:
+            - AuthenticationFilter
+#          metadata:
+#            cors:
+#              allowedOrigins: '*'
+#              allowedMethods:
+#                - GET
+#                - POST
+#              allowedHeaders: '*'
+#              maxAge: 30
+
+        - id : teacher-service
+          uri : lb://TEACHER-SERVICE
+          predicates:
+            - Path=/api/v1/teacher/**
+#          metadata:
+#            cors:
+#              allowedOrigins: '*'
+#              allowedMethods:
+#                - GET
+#                - POST
+#              allowedHeaders: '*'
+#              maxAge: 30
+          filters:
+            - AuthenticationFilter
+
+
+#          metadata:
+#            cors:
+#              allowedOrigins : '*'
+#              allowedMethods :
+#                - GET
+#                - POST
+#              allowedHeaders : '*'
+#              maxAge : 30
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true

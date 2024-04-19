@@ -16,7 +16,7 @@ public record AuthenticationController(
         AuthenticationService authenticationService,
         JwtService jwtService
 ) {
-    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.POST, RequestMethod.OPTIONS})
+//    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.POST, RequestMethod.OPTIONS})
     @PostMapping("/admin")
     public AuthenticationResponseAdmin register(
             @RequestBody RegisterRequest request

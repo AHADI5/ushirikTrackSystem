@@ -15,6 +15,8 @@ import java.util.List;
 
 @RestController
 @Slf4j
+
+
 @RequestMapping("api/v1/school")
 public record SchoolController(
         SchoolService schoolService,
@@ -65,7 +67,7 @@ public record SchoolController(
     public List<CommuniqueResponse> getCommuniqueBySchoolID(@PathVariable  int schoolID) {
         return  communiqueService.getAllCommuniqueBySchoolID(schoolID);
     }
-    @CrossOrigin("*")
+
     @GetMapping("{schoolID}/events")
     public List<EventResponse> getAllEventsBySchoolID(@PathVariable int schoolID) {
         return  eventService.getSchoolEvents(schoolID);
@@ -76,8 +78,8 @@ public record SchoolController(
         return eventService.getUpcomingEvents(schoolID);
 
     }
-    @CrossOrigin(origins = "*", allowedHeaders = "*",
-            methods = {RequestMethod.POST, RequestMethod.OPTIONS})
+
+
     @PostMapping("/schoolAdmin")
     public AdminResponse registerAdmin(@RequestBody RegisterAdminRequest request){
         return schoolAdminService.registerSchoolAdmin(request);

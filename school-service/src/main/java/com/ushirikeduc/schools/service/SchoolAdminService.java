@@ -24,7 +24,7 @@ public record SchoolAdminService (
 
         //Post to UserManagement Service
 
-        return restTemplate.postForObject("http://localhost:8850/api/v1/auth/admin",
+        return restTemplate.postForObject("http://localhost:8080/api/v1/auth/admin",
                 savedSchoolAdmin,
                 AdminResponse.class);
 
