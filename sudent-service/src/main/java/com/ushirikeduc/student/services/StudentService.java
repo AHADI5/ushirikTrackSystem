@@ -11,13 +11,17 @@ import com.ushirikeduc.student.model.Student;
 import com.ushirikeduc.student.repository.AddressRepository;
 import com.ushirikeduc.student.repository.ParentRepository;
 import com.ushirikeduc.student.repository.StudentRepository;
+import com.ushirikeduc.student.request.ClassStudentsResponse;
 import com.ushirikeduc.student.request.StudentByParentEmailRequest;
 import com.ushirikeduc.student.request.StudentRegistrationRequest;
 import com.ushirikeduc.student.request.StudentResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +46,7 @@ public record StudentService(
         if (existingParent.isPresent()) {
             // Parent exists, associate student with existing parent
             Student student = createStudent(request, existingParent.get());
+            assert student != null;
             Student newStudent = studentRepository.save(student);
 
             //Publish Student creation event
@@ -64,6 +69,7 @@ public record StudentService(
             //Publish student creation Event
 //            studentProducer.sendMessage(studentEvent);
 //            messageController.publish(studentEvent);
+            assert student != null;
             Student newStudent = studentRepository.save(student);
             messageController.publishStudent(newStudent);
             return ResponseEntity.ok(student);
@@ -101,6 +107,26 @@ public record StudentService(
     }
 
     private Student createStudent(StudentRegistrationRequest request, Parent parent) {
+        int schoolID ;
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Integer> response = restTemplate.exchange(
+                "http://localhost:8746/api/v1/classRoom/"+ request.classID() +"/schoolID",
+                HttpMethod.GET,
+                null,
+                Integer.class
+        );
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+             schoolID = response.getBody() != null ? response.getBody() : 0;
+        } else {
+            // Handle error response
+            return null;
+        }
+
+        //Setting Parent's child School
+        parent.setSchoolID(schoolID);
+
         Address address = createAddress(request);
         return Student.builder()
                 .name(request.name())

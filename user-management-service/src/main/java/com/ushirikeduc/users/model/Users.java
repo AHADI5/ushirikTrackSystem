@@ -26,6 +26,7 @@ public class Users implements UserDetails {
     String lastName;
     String password;
     String email;
+    int schoolID ;
     //Roles in the system
     @Enumerated(EnumType.STRING)
     private Role role;

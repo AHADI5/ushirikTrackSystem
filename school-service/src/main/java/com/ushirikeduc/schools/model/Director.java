@@ -6,6 +6,7 @@ import lombok.*;
 
 @Entity
 @Data
+@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,13 +23,14 @@ public class Director {
 
     private Integer directorID;
 
-    private String  name ;
+    private String  firstName ;
 
-    private String middleName ;
+    private String lastName ;
 
-    private String firstName ;
+    private String directorEmail ;
+    private int schoolID ;
 
-    private String gender ;
+
     @OneToOne
     private  Address address ;
 

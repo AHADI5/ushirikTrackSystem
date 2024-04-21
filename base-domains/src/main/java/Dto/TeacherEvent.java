@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class TeacherEvent {
     private int teacherID;
     private  int classID;
+    private int schoolID ;
     private String firstName;
     private String lastName ;
     private String password ;

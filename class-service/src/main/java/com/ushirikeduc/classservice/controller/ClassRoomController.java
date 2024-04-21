@@ -56,6 +56,10 @@ public class ClassRoomController {
     public ClassInfoResponse  getClassInfosByStudentID (@PathVariable Integer studentID) {
 
         return classRoomService.getClassInfoByStudentID(studentID);
+    }
 
+    @GetMapping("{classID}/schoolID")
+    public int getSchoolIDByClassID(@PathVariable int classID) {
+        return  classRoomService.getSchoolIDbyClassID(classID) ;
     }
 }

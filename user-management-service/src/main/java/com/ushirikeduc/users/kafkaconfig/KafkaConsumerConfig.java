@@ -1,6 +1,8 @@
 package com.ushirikeduc.users.kafkaconfig;
+import Dto.DirectorEvent;
 import Dto.ParentEvent;
 import Dto.TeacherEvent;
+import com.ushirikeduc.users.kafkaconfig.Deserializers.DirectorDiserializer;
 import com.ushirikeduc.users.kafkaconfig.Deserializers.ParentDeserializer;
 import com.ushirikeduc.users.kafkaconfig.Deserializers.TeacherDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -68,6 +70,32 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(consumerFactoryTeacher());
         return factory;
     }
+
+    /*
+    * Consuming schoolDirector Event
+    *
+    * */
+
+    public ConsumerFactory<String, DirectorEvent> consumerFactoryDirector() {
+        Map<String , Object> propsDirector = new HashMap<>();
+        propsDirector.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsDirector.put(ConsumerConfig.GROUP_ID_CONFIG, "director-user");
+        propsDirector.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        propsDirector.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        propsDirector.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, DirectorDiserializer.class);
+
+
+        return new DefaultKafkaConsumerFactory<>(propsDirector , new StringDeserializer(), new DirectorDiserializer()) ;
+    }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,DirectorEvent> kafkaListenerContainerFactoryDirector(){
+        ConcurrentKafkaListenerContainerFactory<String , DirectorEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryDirector());
+        return factory;
+    }
+
+
 
 
 

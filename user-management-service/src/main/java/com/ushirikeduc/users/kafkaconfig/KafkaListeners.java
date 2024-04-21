@@ -1,5 +1,6 @@
 package com.ushirikeduc.users.kafkaconfig;
 
+import Dto.DirectorEvent;
 import Dto.ParentEvent;
 import Dto.TeacherEvent;
 import com.ushirikeduc.users.dtoRequests.RegisterRequest;
@@ -23,7 +24,7 @@ public class KafkaListeners {
     }
 
     /*
-    * Student Listener
+    * Parent Listener
     * */
     @KafkaListener(
             topics = "parent-created",
@@ -40,9 +41,14 @@ public class KafkaListeners {
         request.setLastName(parentEvent.getLastName());
         request.setEmail(parentEvent.getEmail());
         request.setPassword(parentEvent.getPassword());
+        request.setSchoolID(parentEvent.getSchoolID());
         authenticationService.register(request, role);
 
     }
+
+    /*
+    * Teacher Listener
+    * */
 
     @KafkaListener(
             topics = "teacher-created",
@@ -59,6 +65,31 @@ public class KafkaListeners {
         request.setLastName(teacherEvent.getLastName());
         request.setEmail(teacherEvent.getEmail());
         request.setPassword(teacherEvent.getPassword());
+        request.setSchoolID(teacherEvent.getSchoolID());
+        authenticationService.register(request, role);
+
+    }
+
+    /*
+    * Director Listener
+    * */
+
+    @KafkaListener(
+            topics = "director-created",
+            groupId = "director-user",
+            containerFactory = "kafkaListenerContainerFactoryDirector"
+
+    )
+
+    void listener(DirectorEvent directorEvent) {
+        log.info("Event received in ClassRoom  service %s" + directorEvent.toString() );
+        Role role = Role.DIRECTOR;
+        RegisterRequest request = new RegisterRequest();
+        request.setFirstName(directorEvent.getFirstName());
+        request.setLastName(directorEvent.getLastName());
+        request.setEmail(directorEvent.getEmail());
+        request.setPassword(directorEvent.getPassword());
+        request.setSchoolID(directorEvent.getSchoolID());
         authenticationService.register(request, role);
 
     }

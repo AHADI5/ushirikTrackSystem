@@ -26,6 +26,7 @@ public record AuthenticationService(
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
+                .schoolID(request.getSchoolID())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .build();
@@ -41,6 +42,7 @@ public record AuthenticationService(
         Users user = Users.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
+                .schoolID(request.getSchoolID())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)

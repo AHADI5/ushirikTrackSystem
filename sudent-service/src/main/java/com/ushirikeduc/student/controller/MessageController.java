@@ -42,6 +42,7 @@ public record MessageController(
         parentEvent.setLastName(parent.getLastName());
         parentEvent.setEmail(parent.getEmail());
         parentEvent.setPassword(password);
+        parentEvent.setSchoolID(parent.getSchoolID());
         kafkaTemplateParent.send("parent-created",parentEvent);
         log.info(String.format("Parent event Created  => %s ", parentEvent));
     }

@@ -9,8 +9,7 @@ public record SchoolRegistrationRequest(
         String  email ,
         String postalBox,
         String adminEmail ,
-        Address address,
+        SchoolAddressRegistration address,
         Director director
-
 ) {
 }

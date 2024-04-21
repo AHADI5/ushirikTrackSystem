@@ -12,6 +12,7 @@ public class DirectorEvent {
     private String lastName ;
     private String password ;
     private String email ;
+    private int schoolID ;
 
 
 }

@@ -34,8 +34,8 @@ public record SchoolAdminService (
 
     }
 
-    public List<SchoolResponse> getSchoolByAdminEmail(AdminMailRequest email) {
-        List<School> schools = schoolRepository.getSchoolByAdministrator_Email(email.email());
+    public List<SchoolResponse> getSchoolByAdminEmail(String email) {
+        List<School> schools = schoolRepository.getSchoolByAdministrator_Email(email);
 
         List<SchoolResponse> schoolResponse = new ArrayList<>();
 
@@ -43,8 +43,9 @@ public record SchoolAdminService (
             SchoolResponse schoolResp = new SchoolResponse(
                     school.getName(),
                     school.getEmail(),
+                    school.getSchoolID(),
                     new DirectorResponse(
-                            school.getDirector().getName(),
+                            school.getDirector().getFirstName() + " " + school.getDirector().getLastName(),
                             school.getSchoolID(),
                             school.getDirector().getAddress()
                     ),

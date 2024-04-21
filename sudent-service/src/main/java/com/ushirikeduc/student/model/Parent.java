@@ -31,6 +31,7 @@ public class Parent {
     private String lastName ;
     private String phone ;
     private String email ;
+    private int schoolID ;
 
     @JsonIgnore
     @OneToMany(mappedBy = "parent" ,

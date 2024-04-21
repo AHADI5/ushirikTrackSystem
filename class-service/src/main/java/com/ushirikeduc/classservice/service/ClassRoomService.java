@@ -156,4 +156,10 @@ public class ClassRoomService{
         );
 
     }
+
+    public int getSchoolIDbyClassID(int classRoomID) {
+        ClassRoom classRoom = classRepository.findById((long) classRoomID)
+                .orElseThrow(() -> new RuntimeException("No class Found"));
+        return (int) classRoom.getSchoolID();
+    }
 }

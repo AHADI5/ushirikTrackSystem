@@ -24,6 +24,7 @@ public class Teacher {
     )
     private Long id;
     private int classID;
+    private int schoolID ;
     private String firstName;
     private String lastName ;
     private String email ;

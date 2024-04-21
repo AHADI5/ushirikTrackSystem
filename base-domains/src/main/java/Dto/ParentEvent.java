@@ -12,4 +12,6 @@ public class ParentEvent {
     private String lastName ;
     private String password ;
     private String email ;
+    private int schoolID ;
+
 }
