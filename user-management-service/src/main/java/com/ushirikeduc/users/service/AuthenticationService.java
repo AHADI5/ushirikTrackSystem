@@ -6,12 +6,14 @@ import com.ushirikeduc.users.model.Role;
 import com.ushirikeduc.users.model.Users;
 import com.ushirikeduc.users.repository.UserRepository;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +26,7 @@ public record AuthenticationService(
     public void register(RegisterRequest request, Role role) {
         Users user = Users.builder()
                 .firstName(request.getFirstName())
+                .enabled(true)
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .schoolID(request.getSchoolID())
@@ -44,6 +47,7 @@ public record AuthenticationService(
                 .lastName(request.getLastName())
                 .schoolID(request.getSchoolID())
                 .email(request.getEmail())
+                .enabled(true)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .build();
@@ -93,5 +97,40 @@ public record AuthenticationService(
         String userEmail = jwtService().extractUsername(token);
         Users user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User Not found"));
         return jwtService().isTokenValid(token , user);
+    }
+
+    public List<Users> getUsersBySchoolID(int schoolID) {
+        return userRepository.findUsersBySchoolID(schoolID);
+    }
+
+    public List<Users> getUserParentBySchoolID(int schoolID, Role role) {
+        return  userRepository.findUsersBySchoolIDAndRole(schoolID , role);
+    }
+    public List<Users> getUserTeacherBySchoolID(int schoolID, Role role) {
+        return  userRepository.findUsersBySchoolIDAndRole(schoolID , role);
+    }
+
+    //Logic to activate or disable a user account
+    public ResponseEntity<Boolean> disableUser (String userName)  {
+        Users user  = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found !!"));
+        if (user.isEnabled()) {
+            user.setEnabled(false);
+            userRepository.save(user);
+            return ResponseEntity.ok(user.isEnabled());
+        }
+
+        return null;
+    }
+
+    public ResponseEntity<Boolean> enableUser (String userName) {
+        Users user  = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found !!"));
+        if (!user.isEnabled()) {
+            user.setEnabled(true);
+            userRepository.save(user);
+            return ResponseEntity.ok(user.isEnabled());
+        }
+        return null;
     }
 }

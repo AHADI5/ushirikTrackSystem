@@ -36,21 +36,21 @@ spring:
             - Path=/api/v1/school/**
           filters:
             - AuthenticationFilter
-#          metadata:
-#            cors:
-#              allowedOrigins: '*'
-#              allowedMethods:
-#                - GET
-#                - POST
-#              allowedHeaders: '*'
-#              maxAge: 30
 
-        - id : class-service
-          uri : lb://CLASSROOM-SERVICE
+        - id: classroom-service
+          uri: lb://CLASSROOM-SERVICE
           predicates:
-            - Path=/api/v1/classRoom/**'
+            - Path=/api/v1/classroom/**
           filters:
             - AuthenticationFilter
+
+
+#        - id : classroom-service
+#          uri : lb://CLASSROOM-SERVICE
+#          predicates:
+#            - Path=/api/v1/classRoom/**'
+#          filters:
+#            - AuthenticationFilter
 #          metadata:
 #            cors:
 #              allowedOrigins: '*'

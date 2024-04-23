@@ -1,5 +1,6 @@
 package com.ushirikeduc.classservice.controller;
 
+import com.ushirikeduc.classservice.dto.ClassGeneralInformation;
 import com.ushirikeduc.classservice.dto.ClassInfoResponse;
 import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
 import com.ushirikeduc.classservice.model.ClassRoom;
@@ -7,6 +8,7 @@ import com.ushirikeduc.classservice.model.Course;
 import com.ushirikeduc.classservice.service.ClassRoomService;
 import com.ushirikeduc.classservice.service.CoursesService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @Slf4j
-@RequestMapping("api/v1/classRoom")
+@RequestMapping("api/v1/classroom")
 public class ClassRoomController {
     private final ClassRoomService classRoomService;
     private final CoursesService coursesService;
@@ -36,7 +38,7 @@ public class ClassRoomController {
         return  classRoomService.getClassById(Long.valueOf(classRoomID));
     }
 
-    @GetMapping("course/{courseID}")
+    @GetMapping("/course/{courseID}")
     public Course getCourseByID(@PathVariable int courseID) {
         return coursesService.getCourseByID(courseID);
     }
@@ -62,4 +64,16 @@ public class ClassRoomController {
     public int getSchoolIDByClassID(@PathVariable int classID) {
         return  classRoomService.getSchoolIDbyClassID(classID) ;
     }
+
+    @GetMapping("{schoolID}/classrooms")
+    public List<ClassGeneralInformation> getClassRoomsBySchoolID(@PathVariable int schoolID){
+        return classRoomService.getClassRooms(schoolID) ;
+    }
+
+    //Register a list of classRoom
+    @PostMapping("/{schoolID}/registerClassRoom")
+    public ResponseEntity registerClassRoomList(@PathVariable int schoolID, @RequestBody List<ClassRegistrationRequest> requests) {
+        return classRoomService.registerClassRoomList(schoolID,requests);
+    }
+
 }

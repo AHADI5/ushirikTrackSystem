@@ -2,21 +2,17 @@ package com.ushirikeduc.classservice.service;
 
 import Dto.ClassRoomEvent;
 import Dto.StudentEvent;
-import com.ushirikeduc.classservice.dto.ClassInfoResponse;
-import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
-import com.ushirikeduc.classservice.dto.ClassStudentsResponse;
-import com.ushirikeduc.classservice.dto.EnrolledStudentResponse;
+import com.ushirikeduc.classservice.dto.*;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Student;
 import com.ushirikeduc.classservice.model.Teacher;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
 import com.ushirikeduc.classservice.repository.EnrolledStudentRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.errors.ResourceNotFoundException;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +46,25 @@ public class ClassRoomService{
         return savedClassRoom;
     }
 
+
+    //Register a list of classRoom
+
+    public ResponseEntity registerClassRoomList (int schoolID,List<ClassRegistrationRequest> request) {
+//        List<ClassRoom> classRoomList = new ArrayList<>();
+        for (ClassRegistrationRequest registrationRequest : request) {
+            ClassRoom classRoom = ClassRoom.builder()
+                    .name(registrationRequest.name())
+                    .level((long) registrationRequest.level())
+                    .schoolID(schoolID)
+                    .build();
+            classRepository.save(classRoom);
+        }
+
+        return ResponseEntity.ok("Success");
+
+    }
+
+
     private ClassRoomEvent getClassRoomEvent(ClassRoom classRoom) {
         ClassRoomEvent classRoomEvent = new ClassRoomEvent();
         classRoomEvent.setClassesID(classRoom.getClassesID()) ;
@@ -68,6 +83,7 @@ public class ClassRoomService{
         //Get the class by its id
         return classRepository.findById((long) Math.toIntExact(classID));
     }
+
 
     //Add classes to a school
     //Assign the teacher to the class
@@ -161,5 +177,26 @@ public class ClassRoomService{
         ClassRoom classRoom = classRepository.findById((long) classRoomID)
                 .orElseThrow(() -> new RuntimeException("No class Found"));
         return (int) classRoom.getSchoolID();
+    }
+
+    public List<ClassGeneralInformation> getClassRooms(int schoolID) {
+        List<ClassRoom> classRooms = classRepository.getClassRoomBySchoolID(schoolID);
+        List<ClassGeneralInformation> classGeneralInformations = new ArrayList<>();
+        for (ClassRoom classRoom  : classRooms) {
+
+            ClassGeneralInformation classGeneralInformation = new ClassGeneralInformation(
+                    Math.toIntExact(classRoom.getClassesID()),
+                    Math.toIntExact(classRoom.getLevel()),
+                    classRoom.getName(),
+                    classRoom.getStudents().size(),
+                    classRoom.getCourses().size(),
+                    classRoom.getTeacher() == null ? " " : classRoom.getTeacher().getName()
+            );
+
+            classGeneralInformations.add(classGeneralInformation);
+        }
+
+        return classGeneralInformations;
+
     }
 }

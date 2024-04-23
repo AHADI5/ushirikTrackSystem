@@ -27,6 +27,7 @@ public class Users implements UserDetails {
     String password;
     String email;
     int schoolID ;
+    boolean enabled;
     //Roles in the system
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -61,6 +62,7 @@ public class Users implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
     }
+
 }

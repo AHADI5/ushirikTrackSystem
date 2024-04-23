@@ -18,7 +18,7 @@
     <module>base-domains</module>
     <module>sudent-service</module>
 
-    <module>class-service</module>
+    <module>classroom-service</module>
     <module>courses-service</module>
       <module>discipline-service</module>
       <module>user-management-service</module>
