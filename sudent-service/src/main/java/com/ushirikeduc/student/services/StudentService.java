@@ -97,35 +97,37 @@ public record StudentService(
 //    }
 
     private Parent createParent(StudentRegistrationRequest parentRequest) {
-        return Parent.builder()
-                .firstName(parentRequest.parent().getFirstName())
-                .lastName(parentRequest.parent().getLastName())
-                .phone(parentRequest.parent().getPhone())
-                .email(parentRequest.parent().getEmail())
-                .parentID(parentRequest.parent().getParentID())
-                .build();
-    }
 
-    private Student createStudent(StudentRegistrationRequest request, Parent parent) {
         int schoolID ;
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<Integer> response = restTemplate.exchange(
-                "http://localhost:8746/api/v1/classRoom/"+ request.classID() +"/schoolID",
+                "http://localhost:8746/api/v1/classroom/"+ parentRequest.classID() +"/schoolID",
                 HttpMethod.GET,
                 null,
                 Integer.class
         );
+        log.info("School Id .......... ........ ...... is " + response.getBody());
 
         if (response.getStatusCode() == HttpStatus.OK) {
-             schoolID = response.getBody() != null ? response.getBody() : 0;
+            schoolID = response.getBody() != null ? response.getBody() : 0;
         } else {
             // Handle error response
             return null;
         }
 
-        //Setting Parent's child School
-        parent.setSchoolID(schoolID);
+
+        return Parent.builder()
+                .firstName(parentRequest.parent().getFirstName())
+                .lastName(parentRequest.parent().getLastName())
+                .phone(parentRequest.parent().getPhone())
+                .email(parentRequest.parent().getEmail())
+                .schoolID(schoolID)
+                .parentID(parentRequest.parent().getParentID())
+                .build();
+    }
+
+    private Student createStudent(StudentRegistrationRequest request, Parent parent) {
 
         Address address = createAddress(request);
         return Student.builder()
@@ -179,5 +181,13 @@ public record StudentService(
                 student.getFirstName(),
                 student.getClassID()
         );
+    }
+
+    public ResponseEntity<Integer> getStudentNumberByParent(StudentByParentEmailRequest emailAddress) {
+        Parent parent = parentRepository.findByEmail(emailAddress.email())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return ResponseEntity.ok(parent.getStudents().size());
+
     }
 }

@@ -36,7 +36,7 @@ public class ClassRoomService{
     public ClassRoom registerClassRoom(ClassRegistrationRequest Request) {
         //Register a single class
         ClassRoom classRoom = ClassRoom.builder()
-                .name(Request.name())
+                .name(Request.letter())
                 .schoolID(Request.schoolID())
                 .level((long) Request.level())
                 .build();
@@ -53,7 +53,7 @@ public class ClassRoomService{
 //        List<ClassRoom> classRoomList = new ArrayList<>();
         for (ClassRegistrationRequest registrationRequest : request) {
             ClassRoom classRoom = ClassRoom.builder()
-                    .name(registrationRequest.name())
+                    .name(registrationRequest.letter())
                     .level((long) registrationRequest.level())
                     .schoolID(schoolID)
                     .build();

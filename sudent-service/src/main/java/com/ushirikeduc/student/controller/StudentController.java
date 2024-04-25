@@ -78,6 +78,8 @@ public record StudentController(
         return ResponseEntity.ok( studentWithClassInfo);
 
     }
+
+
     public ClassStudentsResponse fetchClassInfoForStudent(int studentID) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -94,6 +96,15 @@ public record StudentController(
             // Handle error response
             return null;
         }
+
+    }
+
+    @PostMapping("parent/studentNumber")
+    public ResponseEntity<Integer>  getStudentNumberByParent(@RequestBody
+                                    StudentByParentEmailRequest emailAddress) {
+        return studentService.getStudentNumberByParent(emailAddress) ;
+
+
 
     }
 

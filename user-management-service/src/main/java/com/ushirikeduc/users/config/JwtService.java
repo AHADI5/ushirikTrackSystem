@@ -46,7 +46,7 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .claim("authorities" , authorityString)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 100 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // one hour for testing
                 .signWith(getSignInkey(), SignatureAlgorithm.HS256)
                 .compact();
     }

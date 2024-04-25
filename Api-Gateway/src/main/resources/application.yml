@@ -66,27 +66,12 @@ spring:
             - Path=/api/v1/student/**
           filters:
             - AuthenticationFilter
-#          metadata:
-#            cors:
-#              allowedOrigins: '*'
-#              allowedMethods:
-#                - GET
-#                - POST
-#              allowedHeaders: '*'
-#              maxAge: 30
+
 
         - id : teacher-service
           uri : lb://TEACHER-SERVICE
           predicates:
             - Path=/api/v1/teacher/**
-#          metadata:
-#            cors:
-#              allowedOrigins: '*'
-#              allowedMethods:
-#                - GET
-#                - POST
-#              allowedHeaders: '*'
-#              maxAge: 30
           filters:
             - AuthenticationFilter
 
