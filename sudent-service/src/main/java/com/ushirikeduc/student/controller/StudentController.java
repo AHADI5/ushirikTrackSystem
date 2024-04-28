@@ -58,8 +58,6 @@ public record StudentController(
             ClassStudentsResponse classInfo = fetchClassInfoForStudent(student.getStudentID());
 
             //Create a StudentResponse object with class informartions
-
-
             assert classInfo != null;
             StudentWithClassResponse studentResponseWithClassInfo = new StudentWithClassResponse(
                     student.getStudentID(),
@@ -84,7 +82,7 @@ public record StudentController(
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<ClassStudentsResponse> response = restTemplate.exchange(
-                "http://localhost:8746/api/v1/classRoom/" + studentID + "/class",
+                "http://localhost:8746/api/v1/classroom/" + studentID + "/class",
                 HttpMethod.GET,
                 null,
                 ClassStudentsResponse.class

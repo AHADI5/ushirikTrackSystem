@@ -22,7 +22,6 @@ public class School {
             generator = "school_id_sequence"
     )
     private  Integer schoolID;
-
     private  String name ;
     private String  email ;
     private  String postalBox;
@@ -41,10 +40,6 @@ public class School {
 
     @JoinColumn(name = "administrator_id")
     private SchoolAdmin administrator;
-
-
-
-
 }
 
 

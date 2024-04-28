@@ -101,5 +101,13 @@ public Director getDirector(int schoolId) {
 }
 
 
+    public School getSchoolByDirectorEmail(String userName) {
+        return schoolRepository.getSchoolByDirector_DirectorEmail(userName);
+    }
 
+    public Integer getSchoolIDByDirectorEmail(String userName) {
+        School school = schoolRepository.getSchoolByDirector_DirectorEmail(userName);
+
+        return  school.getSchoolID();
+    }
 }

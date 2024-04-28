@@ -8,8 +8,11 @@ import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.requests.CommuniqueRegisterRequest;
 import com.ushirikeduc.schools.requests.CommuniqueResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +41,7 @@ public record CommuniqueService (
                 .title(request.title())
                 .content(request.content())
                 .communiqueType(communiqueType)
-                .date(new Date())
+                .dateCreated(new Date())
                 .school(school)
                 .build();
         Communique savedCommunique = communiqueRepository.save(communique);
@@ -46,7 +49,7 @@ public record CommuniqueService (
                 savedCommunique.getTitle(),
                 savedCommunique.getContent(),
                 savedCommunique.getCommuniqueType(),
-                savedCommunique.getDate()
+                savedCommunique.getDateCreated()
         );
     }
 
@@ -62,11 +65,35 @@ public record CommuniqueService (
                     communique.getTitle(),
                     communique.getContent(),
                     communique.getCommuniqueType(),
-                    communique.getDate()
+                    communique.getDateCreated()
             );
             communiqueResponses.add(communiqueResponse);
         }
         return  communiqueResponses;
+
+    }
+
+    public List<CommuniqueResponse> getRecentCommunique(int schoolID) {
+        List<CommuniqueResponse> communiqueResponses = new ArrayList<>();
+//        Pageable topFive = (Pageable) PageRequest.of(0, 5, Sort.by("dateCreated").descending());
+        //FIND THE SCHOOL
+        School school = schoolService.getSchool(schoolID);
+
+        List<Communique> communiques =  communiqueRepository.findTop5BySchoolOrderByDateCreatedDesc( school,PageRequest.of(0, 5));
+        for (Communique communique : communiques) {
+            communiqueResponses.add(getSimpleCommunique(communique));
+        }
+        return  communiqueResponses ;
+    }
+
+    public CommuniqueResponse getSimpleCommunique(Communique communique) {
+
+        return new CommuniqueResponse(
+                communique.getTitle(),
+                communique.getContent(),
+                communique.getCommuniqueType(),
+                communique.getDateCreated()
+        );
 
     }
 }

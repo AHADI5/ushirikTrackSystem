@@ -18,6 +18,7 @@
         <module name="Api-Gateway" />
         <module name="courses-service" />
         <module name="student-max-manamgement" />
+        <module name="notification-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -42,6 +43,7 @@
       <module name="courses-service" options="-parameters" />
       <module name="discipline-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
       <module name="school-service" options="-parameters" />
       <module name="service-register" options="-parameters" />
       <module name="service-registry" options="-parameters" />

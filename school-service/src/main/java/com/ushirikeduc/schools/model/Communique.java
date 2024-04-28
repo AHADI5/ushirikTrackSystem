@@ -26,7 +26,7 @@ public class Communique {
     private long communiqueID ;
     private String title;
     private String content ;
-    private Date date;
+    private Date dateCreated;
 
     private CommuniqueType communiqueType ;
     @ManyToOne

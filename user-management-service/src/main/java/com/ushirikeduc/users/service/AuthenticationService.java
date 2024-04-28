@@ -42,6 +42,9 @@ public record AuthenticationService(
     }
 
     public AuthenticationResponseAdmin registerAdmin(RegisterRequest request, Role role) {
+        //Checking whether the user Exists
+        Optional<Users> existingUser = userRepository.findByEmail(request.getEmail());
+
         Users user = Users.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())

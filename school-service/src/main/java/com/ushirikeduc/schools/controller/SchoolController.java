@@ -91,5 +91,22 @@ public record SchoolController(
         log.info("Admin email received is " + userName);
         return  schoolAdminService.getSchoolByAdminEmail(userName);
     }
+
+    @GetMapping("/director/school")
+    public School getSchoolByDirectorEmail (@RequestHeader String userName) {
+        log.info("Director admin received in school successfully" + userName);
+        return schoolService.getSchoolByDirectorEmail(userName) ;
+    }
+
+    @GetMapping("/director/schoolID")
+    public Integer getSchoolIDByDirectorEmail(@RequestHeader String userName) {
+        log.info("Director admin received in school successfully" + userName);
+        return  schoolService.getSchoolIDByDirectorEmail (userName);
+    }
+
+    @GetMapping("/{schoolID}/recentCommuniques")
+    public List<CommuniqueResponse> getRecentCommuniques(@PathVariable int schoolID){
+        return communiqueService.getRecentCommunique(schoolID);
+    }
 }
 
