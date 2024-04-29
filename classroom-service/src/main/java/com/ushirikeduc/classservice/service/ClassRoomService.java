@@ -2,6 +2,7 @@ package com.ushirikeduc.classservice.service;
 
 import Dto.ClassRoomEvent;
 import Dto.StudentEvent;
+import com.ushirikeduc.classservice.controller.MessageController;
 import com.ushirikeduc.classservice.dto.*;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Student;
@@ -9,10 +10,12 @@ import com.ushirikeduc.classservice.model.Teacher;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
 import com.ushirikeduc.classservice.repository.EnrolledStudentRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,15 +25,19 @@ public class ClassRoomService{
     final ClassRoomRepository classRepository;
 
     final EnrolledStudentRepository enrolledStudentRepository;
+    final MessageController messageController ;
 
 //    final ClassRoomProducer classRoomProducer;
 
     public ClassRoomService(ClassRoomRepository classRepository,
-                            EnrolledStudentRepository enrolledStudentRepository
-                          ) {
+                            EnrolledStudentRepository enrolledStudentRepository,
+                            MessageController messageController
+
+    ) {
         this.classRepository = classRepository;
         this.enrolledStudentRepository = enrolledStudentRepository;
 //        this.classRoomProducer = classRoomProducer;
+        this.messageController = messageController;
     }
 
     public ClassRoom registerClassRoom(ClassRegistrationRequest Request) {
@@ -57,7 +64,10 @@ public class ClassRoomService{
                     .level((long) registrationRequest.level())
                     .schoolID(schoolID)
                     .build();
-            classRepository.save(classRoom);
+           ClassRoom savedClassRoom =  classRepository.save(classRoom);
+            messageController.publishStudent(savedClassRoom);
+
+
         }
 
         return ResponseEntity.ok("Success");
@@ -107,6 +117,7 @@ public class ClassRoomService{
         enrolledStudent.setName(studentEvent.getName());
         enrolledStudent.setGender(studentEvent.getGender());
 //        enrolledStudent.setClassID(studentEvent.getClassID());
+        enrolledStudent.setDateEnrolled(new Date());
         enrolledStudent.setStudentID(studentEvent.getStudentID());
         enrolledStudent.setStudentClass(getClassIfExists(studentEvent.getClassID()));
         enrolledStudentRepository.save(enrolledStudent);
@@ -198,5 +209,9 @@ public class ClassRoomService{
 
         return classGeneralInformations;
 
+    }
+
+    public List<Student> getRecentStudents(int schoolID) {
+        return enrolledStudentRepository.findTopByStudentClassSchoolIDOrderByDateEnrolledDesc(schoolID,PageRequest.of(0,5));
     }
 }

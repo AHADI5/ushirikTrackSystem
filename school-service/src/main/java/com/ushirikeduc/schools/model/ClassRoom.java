@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Communique {
+public class ClassRoom {
     @Id
     @SequenceGenerator(
             name = "rule_id_sequence",
@@ -25,16 +24,25 @@ public class Communique {
             strategy = GenerationType.SEQUENCE,
             generator = "rule_id_sequence"
     )
-    private long communiqueID ;
-    private String title;
-    private String content ;
-    private Date dateCreated;
-//    private List<Integer> reach = new ArrayList<>() ;
+    private long classRoomID ;
+    private  long classID;
+    private String name ;
+    private Long level ;
+    private Long SchoolID ;
 
-    private CommuniqueType communiqueType ;
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
-    @ManyToMany(mappedBy = "communiques")
-    private List<ClassRoom> classrooms = new ArrayList<>();
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "classroom_communique",
+            joinColumns = @JoinColumn(name = "classRoomID"),
+            inverseJoinColumns = @JoinColumn(name = "communiqueID")
+    )
+    private List<Communique> communiques = new ArrayList<>();
+
+
+
 }

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CommuniqueRepository extends JpaRepository<Communique , Integer> {
- public List<Communique> findTop5BySchoolOrderByDateCreatedDesc(School school, PageRequest pageRequest);
+ public List<Communique> findTop1BySchoolOrderByDateCreatedDesc(School school, PageRequest pageRequest);
 }

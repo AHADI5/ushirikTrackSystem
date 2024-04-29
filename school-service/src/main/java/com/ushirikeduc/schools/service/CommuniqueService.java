@@ -1,18 +1,18 @@
 package com.ushirikeduc.schools.service;
 
+import com.ushirikeduc.schools.model.ClassRoom;
 import com.ushirikeduc.schools.model.Communique;
 import com.ushirikeduc.schools.model.CommuniqueType;
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.repository.CommuniqueRepository;
 import com.ushirikeduc.schools.repository.SchoolRepository;
+import com.ushirikeduc.schools.requests.ClassRoomSimpleForm;
 import com.ushirikeduc.schools.requests.CommuniqueRegisterRequest;
 import com.ushirikeduc.schools.requests.CommuniqueResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +21,8 @@ import java.util.List;
 public record CommuniqueService (
         SchoolRepository schoolRepository ,
         CommuniqueRepository communiqueRepository,
-        SchoolService schoolService
+        SchoolService schoolService ,
+        ClassRoomService classRoomService
 ) {
     public CommuniqueResponse registerCommunique(int schoolID,
                                                  CommuniqueRegisterRequest request) {
@@ -37,19 +38,32 @@ public record CommuniqueService (
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
 
+        //List of concerned classRoom an Empty list
+        List<ClassRoom> concernedClassRooms  = new ArrayList<>();
+
+        //make a list of concerned classRooms from the request
+        for (int classRoomID : request.classConcerned()) {
+            ClassRoom classRoom = classRoomService.getClassRoomByID(classRoomID);
+            concernedClassRooms.add(classRoom);
+
+        }
+
         Communique communique = Communique.builder()
                 .title(request.title())
                 .content(request.content())
                 .communiqueType(communiqueType)
                 .dateCreated(new Date())
                 .school(school)
+                .classrooms(concernedClassRooms)
                 .build();
         Communique savedCommunique = communiqueRepository.save(communique);
         return  new CommuniqueResponse(
                 savedCommunique.getTitle(),
                 savedCommunique.getContent(),
                 savedCommunique.getCommuniqueType(),
-                savedCommunique.getDateCreated()
+                savedCommunique.getDateCreated(),
+                getClassRoomSimpleForm(communique.getClassrooms()),
+                savedCommunique.getCommuniqueID()
         );
     }
 
@@ -62,10 +76,7 @@ public record CommuniqueService (
 
         for (Communique communique : communiques)  {
             CommuniqueResponse communiqueResponse = new CommuniqueResponse(
-                    communique.getTitle(),
-                    communique.getContent(),
-                    communique.getCommuniqueType(),
-                    communique.getDateCreated()
+                    communique.getTitle(), communique.getContent(), communique.getCommuniqueType(), communique.getDateCreated(),  getClassRoomSimpleForm(communique.getClassrooms()), communique.getCommuniqueID()
             );
             communiqueResponses.add(communiqueResponse);
         }
@@ -79,7 +90,7 @@ public record CommuniqueService (
         //FIND THE SCHOOL
         School school = schoolService.getSchool(schoolID);
 
-        List<Communique> communiques =  communiqueRepository.findTop5BySchoolOrderByDateCreatedDesc( school,PageRequest.of(0, 5));
+        List<Communique> communiques =  communiqueRepository.findTop1BySchoolOrderByDateCreatedDesc( school,PageRequest.of(0, 1));
         for (Communique communique : communiques) {
             communiqueResponses.add(getSimpleCommunique(communique));
         }
@@ -92,8 +103,25 @@ public record CommuniqueService (
                 communique.getTitle(),
                 communique.getContent(),
                 communique.getCommuniqueType(),
-                communique.getDateCreated()
+                communique.getDateCreated(),
+                getClassRoomSimpleForm(communique.getClassrooms()),
+                communique.getCommuniqueID()
         );
+    }
+
+    public List<ClassRoomSimpleForm> getClassRoomSimpleForm (List<ClassRoom> classRooms) {
+        List<ClassRoomSimpleForm> classRoomSimpleForms = new ArrayList<>();
+        for (ClassRoom classRoom : classRooms) {
+            ClassRoomSimpleForm classRoom1 = new ClassRoomSimpleForm(
+                    classRoom.getLevel(),
+                    classRoom.getName(),
+                    classRoom.getSchoolID()
+
+            );
+            classRoomSimpleForms.add(classRoom1);
+
+        }
+      return  classRoomSimpleForms;
 
     }
 }

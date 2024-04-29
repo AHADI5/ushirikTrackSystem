@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Entity
@@ -28,6 +25,7 @@ public class Student {
     )
     private long idEnroll;
     private long studentID;
+    private Date dateEnrolled;
     private String name ;
     private String gender;
 

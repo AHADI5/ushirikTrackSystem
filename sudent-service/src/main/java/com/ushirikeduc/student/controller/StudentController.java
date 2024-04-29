@@ -101,10 +101,9 @@ public record StudentController(
     public ResponseEntity<Integer>  getStudentNumberByParent(@RequestBody
                                     StudentByParentEmailRequest emailAddress) {
         return studentService.getStudentNumberByParent(emailAddress) ;
-
-
-
     }
+
+
 
 
 }

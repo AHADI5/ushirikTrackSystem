@@ -5,6 +5,7 @@ import com.ushirikeduc.classservice.dto.ClassInfoResponse;
 import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Course;
+import com.ushirikeduc.classservice.model.Student;
 import com.ushirikeduc.classservice.service.ClassRoomService;
 import com.ushirikeduc.classservice.service.CoursesService;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,11 @@ public class ClassRoomController {
     @PostMapping("/{schoolID}/registerClassRoom")
     public ResponseEntity registerClassRoomList(@PathVariable int schoolID, @RequestBody List<ClassRegistrationRequest> requests) {
         return classRoomService.registerClassRoomList(schoolID,requests);
+    }
+
+    @GetMapping("/recentStudents")
+    public List<Student> getRecentStudents(int schoolID) {
+        return classRoomService.getRecentStudents(schoolID) ;
     }
 
 }
