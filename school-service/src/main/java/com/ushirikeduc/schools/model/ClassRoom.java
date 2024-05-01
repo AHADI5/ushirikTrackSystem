@@ -35,8 +35,9 @@ public class ClassRoom {
     private School school;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
+
             name = "classroom_communique",
             joinColumns = @JoinColumn(name = "classRoomID"),
             inverseJoinColumns = @JoinColumn(name = "communiqueID")

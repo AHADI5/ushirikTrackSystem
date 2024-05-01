@@ -37,4 +37,5 @@ public class Communique {
     private School school;
     @ManyToMany(mappedBy = "communiques")
     private List<ClassRoom> classrooms = new ArrayList<>();
+
 }

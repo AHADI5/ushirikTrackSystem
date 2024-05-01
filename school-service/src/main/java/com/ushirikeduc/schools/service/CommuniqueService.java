@@ -10,12 +10,16 @@ import com.ushirikeduc.schools.requests.ClassRoomSimpleForm;
 import com.ushirikeduc.schools.requests.CommuniqueRegisterRequest;
 import com.ushirikeduc.schools.requests.CommuniqueResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 public record CommuniqueService (
@@ -62,7 +66,7 @@ public record CommuniqueService (
                 savedCommunique.getContent(),
                 savedCommunique.getCommuniqueType(),
                 savedCommunique.getDateCreated(),
-                getClassRoomSimpleForm(communique.getClassrooms()),
+                getClassRoomSimpleForm(savedCommunique.getClassrooms()),
                 savedCommunique.getCommuniqueID()
         );
     }
@@ -122,6 +126,43 @@ public record CommuniqueService (
 
         }
       return  classRoomSimpleForms;
+
+    }
+
+    public ResponseEntity<String> deleteCommunique(int communiqueID) {
+        //find communique
+
+        Communique communique = communiqueRepository.findById((int) communiqueID)
+                .orElseThrow(() -> new ResourceNotFoundException("No communique found"));
+        communiqueRepository.deleteById(communiqueID);
+        return ResponseEntity.ok("Deleted");
+    }
+
+    public ResponseEntity<String> updateCommunique(int communiqeID , CommuniqueRegisterRequest updatedCommunique) {
+        Communique communique = communiqueRepository.findById((int) communiqeID)
+                .orElseThrow(() -> new ResourceNotFoundException("no communique found"));
+        communique.setTitle(updatedCommunique.title());
+        communique.setContent(updatedCommunique.content());
+        List <ClassRoom> classRoomList = new ArrayList<>();
+
+        for (int classRoomID : updatedCommunique.classConcerned()) {
+            ClassRoom classRoom = classRoomService.getClassRoomByID(classRoomID);
+            classRoomList.add(classRoom);
+        }
+
+        communique.setClassrooms(classRoomList);
+
+        return ResponseEntity.ok("Modified");
+
+    }
+
+    public  CommuniqueResponse getCommuniqueByID(int communiqueID) {
+        Communique communique = communiqueRepository.findById(communiqueID)
+                .orElseThrow(() -> new ResourceNotFoundException("Communique not found"));
+
+        log.info("these are classRooms from the selected communique : " + communique.getClassrooms().toString());
+
+        return getSimpleCommunique(communique);
 
     }
 }

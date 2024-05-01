@@ -2,10 +2,7 @@ package com.ushirikeduc.schools.controller;
 
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.*;
-import com.ushirikeduc.schools.service.CommuniqueService;
-import com.ushirikeduc.schools.service.EventService;
-import com.ushirikeduc.schools.service.SchoolAdminService;
-import com.ushirikeduc.schools.service.SchoolService;
+import com.ushirikeduc.schools.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +20,9 @@ public record SchoolController(
 
         EventService eventService,
         CommuniqueService communiqueService ,
-        SchoolAdminService schoolAdminService
+        SchoolAdminService schoolAdminService,
+
+        ClassRoomService classRoomService
                              ) {
     @PostMapping("/register-school")
     public SchoolResponse registerSchool(@RequestBody  SchoolRegistrationRequest request , @RequestHeader String userName) {
@@ -108,5 +107,23 @@ public record SchoolController(
     public List<CommuniqueResponse> getRecentCommuniques(@PathVariable int schoolID){
         return communiqueService.getRecentCommunique(schoolID);
     }
+
+    @GetMapping("{communiqueID}/communique")
+    public  CommuniqueResponse getCommuniqueByID(@PathVariable int communiqueID){
+        return  communiqueService.getCommuniqueByID(communiqueID) ;
+    }
+
+    // Update and Delete a communique
+    @DeleteMapping("{communiqueID}/delete-communique")
+    public ResponseEntity<String> deleteCommunique(@PathVariable int communiqueID){
+        return communiqueService.deleteCommunique(communiqueID);
+    }
+    @PutMapping("{communiqueID}/update-communique")
+    public ResponseEntity<String> updateCommunique(@PathVariable int communiqueID ,
+                                                   @RequestBody CommuniqueRegisterRequest request ) {
+        return communiqueService.updateCommunique(communiqueID, request);
+    }
+
+
 }
 

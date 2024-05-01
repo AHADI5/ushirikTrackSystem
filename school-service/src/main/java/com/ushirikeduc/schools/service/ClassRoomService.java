@@ -33,6 +33,6 @@ public record ClassRoomService(
     public ClassRoom getClassRoomByID(int classRoomID) {
         return  classRoomRepository.findById(classRoomID)
                 .orElseThrow(() -> new ResourceNotFoundException("ClassRoom Not found "));
-
     }
+
 }
