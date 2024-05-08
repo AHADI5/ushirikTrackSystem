@@ -3,7 +3,6 @@ package com.ushirikeduc.users.auth;
 import com.ushirikeduc.users.config.JwtService;
 import com.ushirikeduc.users.dtoRequests.*;
 import com.ushirikeduc.users.model.Role;
-import com.ushirikeduc.users.model.Users;
 import com.ushirikeduc.users.service.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -56,21 +55,32 @@ public record AuthenticationController(
     }
 
     @GetMapping("/{schoolID}/users")
-    public List<Users> getUsersBySchoolID (@PathVariable int schoolID) {
+    public List<UserResponse> getUsersBySchoolID (@PathVariable int schoolID) {
         return  authenticationService.getUsersBySchoolID(schoolID);
 
     }
     @GetMapping("/{schoolID}/users/parent")
-    public List<Users> getUserParentBySchoolID (@PathVariable int schoolID) {
+    public List<UserResponse> getUserParentBySchoolID (@PathVariable int schoolID) {
         Role role = Role.PARENT;
         return authenticationService.getUserParentBySchoolID(schoolID ,role );
 
     }
 
     @GetMapping("/{schoolID}/users/teacher")
-    public List<Users> getUserTeachersBySchoolID (@PathVariable int schoolID) {
+    public List<UserResponse> getUserTeachersBySchoolID (@PathVariable int schoolID) {
         Role role = Role.TEACHER;
         return authenticationService.getUserParentBySchoolID(schoolID ,role);
+    }
+
+    @GetMapping("/{schoolID}/recent-users")
+    public List<UserResponse> recentUsers(@PathVariable int schoolID){
+
+        return  authenticationService.getRecentUsers(schoolID);
+    }
+
+    @GetMapping("/{schoolID}/user-created-today")
+    public List<UserResponse> createdToday(@PathVariable int schoolID) {
+        return  authenticationService.getUsersCreatedToday(schoolID);
     }
 
     @PutMapping("/{userName}/enableUser")
@@ -83,5 +93,4 @@ public record AuthenticationController(
         return  authenticationService.disableUser(userName);
 
     }
-
 }

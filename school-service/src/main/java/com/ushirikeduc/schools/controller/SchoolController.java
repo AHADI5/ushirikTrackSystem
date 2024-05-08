@@ -25,8 +25,8 @@ public record SchoolController(
         ClassRoomService classRoomService
                              ) {
     @PostMapping("/register-school")
-    public SchoolResponse registerSchool(@RequestBody  SchoolRegistrationRequest request , @RequestHeader String userName) {
-        log.info(userName);
+    public SchoolResponse registerSchool(@RequestBody  SchoolRegistrationRequest request  /*@RequestHeader String userName*/) {
+
         return schoolService.registerSchool(request);
     }
 
@@ -40,10 +40,10 @@ public record SchoolController(
 //
 //        return classesService.addClassesToSchool(schoolId ,classesList);
 //    }
-    @GetMapping(value = "/{schoolID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getSchoolWithDetails(@PathVariable("schoolID") Integer schoolId) {
-        School school = schoolService.getSchool(schoolId);
-        return ResponseEntity.ok(school);
+    @GetMapping("/{schoolID}")
+    public SchoolResponse getSchoolByID (@PathVariable int schoolID) {
+        return schoolService.loadSchoolByID (schoolID);
+
     }
 
 
@@ -103,6 +103,7 @@ public record SchoolController(
         return  schoolService.getSchoolIDByDirectorEmail (userName);
     }
 
+    //Communique
     @GetMapping("/{schoolID}/recentCommuniques")
     public List<CommuniqueResponse> getRecentCommuniques(@PathVariable int schoolID){
         return communiqueService.getRecentCommunique(schoolID);
@@ -124,6 +125,17 @@ public record SchoolController(
         return communiqueService.updateCommunique(communiqueID, request);
     }
 
+    //Events
+    @PostMapping ("{schoolID}/getEventByStartingDate")
+    public EventResponse getEventByStartingDate (@PathVariable int schoolID ,
+                                                  @RequestBody EventDateRequest date){
+        return  eventService.getEventByStartingDate(schoolID , date.date());
+    }
 
+    @PostMapping ("{schoolID}/getListEventByStartingDate")
+    public List<EventResponse> getListEventByStartingDate (@PathVariable int schoolID ,
+                                                 @RequestBody EventDateRequest date){
+        return  eventService.getEventListByStartingDate(schoolID , date.date());
+    }
 }
 

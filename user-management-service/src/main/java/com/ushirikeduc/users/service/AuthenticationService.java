@@ -2,9 +2,11 @@ package com.ushirikeduc.users.service;
 
 import com.ushirikeduc.users.config.JwtService;
 import com.ushirikeduc.users.dtoRequests.*;
+import com.ushirikeduc.users.model.Operation;
 import com.ushirikeduc.users.model.Role;
 import com.ushirikeduc.users.model.Users;
 import com.ushirikeduc.users.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,16 +14,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
+@Slf4j
 public record AuthenticationService(
         PasswordEncoder passwordEncoder,
         JwtService jwtService,
         AuthenticationManager authenticationManager,
-        UserRepository userRepository
+        UserRepository userRepository ,
+        UserOperationService userOperationService
 ) {
     public void register(RegisterRequest request, Role role) {
         Users user = Users.builder()
@@ -32,6 +36,7 @@ public record AuthenticationService(
                 .schoolID(request.getSchoolID())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
+                .createdAt(new Date())
                 .build();
         userRepository.save(user);
 //        var jwToken = jwtService.generateToken(user);
@@ -102,15 +107,16 @@ public record AuthenticationService(
         return jwtService().isTokenValid(token , user);
     }
 
-    public List<Users> getUsersBySchoolID(int schoolID) {
-        return userRepository.findUsersBySchoolID(schoolID);
+    public List<UserResponse> getUsersBySchoolID(int schoolID) {
+
+        return simpleUserResponse(userRepository.findUsersBySchoolID(schoolID));
     }
 
-    public List<Users> getUserParentBySchoolID(int schoolID, Role role) {
-        return  userRepository.findUsersBySchoolIDAndRole(schoolID , role);
+    public List<UserResponse> getUserParentBySchoolID(int schoolID, Role role) {
+        return  simpleUserResponse(userRepository.findUsersBySchoolIDAndRole(schoolID , role));
     }
-    public List<Users> getUserTeacherBySchoolID(int schoolID, Role role) {
-        return  userRepository.findUsersBySchoolIDAndRole(schoolID , role);
+    public List<UserResponse> getUserTeacherBySchoolID(int schoolID, Role role) {
+        return  simpleUserResponse(userRepository.findUsersBySchoolIDAndRole(schoolID , role));
     }
 
     //Logic to activate or disable a user account
@@ -119,7 +125,10 @@ public record AuthenticationService(
                 .orElseThrow(() -> new ResourceNotFoundException("User not found !!"));
         if (user.isEnabled()) {
             user.setEnabled(false);
+            //Register Operations
+            userOperationService.registerOperation(userName , Operation.DISABLE);
             userRepository.save(user);
+
             return ResponseEntity.ok(user.isEnabled());
         }
 
@@ -136,4 +145,77 @@ public record AuthenticationService(
         }
         return null;
     }
+
+    public List<UserResponse> getRecentUsers(int SchoolID) {
+        /*
+        * This method returns a list of top5 recent users created
+        * */
+
+        return  simpleUserResponse(userRepository.findTop5BySchoolIDOrderByCreatedAtDesc(SchoolID));
+    }
+
+    public List<UserResponse> getUsersCreatedToday(int schoolID) {
+        /*
+         * This function Returns a list of users created today (the present system date)
+         */
+        Date today = new Date(); // Get the current system date without time
+
+        List<Users> usersCreatedToday = new ArrayList<>();
+        List<Users> users = userRepository.findUsersBySchoolID(schoolID);
+
+        for (Users user : users) {
+            // Extract the date part from user's creation date
+            Date userDate = parseDate(String.valueOf(user.getCreatedAt()));
+            if (userDate != null && isSameDay(userDate, today)) {
+                usersCreatedToday.add(user);
+            }
+        }
+        return simpleUserResponse(usersCreatedToday);
+    }
+
+    public Date parseDate(String dateString) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null; // Handle parsing error
+        }
+    }
+
+    public boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public List<UserResponse> simpleUserResponse  (List<Users>  users) {
+        List<UserResponse> responses = new ArrayList<>();
+        for (Users user  : users ) {
+            UserResponse userResponse = new UserResponse(
+                    user.getUserID(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.isEnabled() ,
+                    user.isAccountNonExpired(),
+                    user.isAccountNonLocked(),
+                    user.getRole(),
+                    user.getCreatedAt()
+            );
+            responses.add(userResponse);
+
+
+        }
+
+        return responses;
+
+    }
+
+
+
 }

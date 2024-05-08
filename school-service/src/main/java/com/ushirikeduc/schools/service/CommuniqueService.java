@@ -159,10 +159,7 @@ public record CommuniqueService (
     public  CommuniqueResponse getCommuniqueByID(int communiqueID) {
         Communique communique = communiqueRepository.findById(communiqueID)
                 .orElseThrow(() -> new ResourceNotFoundException("Communique not found"));
-
         log.info("these are classRooms from the selected communique : " + communique.getClassrooms().toString());
-
         return getSimpleCommunique(communique);
-
     }
 }

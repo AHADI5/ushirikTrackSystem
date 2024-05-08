@@ -1,18 +1,16 @@
 package com.ushirikeduc.schools.service;
 
 import com.ushirikeduc.schools.controller.MessageController;
-import com.ushirikeduc.schools.model.SchoolAdmin;
+import com.ushirikeduc.schools.model.*;
 import com.ushirikeduc.schools.repository.AddressRepository;
 import com.ushirikeduc.schools.repository.AdminRepository;
 import com.ushirikeduc.schools.repository.DirectorRepository;
 import com.ushirikeduc.schools.repository.SchoolRepository;
-import com.ushirikeduc.schools.model.Address;
-import com.ushirikeduc.schools.model.Director;
-import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.DirectorResponse;
 import com.ushirikeduc.schools.requests.SchoolAddressRegistration;
 import com.ushirikeduc.schools.requests.SchoolRegistrationRequest;
 import com.ushirikeduc.schools.requests.SchoolResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.aspectj.bridge.Message;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public record SchoolService(SchoolRepository schoolRepository,
                             AddressRepository addressRepository,
                             DirectorRepository directorRepository ,
@@ -56,11 +55,22 @@ public record SchoolService(SchoolRepository schoolRepository,
         //find Admin by email Address
 
         SchoolAdmin schoolAdmin = schoolAdminRepository.findSchoolAdminByEmail(request.adminEmail());
+        SchoolType schoolType = null ;
+        //Manage School type
+        switch (request.schoolType()) {
+            case  "PRIMARY" -> schoolType = SchoolType.PRIMARY;
+            case "SECONDARY" -> schoolType = SchoolType.SECONDARY;
+            case "PRESCOLAIRE" -> schoolType= SchoolType.PRESCLOLAIRE;
+
+        }
+
+
 
 
         School school = School.builder()
                 .name(request.name())
                 .administrator(schoolAdmin)
+                .schoolType(schoolType)
                 .email(request.email())
                 .postalBox(request.postalBox())
                 .address(savedAddress)
@@ -79,6 +89,7 @@ public record SchoolService(SchoolRepository schoolRepository,
                 savedSchool.getName(),
                 savedSchool.getEmail(),
                 school.getSchoolID(),
+                school.getSchoolType(),
                 new DirectorResponse(
                         savedSchool.getDirector().getFirstName() + " " + savedSchool.getDirector().getLastName(),
                         savedSchool.getSchoolID(),
@@ -92,6 +103,23 @@ public record SchoolService(SchoolRepository schoolRepository,
 public School getSchool(int schoolId) {
     return schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException(("School Not found")));
+}
+
+public SchoolResponse loadSchoolByID (int schoolId){
+        School school = getSchool(schoolId);
+
+        return  new SchoolResponse(
+                school.getName(),
+                school.getEmail(),
+                school.getSchoolID(),
+                school.getSchoolType(),
+                new DirectorResponse(
+                        school.getDirector().getFirstName(),
+                        school.getDirector().getSchoolID() ,
+                        school.getDirector().getAddress()
+                ),
+                school.getAddress()
+        );
 }
 
 public Director getDirector(int schoolId) {

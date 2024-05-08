@@ -25,6 +25,7 @@ public class School {
     private  String name ;
     private String  email ;
     private  String postalBox;
+    private SchoolType schoolType;
 
     @OneToOne
     private Address address;
@@ -40,6 +41,7 @@ public class School {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "administrator_id")
     private SchoolAdmin administrator;
+
 
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
     private  List<ClassRoom> classRooms = new ArrayList<>();

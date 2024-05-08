@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -24,9 +26,11 @@ public class SchoolEvent {
             generator = "event_id_sequence"
     )
     private Integer schoolEventId ;
-
     private Date startingDate ;
     private Date endingDate ;
+    private LocalTime openingTime ;
+    private LocalTime closingTime ;
+    private String place ;
     private String title ;
     private String description ;
     @ManyToOne

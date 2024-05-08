@@ -44,6 +44,7 @@ public record SchoolAdminService (
                     school.getName(),
                     school.getEmail(),
                     school.getSchoolID(),
+                    school.getSchoolType(),
                     new DirectorResponse(
                             school.getDirector().getFirstName() + " " + school.getDirector().getLastName(),
                             school.getSchoolID(),

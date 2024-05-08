@@ -15,14 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SchoolAdmin {
     @Id
-    @SequenceGenerator(
-            name = "school_id_sequence",
-            sequenceName = "school_id_sequence"
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "school_id_sequence"
-    )
+    @GeneratedValue
     private  int schoolAdminID ;
     String firstName;
     String lastName;

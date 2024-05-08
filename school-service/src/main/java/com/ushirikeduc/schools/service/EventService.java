@@ -7,10 +7,12 @@ import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.requests.EventRegisterRequest;
 import com.ushirikeduc.schools.requests.EventResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,16 +36,65 @@ public record EventService (
                 .startingDate(startingDate)
                 .school(school)
                 .endingDate(endingDate)
+                .place(request.place())
+                .openingTime(parseTime(request.openingDate()))
+                .closingTime(parseTime(request.closingDate()))
                 .description(request.description())
                 .build();
         SchoolEvent savedSchoolEvent =eventRepository.save(schoolEvent);
         return  new EventResponse(
                 savedSchoolEvent.getTitle(),
                 savedSchoolEvent.getDescription(),
+                savedSchoolEvent.getPlace(),
+                savedSchoolEvent.getOpeningTime(),
+                savedSchoolEvent.getOpeningTime(),
                 savedSchoolEvent.getStartingDate(),
                 savedSchoolEvent.getEndingDate()
         );
 
+    }
+
+    public EventResponse getEventByStartingDate(int schoolID,String  startingDate) {
+
+        School school = service.getSchool(schoolID);
+        Date date = parseDate(startingDate);
+        SchoolEvent event = eventRepository.findSchoolEventBySchoolAndStartingDate(school, date);
+
+        return new EventResponse(
+                event.getTitle(),
+                event.getDescription(),
+                event.getPlace(),
+                event.getOpeningTime(),
+                event.getOpeningTime(),
+                event.getStartingDate(),
+                event.getEndingDate()
+        );
+    }
+
+    public List<EventResponse> getEventListByStartingDate(int schoolID , String startingDate) {
+        School school = service.getSchool(schoolID);
+        Date date = parseDate(startingDate);
+        SchoolEvent event = eventRepository.findSchoolEventBySchoolAndStartingDate(school, date);
+
+        List<SchoolEvent> events = eventRepository.findAllBySchoolAndStartingDate(school , date);
+
+        //Empty list for storing simple events format
+
+        List<EventResponse> eventResponses = new ArrayList<>();
+
+        for (SchoolEvent schoolEvent : events) {
+            EventResponse eventResponse = new EventResponse(
+                    schoolEvent.getTitle(),
+                    schoolEvent.getDescription(),
+                    schoolEvent.getPlace(),
+                    schoolEvent.getOpeningTime(),
+                    schoolEvent.getClosingTime(),
+                    schoolEvent.getStartingDate(),
+                    schoolEvent.getEndingDate()
+            );
+            eventResponses.add(eventResponse);
+        }
+        return  eventResponses;
     }
 
     public List<EventResponse> getSchoolEvents (int schoolID) {
@@ -56,6 +107,9 @@ public record EventService (
             EventResponse eventResponse = new EventResponse(
                     event.getTitle(),
                     event.getDescription(),
+                    event.getPlace(),
+                    event.getOpeningTime(),
+                    event.getOpeningTime(),
                     event.getStartingDate(),
                     event.getEndingDate()
             );
@@ -86,6 +140,9 @@ public record EventService (
             EventResponse upComingEvent = new EventResponse(
                     events.getTitle(),
                     events.getDescription(),
+                    events.getPlace(),
+                    events.getOpeningTime(),
+                    events.getOpeningTime(),
                     events.getStartingDate(),
                     events.getEndingDate()
             );
@@ -103,6 +160,7 @@ public record EventService (
 //    }
 
     public Date  parseDate(String dateString) {
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             return dateFormat.parse(dateString) ;
@@ -110,5 +168,10 @@ public record EventService (
             throw new IllegalStateException("Invalid date format ");
         }
 
+    }
+
+    public LocalTime parseTime(String timeString) {
+
+        return LocalTime.parse(timeString);
     }
 }
