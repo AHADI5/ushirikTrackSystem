@@ -33,9 +33,4 @@ public class Student {
     @JoinColumn(name = "class_id")
     private ClassRoom studentClass;
 
-
-
-
-
-
 }

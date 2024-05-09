@@ -63,7 +63,7 @@ public class KafkaListeners {
         log.info(String.format("Teacher  Event received in school service => %s",teacherEvent.toString()));
         // save the teacher in the database
         Teacher teacher = Teacher.builder()
-                .classID((long) teacherEvent.getClassID())
+//                .classID((long) teacherEvent.getClassID())
                 .teacherID((long) teacherEvent.getTeacherID())
                 .name(teacherEvent.getFirstName() + " " + teacherEvent.getLastName())
                 .build();
@@ -71,7 +71,7 @@ public class KafkaListeners {
         log.info("Class Assigned Successfully" + savedTeacher);
 
         //singing teacher to the selected ClassRoom
-        classRoomService.assignTeacherToClass(savedTeacher);
+//        classRoomService.assignTeacherToClass(savedTeacher);
     }
 
     /***

@@ -5,11 +5,14 @@ import Dto.StudentEvent;
 import com.ushirikeduc.classservice.controller.MessageController;
 import com.ushirikeduc.classservice.dto.*;
 import com.ushirikeduc.classservice.model.ClassRoom;
+import com.ushirikeduc.classservice.model.ClassRoomOption;
 import com.ushirikeduc.classservice.model.Student;
 import com.ushirikeduc.classservice.model.Teacher;
+import com.ushirikeduc.classservice.repository.ClassRoomOptionRepository;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
 import com.ushirikeduc.classservice.repository.EnrolledStudentRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,26 +29,36 @@ public class ClassRoomService{
 
     final EnrolledStudentRepository enrolledStudentRepository;
     final MessageController messageController ;
+    final ClassRoomOptionRepository classRoomOptionRepository;
 
 //    final ClassRoomProducer classRoomProducer;
 
     public ClassRoomService(ClassRoomRepository classRepository,
                             EnrolledStudentRepository enrolledStudentRepository,
-                            MessageController messageController
+                            MessageController messageController,
+                            ClassRoomOptionRepository classRoomOptionRepository
 
     ) {
         this.classRepository = classRepository;
         this.enrolledStudentRepository = enrolledStudentRepository;
 //        this.classRoomProducer = classRoomProducer;
         this.messageController = messageController;
+        this.classRoomOptionRepository = classRoomOptionRepository;
+
     }
 
+
+
     public ClassRoom registerClassRoom(ClassRegistrationRequest Request) {
+        //Getting ClassRoomOption
+        ClassRoomOption classRoomOption = classRoomOptionRepository.findById((int) Request.ClassRoomOptionID())
+                .orElseThrow(() -> new ResourceNotFoundException("ClassRoom Option Not found"));
         //Register a single class
         ClassRoom classRoom = ClassRoom.builder()
                 .name(Request.letter())
                 .schoolID(Request.schoolID())
                 .level((long) Request.level())
+                .classRoomOption(classRoomOption)
                 .build();
         ClassRoom savedClassRoom =classRepository.save(classRoom) ;
         ClassRoomEvent classRoomEvent = getClassRoomEvent(classRoom);
@@ -89,25 +102,25 @@ public class ClassRoomService{
         return  classRepository.findAll();
     }
 
-    public Optional<ClassRoom> getClassById(Long classID ) {
+    public ClassRoom getClassById(Long classID ) {
         //Get the class by its id
-        return classRepository.findById((long) Math.toIntExact(classID));
+        return classRepository.findById((long) Math.toIntExact(classID)).orElseThrow(() -> new ResourceNotFoundException("Np classroom found"));
     }
 
 
     //Add classes to a school
     //Assign the teacher to the class
-    public void assignTeacherToClass(Teacher teacher) {
-        Optional<ClassRoom> classes = getClassById(teacher.getClassID());
-        classes.ifPresent(
-                c -> {
-                    c.assignTeacher(teacher);
-                    classRepository.save(c);
-                    //todo Send teacher update
-                }
-        );
-
-    }
+//    public void assignTeacherToClass(Teacher teacher) {
+//        Optional<ClassRoom> classes = getClassById(teacher.getClassID());
+//        classes.ifPresent(
+//                c -> {
+//                    c.assignTeacher(teacher);
+//                    classRepository.save(c);
+//                    //todo Send teacher update
+//                }
+//        );
+//
+//    }
 
     //Adding Student to a class
     public ResponseEntity<Student> createStudent(StudentEvent studentEvent) {
@@ -149,9 +162,10 @@ public class ClassRoomService{
 
     public ClassStudentsResponse createSimpleClassList(Student student) {
         return new  ClassStudentsResponse(
-                student.getStudentClass().getTeacher(),
+//                student.getStudentClass().getTeacher(),
                 student.getStudentClass().getName() ,
                 Math.toIntExact(student.getStudentClass().getLevel()),
+                student.getStudentClass().getClassRoomOption().getOptionName(),
                 student.getStudentClass().getStudents().stream()
                         .map(this::createSimpleStudent)
                         .toList()
@@ -178,7 +192,8 @@ public class ClassRoomService{
                 classRoom.getName(),
                 Math.toIntExact(classRoom.getLevel()),
                 classRoom.getName(),//make a call to school microservice to get School name.
-                (int) classRoom.getSchoolID()
+                (int) classRoom.getSchoolID(),
+                classRoom.getClassRoomOption().getOptionName()
 
         );
 
@@ -201,7 +216,8 @@ public class ClassRoomService{
                     classRoom.getName(),
                     classRoom.getStudents().size(),
                     classRoom.getCourses().size(),
-                    classRoom.getTeacher() == null ? " " : classRoom.getTeacher().getName()
+                    classRoom.getClassRoomOption().getOptionName()
+//                    classRoom.getTeacher() == null ? " " : classRoom.getTeacher().getName()
             );
 
             classGeneralInformations.add(classGeneralInformation);

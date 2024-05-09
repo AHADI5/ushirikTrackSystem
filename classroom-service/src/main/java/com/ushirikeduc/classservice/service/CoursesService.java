@@ -1,14 +1,19 @@
 package com.ushirikeduc.classservice.service;
 
 import Dto.CourseEvent;
+import com.ushirikeduc.classservice.dto.AssignCoursesRequest;
+import com.ushirikeduc.classservice.dto.CoursesAssigned;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Course;
+import com.ushirikeduc.classservice.model.Teacher;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
 import com.ushirikeduc.classservice.repository.CourseRepository;
+import com.ushirikeduc.classservice.repository.TeacherRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,7 +21,11 @@ import java.util.List;
 public record CoursesService (
         ClassRoomService classRoomService,
         ClassRoomRepository classRoomRepository,
-        CourseRepository courseRepository
+        CourseRepository courseRepository  ,
+        TeacherService teacherService,
+        TeacherRepository teacherRepository
+
+
 ) {
 
     public void registerCourse(CourseEvent courseEvent) {
@@ -55,5 +64,21 @@ public record CoursesService (
                 .findFirst().orElseThrow(() -> new ResourceNotFoundException("Course Not found"));
 
     }
+    public CoursesAssigned assignCourseToTeacher( AssignCoursesRequest request) {
 
+//        ClassRoom classRoom = classRoomService.getClassIfExists(classID);
+        Teacher teacher = teacherService.getTeacherByID(request.teacherID());
+        List<Course> courses = new ArrayList<>();
+        for (int ID : request.courseIDs()) {
+            Course course = courseRepository.findById(ID)
+                    .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+            courses.add(course);
+        }
+        teacher.setCourses(courses);
+        Teacher updatedTeacher  = teacherRepository.save(teacher);
+        return new CoursesAssigned(
+                updatedTeacher.getName(),
+                updatedTeacher.getCourses()
+        );
+    }
 }

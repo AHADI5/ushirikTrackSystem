@@ -29,6 +29,8 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "classroom_id")
     private ClassRoom classRoom;
-
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
 }

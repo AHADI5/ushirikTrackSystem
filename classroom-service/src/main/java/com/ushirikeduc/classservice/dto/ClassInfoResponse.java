@@ -12,4 +12,5 @@ public class ClassInfoResponse  {
     int level;
     String schoolName;
     int schoolID;
+    String optionName ;
 }

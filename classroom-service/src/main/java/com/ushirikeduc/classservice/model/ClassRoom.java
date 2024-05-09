@@ -27,9 +27,14 @@ public class ClassRoom {
     private long classesID;
     private String name ;
     private Long level ;
-    @OneToOne
-    private Teacher teacher;
+//    @OneToOne
+//    private Teacher teacher;
     private long schoolID ;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "classroom_id")
+    private ClassRoomOption classRoomOption;
 
     @JsonIgnore
     @OneToMany(mappedBy = "studentClass", cascade = CascadeType.ALL)
@@ -40,7 +45,7 @@ public class ClassRoom {
     private List<Course> courses = new ArrayList<>();
 
     //Assign Class to teacher
-    public  void assignTeacher(Teacher teacher) {
-        this.setTeacher(teacher);
-    }
+//    public  void assignTeacher(Teacher teacher) {
+//        this.setTeacher(teacher);
+//    }
 }

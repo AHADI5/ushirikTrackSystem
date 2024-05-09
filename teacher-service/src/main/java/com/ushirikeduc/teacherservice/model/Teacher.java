@@ -23,11 +23,11 @@ public class Teacher {
             generator = "teacher_id_sequence"
     )
     private Long id;
-    private int classID;
     private int schoolID ;
     private String firstName;
     private String lastName ;
     private String email ;
+    private String phone;
     @OneToOne
     private Address address;
 

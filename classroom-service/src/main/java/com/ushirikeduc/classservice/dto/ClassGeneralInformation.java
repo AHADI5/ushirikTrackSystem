@@ -6,8 +6,10 @@ public record ClassGeneralInformation(
         String letter ,
         int studentNumber,
 
-        int courseNumber  ,
-        String teacherName
+        int courseNumber ,
+
+        String optionName
+//        String teacherName
 
 ) {
 }

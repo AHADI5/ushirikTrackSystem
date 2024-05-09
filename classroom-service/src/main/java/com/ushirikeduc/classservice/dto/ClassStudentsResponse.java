@@ -5,9 +5,10 @@ import com.ushirikeduc.classservice.model.Teacher;
 import java.util.List;
 
 public record ClassStudentsResponse(
-        Teacher teacher,
+//        Teacher teacher,
         String className,
         int level,
+        String classRoomOptionName ,
         List<EnrolledStudentResponse> students
 
 ) {

@@ -11,6 +11,7 @@ public class ClassRoomEvent {
     private long classesID;
     private String name ;
     private Long level ;
+    private String classOption ;
     private Long SchoolID ;
-    private String teacherName ;
+
 }

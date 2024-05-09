@@ -7,7 +7,7 @@ public record TeacherRegistrationRequest(
          String lastName ,
          String firstName ,
          String email,
-         int classID ,
+         int schoolID ,
          Address address
 
 ) {

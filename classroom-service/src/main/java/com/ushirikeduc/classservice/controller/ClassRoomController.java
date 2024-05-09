@@ -1,11 +1,11 @@
 package com.ushirikeduc.classservice.controller;
 
-import com.ushirikeduc.classservice.dto.ClassGeneralInformation;
-import com.ushirikeduc.classservice.dto.ClassInfoResponse;
-import com.ushirikeduc.classservice.dto.ClassRegistrationRequest;
+import com.ushirikeduc.classservice.dto.*;
 import com.ushirikeduc.classservice.model.ClassRoom;
+import com.ushirikeduc.classservice.model.ClassRoomOption;
 import com.ushirikeduc.classservice.model.Course;
 import com.ushirikeduc.classservice.model.Student;
+import com.ushirikeduc.classservice.service.ClassRoomOptionService;
 import com.ushirikeduc.classservice.service.ClassRoomService;
 import com.ushirikeduc.classservice.service.CoursesService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +21,13 @@ import java.util.Optional;
 public class ClassRoomController {
     private final ClassRoomService classRoomService;
     private final CoursesService coursesService;
+    private  final ClassRoomOptionService classRoomOptionService;
 
-    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService) {
+    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService, ClassRoomService classRoomOptionService, ClassRoomOptionService classRoomOptionService1) {
         this.classRoomService = classRoomService;
         this.coursesService = coursesService;
 
+        this.classRoomOptionService = classRoomOptionService1;
     }
 
     @PostMapping("/newClassRoom")
@@ -35,7 +37,7 @@ public class ClassRoomController {
     }
 
     @GetMapping("/{classRoomID}")
-    public Optional<ClassRoom> getClassRoomById(@PathVariable Integer classRoomID) {
+    public ClassRoom getClassRoomById(@PathVariable Integer classRoomID) {
         return  classRoomService.getClassById(Long.valueOf(classRoomID));
     }
 
@@ -80,6 +82,18 @@ public class ClassRoomController {
     @GetMapping("/recentStudents")
     public List<Student> getRecentStudents(int schoolID) {
         return classRoomService.getRecentStudents(schoolID) ;
+    }
+
+    @PostMapping("/courses/assign-course")
+    public CoursesAssigned assignCourseToTeachers ( AssignCoursesRequest request){
+        return  coursesService.assignCourseToTeacher( request);
+    }
+
+    @PostMapping("/{schoolID}/new-classRoomOption")
+    public  ResponseEntity<ClassRoomOption> registerNewClassRoomOption (@PathVariable int schoolID, ClassRoomOptionRequest request) {
+
+        return classRoomOptionService.createClassRoomOption(schoolID,request);
+
     }
 
 }

@@ -23,7 +23,6 @@ public record MessageController(KafkaTemplate<String , TeacherEvent> kafkaTempla
         teacherEvent.setLastName(savedTeacher.getLastName());
         teacherEvent.setEmail(savedTeacher.getEmail());
         teacherEvent.setTeacherID(Math.toIntExact(savedTeacher.getId()));
-        teacherEvent.setClassID(savedTeacher.getClassID());
         teacherEvent.setSchoolID(savedTeacher.getSchoolID());
         //Set the teacher-event  password
         teacherEvent.setPassword(password);

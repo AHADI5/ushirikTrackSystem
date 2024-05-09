@@ -28,27 +28,27 @@ public record TeacherService(TeacherRepository teacherRepository,
     public Teacher saveTeacher(TeacherRegistrationRequest request) {
         Address address = request.address();
 
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<Integer> response = restTemplate.exchange(
-                "http://localhost:8746/api/v1/classroom/"+ request.classID() +"/schoolID",
-                HttpMethod.GET,
-                null,
-                Integer.class
-        );
-        log.info("School Id .......... ........ ...... is " + response.getBody());
-        int schoolID = response.getBody() == null ? 0 : response.getBody() ;
-        log.info("again " + schoolID);
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        ResponseEntity<Integer> response = restTemplate.exchange(
+//                "http://localhost:8746/api/v1/classroom/"+ request.classID() +"/schoolID",
+//                HttpMethod.GET,
+//                null,
+//                Integer.class
+//        );
+//        log.info("School Id .......... ........ ...... is " + response.getBody());
+//        int schoolID = response.getBody() == null ? 0 : response.getBody() ;
+//        log.info("again " + schoolID);
 
 
         addressRepository.save(address);
         Teacher teacher = Teacher.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
-                .classID(request.classID())
+//                .classID(request.classID())
                 .address(address)
                 .email(request.email())
-                .schoolID(schoolID)
+                .schoolID(request.schoolID())
                 .build();
 
         Teacher savedTeacher = teacherRepository.save(teacher);
@@ -70,7 +70,8 @@ public record TeacherService(TeacherRepository teacherRepository,
         teacher.setEmail(request.email());
         teacher.setFirstName(request.firstName());
         teacher.setLastName(request.lastName());
-        teacher.setClassID(request.classID());
+
+//        teacher.setClassID(request.classID());
 
         Teacher newTeacher  = teacherRepository.save(teacher);
         messageController.publish(newTeacher);
