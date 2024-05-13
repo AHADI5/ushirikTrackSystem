@@ -3,6 +3,7 @@ package com.ushirikeduc.schools.service;
 import com.ushirikeduc.schools.model.*;
 import com.ushirikeduc.schools.repository.CommuniqueRepository;
 import com.ushirikeduc.schools.repository.CommuniqueTypeRepository;
+import com.ushirikeduc.schools.repository.RecipientRepository;
 import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.requests.ClassRoomSimpleForm;
 import com.ushirikeduc.schools.requests.CommuniqueRegisterRequest;
@@ -25,35 +26,34 @@ public record CommuniqueService (
         CommuniqueRepository communiqueRepository,
         SchoolService schoolService ,
         ClassRoomService classRoomService ,
-        CommuniqueTypeRepository communiqueTypeRepository
+        CommuniqueTypeRepository communiqueTypeRepository ,
+        RecipientRepository recipientRepository
 
 ) {
     public CommuniqueResponse registerCommunique(int schoolID,
                                                  CommuniqueRegisterRequest request) {
-//        CommuniqueType communiqueType = null ;
+        CommuniqueRecipientType communiqueRecipientTypeType = null ;
 
-//        switch (request.type()) {
-//            case  "Meeting" -> communiqueType = CommuniqueType.MEETING;
-//            case "Incident" -> communiqueType = CommuniqueType.INCIDENT;
-//            case "Event" -> communiqueType = CommuniqueType.EVENT;
-//            case "Convocation" -> communiqueType = CommuniqueType.CONVOCATION;
-//        }
+        switch (request.recipientType()) {
+            case  "ALL" -> communiqueRecipientTypeType = CommuniqueRecipientType.ALL;
+            case "LEVELS" -> communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_LEVELS;
+            case "INDIVIDUAL" -> communiqueRecipientTypeType = CommuniqueRecipientType.INDIVIDUAL_PARENTS;
+            case "SECTION" ->communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_SECTION;
+        }
 
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
         CommunicationType communicationType = communiqueTypeRepository.findById(request.typeID())
                 .orElseThrow( () -> new ResourceNotFoundException("Communication type not found"));
 
-        //Recipient Management
-        List<String> ConcernedParentIDs  = new ArrayList<>();
 
-
+        assert communiqueRecipientTypeType != null;
         Communique communique = Communique.builder()
                 .title(request.title())
                 .content(request.content())
                 .dateCreated(new Date())
                 .school(school)
-                .recipientIDs()
+                .recipientIDs(getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , request.recipientIDs())))
                 .type(communicationType)
                 .build();
         Communique savedCommunique = communiqueRepository.save(communique);
@@ -154,7 +154,7 @@ public record CommuniqueService (
 
         switch (recipientType) {
             case ALL:
-                String allEndpoint = baseUrl + "/student";
+                String allEndpoint = baseUrl + "/student/AllParentEmail";
                 ResponseEntity<String[]> allResponse = restTemplate.exchange(allEndpoint, HttpMethod.GET, null, String[].class);
                 parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(allResponse.getBody())));
                 break;
@@ -183,4 +183,20 @@ public record CommuniqueService (
 
         return parentsEmail;
     }
+
+    public List<Recepient> getListRecipient (List<String>  emails )  {
+        List<Recepient> recipients = new ArrayList<>();
+        for (String email: emails) {
+            Recepient recepient = Recepient
+                    .builder()
+                    .recipient(email)
+                    .build();
+            Recepient savedRecipient  = recipientRepository.save(recepient);
+            recipients.add(savedRecipient);
+
+        }
+
+        return recipients;
+    }
+
 }

@@ -113,8 +113,9 @@ public record StudentController(
         return studentService.getParentEMailByStudentIDs(studentIDs);
     }
 
-
-
-
+    @PostMapping("/student/AllParentEmail")
+    public  List<String> getAllParentEmail () {
+        return studentService.getAllParentEmails() ;
+    }
 
 }

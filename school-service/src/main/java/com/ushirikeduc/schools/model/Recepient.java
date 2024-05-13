@@ -25,7 +25,7 @@ public class Recepient {
             generator = "rule_id_sequence"
     )
     private  long recipientID ;
-    private  long recipient ;
+    private  String recipient ;
     @ManyToMany(mappedBy = "recipientIDs")
     private List<Communique> communiques = new ArrayList<>();
 

@@ -204,6 +204,17 @@ public record StudentService(
 
     }
 
+    public List<String> getAllParentEmails() {
+        List<String>  emails = new ArrayList<>();
+        List<Parent> parents = parentRepository.findAll();
+
+        for (Parent parent : parents) {
+            emails.add(parent.getEmail());
+        }
+
+        return emails ;
+    }
+
 
 //    public ResponseEntity<List<String>> getParentsByChildrenLevel(int classRoomLevel) {
 //
