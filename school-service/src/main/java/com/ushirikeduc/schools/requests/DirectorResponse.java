@@ -4,7 +4,7 @@ import com.ushirikeduc.schools.model.Address;
 
 public record DirectorResponse(
         String name ,
-        int schoolID ,
+        long schoolID ,
         Address address
 ) {
 }

@@ -8,7 +8,7 @@ public record SchoolResponse (
         String name  ,
         String email ,
 
-        int schoolID ,
+        long schoolID ,
         SchoolType schoolType,
         DirectorResponse director ,
         Address address

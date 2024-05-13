@@ -79,8 +79,8 @@ public record SchoolService(SchoolRepository schoolRepository,
         School savedSchool = schoolRepository.save(school);
 
         //Getting schoolID
-        int schoolID = savedSchool.getSchoolID();
-        savedDirector.setSchoolID(schoolID);
+        long schoolID = savedSchool.getSchoolID();
+        savedDirector.setSchoolID((int) schoolID);
         directorRepository.save(savedDirector);
         //Creating director account
         messageController.publishDirector(savedDirector);
@@ -100,7 +100,7 @@ public record SchoolService(SchoolRepository schoolRepository,
 
     }
 
-public School getSchool(int schoolId) {
+public School getSchool(long schoolId) {
     return schoolRepository.findById(schoolId)
                 .orElseThrow(() -> new ResourceNotFoundException(("School Not found")));
 }
@@ -122,7 +122,7 @@ public SchoolResponse loadSchoolByID (int schoolId){
         );
 }
 
-public Director getDirector(int schoolId) {
+public Director getDirector(long schoolId) {
         Optional<School> schoolOptional = schoolRepository.findById(schoolId);
         School school = schoolOptional.get();
     return school.getDirector();
@@ -136,6 +136,6 @@ public Director getDirector(int schoolId) {
     public Integer getSchoolIDByDirectorEmail(String userName) {
         School school = schoolRepository.getSchoolByDirector_DirectorEmail(userName);
 
-        return  school.getSchoolID();
+        return Math.toIntExact(school.getSchoolID());
     }
 }

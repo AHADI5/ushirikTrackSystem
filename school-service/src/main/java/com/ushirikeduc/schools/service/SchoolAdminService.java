@@ -5,6 +5,7 @@ import com.ushirikeduc.schools.model.SchoolAdmin;
 import com.ushirikeduc.schools.repository.AdminRepository;
 import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.requests.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public record SchoolAdminService (
         SchoolRepository schoolRepository,
         AdminRepository adminRepository
@@ -24,7 +26,9 @@ public record SchoolAdminService (
                 .password(request.password())
                 .build();
         SchoolAdmin savedSchoolAdmin = adminRepository.save(schoolAdmin);
+
         RestTemplate restTemplate = new RestTemplate();
+        log.info("Admin is " + savedSchoolAdmin.toString());
 
         //Post to UserManagement Service
 

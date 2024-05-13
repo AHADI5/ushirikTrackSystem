@@ -21,7 +21,7 @@ public class School {
             strategy = GenerationType.SEQUENCE,
             generator = "school_id_sequence"
     )
-    private  Integer schoolID;
+    private  long schoolID;
     private  String name ;
     private String  email ;
     private  String postalBox;

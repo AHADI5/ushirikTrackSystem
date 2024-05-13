@@ -18,7 +18,7 @@ public record CommuniqueTypeService (
         SchoolService schoolService
 ) {
 
-    public  ResponseEntity<CommunicationType> createCommunicationType (long schoolID, CommuniqueTypeRequest communicationType){
+    public  ResponseEntity<CommuniqueTypeRequest> createCommunicationType (long schoolID, CommuniqueTypeRequest communicationType){
         School school = schoolService.getSchool((int) schoolID);
         List<FieldsProperty> fieldsPropertyList = new ArrayList<>();
 
@@ -41,7 +41,11 @@ public record CommuniqueTypeService (
 
         CommunicationType savedCommunicationType = communiqueTypeRepository.save(communicationType1);
 
-        return new ResponseEntity<>(savedCommunicationType, HttpStatus.CREATED);
+
+        return new ResponseEntity<>(new CommuniqueTypeRequest(
+                savedCommunicationType.getName(),
+                savedCommunicationType.getFieldsProperties()
+        ), HttpStatus.CREATED);
 
     }
 

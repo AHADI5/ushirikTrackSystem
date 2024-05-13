@@ -1,10 +1,7 @@
 package com.ushirikeduc.schools.service;
 
 import com.ushirikeduc.schools.model.*;
-import com.ushirikeduc.schools.repository.CommuniqueRepository;
-import com.ushirikeduc.schools.repository.CommuniqueTypeRepository;
-import com.ushirikeduc.schools.repository.RecipientRepository;
-import com.ushirikeduc.schools.repository.SchoolRepository;
+import com.ushirikeduc.schools.repository.*;
 import com.ushirikeduc.schools.requests.ClassRoomSimpleForm;
 import com.ushirikeduc.schools.requests.CommuniqueRegisterRequest;
 import com.ushirikeduc.schools.requests.CommuniqueResponse;
@@ -27,34 +24,43 @@ public record CommuniqueService (
         SchoolService schoolService ,
         ClassRoomService classRoomService ,
         CommuniqueTypeRepository communiqueTypeRepository ,
-        RecipientRepository recipientRepository
+        RecipientRepository recipientRepository ,
+        FieldsPropertyRepository fieldsPropertyRepository
 
 ) {
     public CommuniqueResponse registerCommunique(int schoolID,
                                                  CommuniqueRegisterRequest request) {
-        CommuniqueRecipientType communiqueRecipientTypeType = null ;
-
-        switch (request.recipientType()) {
-            case  "ALL" -> communiqueRecipientTypeType = CommuniqueRecipientType.ALL;
-            case "LEVELS" -> communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_LEVELS;
-            case "INDIVIDUAL" -> communiqueRecipientTypeType = CommuniqueRecipientType.INDIVIDUAL_PARENTS;
-            case "SECTION" ->communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_SECTION;
-        }
+        CommuniqueRecipientType communiqueRecipientTypeType = getRecipientType(request);
 
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
         CommunicationType communicationType = communiqueTypeRepository.findById(request.typeID())
                 .orElseThrow( () -> new ResourceNotFoundException("Communication type not found"));
 
+        //Handling values
 
+
+        for( FieldsProperty fieldsProperty : communicationType.getFieldsProperties() ) {
+            Long fieldsPropertyID = fieldsProperty.getPropertyID();
+            log.info(fieldsPropertyID.toString());
+
+
+
+
+        }
+        //Update communique type
+//        CommunicationType savedTypeCommunication = communiqueTypeRepository.save(communicationType);
         assert communiqueRecipientTypeType != null;
+        List<Recepient> recipients = getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , request.recipientIDs()));
+        log.info("Recepients" + recipients);
+
         Communique communique = Communique.builder()
                 .title(request.title())
                 .content(request.content())
                 .dateCreated(new Date())
                 .school(school)
-                .recipientIDs(getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , request.recipientIDs())))
-                .type(communicationType)
+                .recipientIDs(recipients)
+
                 .build();
         Communique savedCommunique = communiqueRepository.save(communique);
         return  new CommuniqueResponse(
@@ -63,6 +69,18 @@ public record CommuniqueService (
                 savedCommunique.getDateCreated(),
                 savedCommunique.getCommuniqueID()
         );
+    }
+
+    private static CommuniqueRecipientType getRecipientType(CommuniqueRegisterRequest request) {
+        CommuniqueRecipientType communiqueRecipientTypeType = null ;
+
+        switch (request.recipientType()) {
+            case  "ALL" -> communiqueRecipientTypeType = CommuniqueRecipientType.ALL;
+            case "LEVELS" -> communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_LEVELS;
+            case "INDIVIDUAL" -> communiqueRecipientTypeType = CommuniqueRecipientType.INDIVIDUAL_PARENTS;
+            case "SECTION" ->communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_SECTION;
+        }
+        return communiqueRecipientTypeType;
     }
 
     public List<CommuniqueResponse> getAllCommuniqueBySchoolID(int schoolID) {

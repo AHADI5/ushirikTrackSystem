@@ -1,6 +1,5 @@
 package com.ushirikeduc.schools.controller;
 
-import com.ushirikeduc.schools.model.CommunicationType;
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.*;
 import com.ushirikeduc.schools.service.*;
@@ -49,7 +48,7 @@ public record SchoolController(
 
 
     @PostMapping("{schoolID}/newCommuniqueType")
-    public ResponseEntity<CommunicationType> createNewCommuniqueType (@RequestBody CommuniqueTypeRequest communicationType, @PathVariable long schoolID) {
+    public ResponseEntity<CommuniqueTypeRequest> createNewCommuniqueType (@RequestBody CommuniqueTypeRequest communicationType, @PathVariable long schoolID) {
        return communiqueTypeService.createCommunicationType( schoolID, communicationType );
     }
 

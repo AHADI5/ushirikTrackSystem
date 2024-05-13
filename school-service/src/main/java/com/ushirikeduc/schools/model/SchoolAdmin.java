@@ -15,12 +15,19 @@ import java.util.List;
 @AllArgsConstructor
 public class SchoolAdmin {
     @Id
-    @GeneratedValue
-    private  int schoolAdminID ;
-    String firstName;
-    String lastName;
-    String password;
-    String email;
+    @SequenceGenerator(
+            name = "school_id_sequence",
+            sequenceName = "admin_id_sequence"
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "admin_id_sequence"
+    )
+    private  long schoolAdminID ;
+    private String firstName;
+    private String lastName;
+    private String password;
+    private String email;
     @OneToMany(mappedBy = "administrator", cascade = CascadeType.ALL)
     private List<School> schools;
 
