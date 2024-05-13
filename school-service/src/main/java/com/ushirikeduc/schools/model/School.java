@@ -41,10 +41,12 @@ public class School {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "administrator_id")
     private SchoolAdmin administrator;
-
-
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
     private  List<ClassRoom> classRooms = new ArrayList<>();
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
+    private  List<CommunicationType> communicationsType = new ArrayList<>();
+
+
 }
 
 

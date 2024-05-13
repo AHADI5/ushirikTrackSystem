@@ -75,7 +75,7 @@ public class ClassRoomController {
 
     //Register a list of classRoom
     @PostMapping("/{schoolID}/registerClassRoom")
-    public ResponseEntity registerClassRoomList(@PathVariable int schoolID, @RequestBody List<ClassRegistrationRequest> requests) {
+    public ResponseEntity<List<ClassInfoResponse>> registerClassRoomList(@PathVariable int schoolID, @RequestBody List<ClassRegistrationRequest> requests) {
         return classRoomService.registerClassRoomList(schoolID,requests);
     }
 
@@ -85,15 +85,32 @@ public class ClassRoomController {
     }
 
     @PostMapping("/courses/assign-course")
-    public CoursesAssigned assignCourseToTeachers ( AssignCoursesRequest request){
+    public CoursesAssigned assignCourseToTeachers (@RequestBody AssignCoursesRequest request){
         return  coursesService.assignCourseToTeacher( request);
     }
 
     @PostMapping("/{schoolID}/new-classRoomOption")
-    public  ResponseEntity<ClassRoomOption> registerNewClassRoomOption (@PathVariable int schoolID, ClassRoomOptionRequest request) {
+    public  ResponseEntity<ClassRoomOption> registerNewClassRoomOption (@PathVariable int schoolID,@RequestBody ClassRoomOptionRequest request) {
 
         return classRoomOptionService.createClassRoomOption(schoolID,request);
 
     }
+
+    @GetMapping("/{schoolID}/get-section")
+    public ResponseEntity<List<ClassRoomOptionResponse>> getAllClassOptionsByClassRoom(@PathVariable int schoolID ){
+        return  classRoomOptionService.getAllClassSection(schoolID);
+    }
+
+    @PostMapping("/studentLevel/parentEmail")
+    public List<String> getParentEmailByStudentLevel(@RequestBody List<Long> levels) {
+        return classRoomService.getParentEmailByStudentLevel(levels) ;
+    }
+
+    @PostMapping("/studentSection/parentEmail")
+    public List<String> getParentEmailByStudentSection(@RequestBody List<Long> sectionID) {
+        return classRoomService.getParentEmailBySection(sectionID) ;
+    }
+
+
 
 }

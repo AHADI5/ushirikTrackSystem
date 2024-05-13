@@ -28,6 +28,7 @@ public class Student {
     private Date dateEnrolled;
     private String name ;
     private String gender;
+    private String parentEmail ;
 
     @ManyToOne
     @JoinColumn(name = "class_id")

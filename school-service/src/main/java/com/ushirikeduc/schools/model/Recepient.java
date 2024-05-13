@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassRoom {
+public class Recepient {
     @Id
     @SequenceGenerator(
             name = "rule_id_sequence",
@@ -24,21 +24,9 @@ public class ClassRoom {
             strategy = GenerationType.SEQUENCE,
             generator = "rule_id_sequence"
     )
-    private long classRoomID ;
-    private  long classID;
-    private String name ;
-    private Long level ;
-    private Long SchoolID ;
-
-    @ManyToOne
-    @JoinColumn(name = "school_id")
-    private School school;
-
-
-
-
-
-
-
+    private  long recipientID ;
+    private  long recipient ;
+    @ManyToMany(mappedBy = "recipientIDs")
+    private List<Communique> communiques = new ArrayList<>();
 
 }

@@ -103,6 +103,17 @@ public record StudentController(
         return studentService.getStudentNumberByParent(emailAddress) ;
     }
 
+//    @PostMapping ("childrenLevel/parents")
+//    public  ResponseEntity<List<String>> getParentsByChildrenLevelClass(@RequestBody int classRoomLevel){
+//        return studentService.getParentsByChildrenLevel( classRoomLevel);
+//    }
+
+    @PostMapping("/studentIDs/parentEmail")
+    public List<String> getParentEmailByStudentIDs  (@RequestBody List<Long> studentIDs){
+        return studentService.getParentEMailByStudentIDs(studentIDs);
+    }
+
+
 
 
 

@@ -12,5 +12,7 @@ public class StudentEvent {
     private String name ;
     private int classID ;
     private String gender;
+    private  String parentEmail;
+
 
 }

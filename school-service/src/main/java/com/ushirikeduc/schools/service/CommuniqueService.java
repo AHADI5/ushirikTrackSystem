@@ -1,10 +1,8 @@
 package com.ushirikeduc.schools.service;
 
-import com.ushirikeduc.schools.model.ClassRoom;
-import com.ushirikeduc.schools.model.Communique;
-import com.ushirikeduc.schools.model.CommuniqueType;
-import com.ushirikeduc.schools.model.School;
+import com.ushirikeduc.schools.model.*;
 import com.ushirikeduc.schools.repository.CommuniqueRepository;
+import com.ushirikeduc.schools.repository.CommuniqueTypeRepository;
 import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.requests.ClassRoomSimpleForm;
 import com.ushirikeduc.schools.requests.CommuniqueRegisterRequest;
@@ -12,13 +10,13 @@ import com.ushirikeduc.schools.requests.CommuniqueResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -26,47 +24,43 @@ public record CommuniqueService (
         SchoolRepository schoolRepository ,
         CommuniqueRepository communiqueRepository,
         SchoolService schoolService ,
-        ClassRoomService classRoomService
+        ClassRoomService classRoomService ,
+        CommuniqueTypeRepository communiqueTypeRepository
+
 ) {
     public CommuniqueResponse registerCommunique(int schoolID,
                                                  CommuniqueRegisterRequest request) {
-        CommuniqueType communiqueType = null ;
+//        CommuniqueType communiqueType = null ;
 
-        switch (request.type()) {
-            case  "Meeting" -> communiqueType = CommuniqueType.MEETING;
-            case "Incident" -> communiqueType = CommuniqueType.INCIDENT;
-            case "Event" -> communiqueType = CommuniqueType.EVENT;
-            case "Convocation" -> communiqueType = CommuniqueType.CONVOCATION;
-        }
+//        switch (request.type()) {
+//            case  "Meeting" -> communiqueType = CommuniqueType.MEETING;
+//            case "Incident" -> communiqueType = CommuniqueType.INCIDENT;
+//            case "Event" -> communiqueType = CommuniqueType.EVENT;
+//            case "Convocation" -> communiqueType = CommuniqueType.CONVOCATION;
+//        }
 
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
+        CommunicationType communicationType = communiqueTypeRepository.findById(request.typeID())
+                .orElseThrow( () -> new ResourceNotFoundException("Communication type not found"));
 
-        //List of concerned classRoom an Empty list
-        List<ClassRoom> concernedClassRooms  = new ArrayList<>();
+        //Recipient Management
+        List<String> ConcernedParentIDs  = new ArrayList<>();
 
-        //make a list of concerned classRooms from the request
-        for (int classRoomID : request.classConcerned()) {
-            ClassRoom classRoom = classRoomService.getClassRoomByID(classRoomID);
-            concernedClassRooms.add(classRoom);
-
-        }
 
         Communique communique = Communique.builder()
                 .title(request.title())
                 .content(request.content())
-                .communiqueType(communiqueType)
                 .dateCreated(new Date())
                 .school(school)
-                .classrooms(concernedClassRooms)
+                .recipientIDs()
+                .type(communicationType)
                 .build();
         Communique savedCommunique = communiqueRepository.save(communique);
         return  new CommuniqueResponse(
                 savedCommunique.getTitle(),
                 savedCommunique.getContent(),
-                savedCommunique.getCommuniqueType(),
                 savedCommunique.getDateCreated(),
-                getClassRoomSimpleForm(savedCommunique.getClassrooms()),
                 savedCommunique.getCommuniqueID()
         );
     }
@@ -80,7 +74,7 @@ public record CommuniqueService (
 
         for (Communique communique : communiques)  {
             CommuniqueResponse communiqueResponse = new CommuniqueResponse(
-                    communique.getTitle(), communique.getContent(), communique.getCommuniqueType(), communique.getDateCreated(),  getClassRoomSimpleForm(communique.getClassrooms()), communique.getCommuniqueID()
+                    communique.getTitle(), communique.getContent(),  communique.getDateCreated(),  communique.getCommuniqueID()
             );
             communiqueResponses.add(communiqueResponse);
         }
@@ -106,9 +100,9 @@ public record CommuniqueService (
         return new CommuniqueResponse(
                 communique.getTitle(),
                 communique.getContent(),
-                communique.getCommuniqueType(),
+
                 communique.getDateCreated(),
-                getClassRoomSimpleForm(communique.getClassrooms()),
+
                 communique.getCommuniqueID()
         );
     }
@@ -143,23 +137,50 @@ public record CommuniqueService (
                 .orElseThrow(() -> new ResourceNotFoundException("no communique found"));
         communique.setTitle(updatedCommunique.title());
         communique.setContent(updatedCommunique.content());
-        List <ClassRoom> classRoomList = new ArrayList<>();
-
-        for (int classRoomID : updatedCommunique.classConcerned()) {
-            ClassRoom classRoom = classRoomService.getClassRoomByID(classRoomID);
-            classRoomList.add(classRoom);
-        }
-
-        communique.setClassrooms(classRoomList);
-
         return ResponseEntity.ok("Modified");
-
     }
 
     public  CommuniqueResponse getCommuniqueByID(int communiqueID) {
         Communique communique = communiqueRepository.findById(communiqueID)
                 .orElseThrow(() -> new ResourceNotFoundException("Communique not found"));
-        log.info("these are classRooms from the selected communique : " + communique.getClassrooms().toString());
+        log.info("these are classRooms from the selected communique : ");
         return getSimpleCommunique(communique);
+    }
+
+    public List<String> getConcernedParentsIDs(CommuniqueRecipientType recipientType, List<Long> ids) {
+        RestTemplate restTemplate = new RestTemplate();
+        String baseUrl = "http://localhost:8080/api/v1";
+        List<String> parentsEmail = new ArrayList<>();
+
+        switch (recipientType) {
+            case ALL:
+                String allEndpoint = baseUrl + "/student";
+                ResponseEntity<String[]> allResponse = restTemplate.exchange(allEndpoint, HttpMethod.GET, null, String[].class);
+                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(allResponse.getBody())));
+                break;
+            case SELECTED_LEVELS:
+                String levelEndpoint = baseUrl + "/classroom/studentLevel/parentEmail";
+                // Assuming you need to send a POST request with the list of IDs
+                ResponseEntity<String[]> levelResponse = restTemplate.exchange(levelEndpoint, HttpMethod.POST, (HttpEntity<?>) ids, String[].class);
+                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(levelResponse.getBody())));
+                break;
+            case SELECTED_SECTION:
+                String sectionEndpoint = baseUrl + "/classroom/studentSection/parentEmail";
+                ResponseEntity<String[]> sectionResponse = restTemplate.exchange(sectionEndpoint, HttpMethod.POST, (HttpEntity<?>) ids, String[].class);
+                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(sectionResponse.getBody())));
+                break;
+            case INDIVIDUAL_PARENTS:
+                String individualEndpoint = baseUrl + "/student/studentIDs/parentEmail";
+                ResponseEntity<String[]> individualResponse = restTemplate.exchange(individualEndpoint, HttpMethod.POST, (HttpEntity<?>) ids, String[].class);
+                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(individualResponse.getBody())));
+                break;
+
+
+
+
+            // Add other cases if needed
+        }
+
+        return parentsEmail;
     }
 }

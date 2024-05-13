@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -191,5 +192,20 @@ public record StudentService(
 
     }
 
+    public List<String> getParentEMailByStudentIDs(List<Long> studentIDs) {
+        List<String> parentEmail = new ArrayList<>();
+        for (Long studentID  : studentIDs) {
+          Student student =  studentRepository.findById(Math.toIntExact(studentID))
+                  .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+          parentEmail.add(student.getParent().getEmail());
+        }
 
+        return parentEmail ;
+
+    }
+
+
+//    public ResponseEntity<List<String>> getParentsByChildrenLevel(int classRoomLevel) {
+//
+//    }
 }

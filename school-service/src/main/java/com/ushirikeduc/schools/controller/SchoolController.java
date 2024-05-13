@@ -1,10 +1,10 @@
 package com.ushirikeduc.schools.controller;
 
+import com.ushirikeduc.schools.model.CommunicationType;
 import com.ushirikeduc.schools.model.School;
 import com.ushirikeduc.schools.requests.*;
 import com.ushirikeduc.schools.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +22,8 @@ public record SchoolController(
         CommuniqueService communiqueService ,
         SchoolAdminService schoolAdminService,
 
-        ClassRoomService classRoomService
+        ClassRoomService classRoomService ,
+        CommuniqueTypeService communiqueTypeService
                              ) {
     @PostMapping("/register-school")
     public SchoolResponse registerSchool(@RequestBody  SchoolRegistrationRequest request  /*@RequestHeader String userName*/) {
@@ -47,6 +48,10 @@ public record SchoolController(
     }
 
 
+    @PostMapping("{schoolID}/newCommuniqueType")
+    public ResponseEntity<CommunicationType> createNewCommuniqueType (@RequestBody CommuniqueTypeRequest communicationType, @PathVariable long schoolID) {
+       return communiqueTypeService.createCommunicationType( schoolID, communicationType );
+    }
 
 
     @PostMapping("{schoolID}/newCommunique")
@@ -66,6 +71,7 @@ public record SchoolController(
     public List<CommuniqueResponse> getCommuniqueBySchoolID(@PathVariable  int schoolID) {
         return  communiqueService.getAllCommuniqueBySchoolID(schoolID);
     }
+
 
     @GetMapping("{schoolID}/events")
     public List<EventResponse> getAllEventsBySchoolID(@PathVariable int schoolID) {
@@ -102,6 +108,7 @@ public record SchoolController(
         log.info("Director admin received in school successfully" + userName);
         return  schoolService.getSchoolIDByDirectorEmail (userName);
     }
+
 
     //Communique
     @GetMapping("/{schoolID}/recentCommuniques")

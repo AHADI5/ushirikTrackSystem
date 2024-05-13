@@ -24,6 +24,7 @@ public record MessageController(
 
     public void publishStudent(Student student){
         StudentEvent studentEvent = new StudentEvent();
+        studentEvent.setParentEmail(student.getParent().getEmail());
         studentEvent.setStudentID(student.getStudentID());
         studentEvent.setGender(student.getGender());
         studentEvent.setName(student.getName() + " " + student.getFirstName() + " " + student.getLastName());

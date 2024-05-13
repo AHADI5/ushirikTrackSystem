@@ -7,38 +7,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassRoom {
+public class CommunicationType {
     @Id
-    @SequenceGenerator(
-            name = "rule_id_sequence",
-            sequenceName = "rule_id_sequence"
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "rule_id_sequence"
-    )
-    private long classRoomID ;
-    private  long classID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long communiqueTypeID ;
     private String name ;
-    private Long level ;
-    private Long SchoolID ;
 
-    @ManyToOne
+    @OneToMany(mappedBy = "communicationType", cascade = CascadeType.ALL)
+    private List<FieldsProperty> fieldsProperties = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
     private School school;
-
-
-
-
-
-
-
 
 }

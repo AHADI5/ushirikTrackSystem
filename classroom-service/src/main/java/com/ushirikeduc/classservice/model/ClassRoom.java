@@ -33,7 +33,7 @@ public class ClassRoom {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "classroom_id")
+    @JoinColumn(name = "classroom_option_id")
     private ClassRoomOption classRoomOption;
 
     @JsonIgnore

@@ -7,7 +7,6 @@ import com.ushirikeduc.classservice.dto.*;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.ClassRoomOption;
 import com.ushirikeduc.classservice.model.Student;
-import com.ushirikeduc.classservice.model.Teacher;
 import com.ushirikeduc.classservice.repository.ClassRoomOptionRepository;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
 import com.ushirikeduc.classservice.repository.EnrolledStudentRepository;
@@ -69,21 +68,27 @@ public class ClassRoomService{
 
     //Register a list of classRoom
 
-    public ResponseEntity registerClassRoomList (int schoolID,List<ClassRegistrationRequest> request) {
+    public ResponseEntity<List<ClassInfoResponse>> registerClassRoomList (int schoolID,List<ClassRegistrationRequest> request) {
 //        List<ClassRoom> classRoomList = new ArrayList<>();
+        List<ClassInfoResponse> classInfoResponses = new ArrayList<>();
         for (ClassRegistrationRequest registrationRequest : request) {
+            ClassRoomOption classRoomOption = classRoomOptionRepository.findById((int) registrationRequest.ClassRoomOptionID())
+                    .orElseThrow(()-> new ResourceNotFoundException("ClassRoom Option not found"));
             ClassRoom classRoom = ClassRoom.builder()
                     .name(registrationRequest.letter())
                     .level((long) registrationRequest.level())
                     .schoolID(schoolID)
+                    .classRoomOption(classRoomOption)
                     .build();
            ClassRoom savedClassRoom =  classRepository.save(classRoom);
+           classInfoResponses.add(classInfoResponse(savedClassRoom));
+
             messageController.publishStudent(savedClassRoom);
 
 
         }
 
-        return ResponseEntity.ok("Success");
+        return ResponseEntity.ok(classInfoResponses);
 
     }
 
@@ -123,7 +128,7 @@ public class ClassRoomService{
 //    }
 
     //Adding Student to a class
-    public ResponseEntity<Student> createStudent(StudentEvent studentEvent) {
+    public void createStudent(StudentEvent studentEvent) {
         //find first the existing class
 
         Student enrolledStudent = new Student();
@@ -131,12 +136,13 @@ public class ClassRoomService{
         enrolledStudent.setGender(studentEvent.getGender());
 //        enrolledStudent.setClassID(studentEvent.getClassID());
         enrolledStudent.setDateEnrolled(new Date());
+        enrolledStudent.setParentEmail(studentEvent.getParentEmail());
         enrolledStudent.setStudentID(studentEvent.getStudentID());
         enrolledStudent.setStudentClass(getClassIfExists(studentEvent.getClassID()));
         enrolledStudentRepository.save(enrolledStudent);
 
         //todo Publish student with class
-        return ResponseEntity.ok(enrolledStudent);
+        ResponseEntity.ok(enrolledStudent);
     }
 
     public ClassRoom getClassIfExists(Integer classId) {
@@ -199,6 +205,17 @@ public class ClassRoomService{
 
     }
 
+    public List<ClassInfoResponse> classInfoResponseList(List<ClassRoom> classRooms){
+        List<ClassInfoResponse> classInfoResponses = new ArrayList<>();
+        for (ClassRoom classRoom : classRooms) {
+            ClassInfoResponse  classInfoResponse = classInfoResponse(classRoom);
+            classInfoResponses.add(classInfoResponse);
+        }
+
+        return  classInfoResponses ;
+    }
+
+
     public int getSchoolIDbyClassID(int classRoomID) {
         ClassRoom classRoom = classRepository.findById((long) classRoomID)
                 .orElseThrow(() -> new RuntimeException("No class Found"));
@@ -230,4 +247,40 @@ public class ClassRoomService{
     public List<Student> getRecentStudents(int schoolID) {
         return enrolledStudentRepository.findTopByStudentClassSchoolIDOrderByDateEnrolledDesc(schoolID,PageRequest.of(0,5));
     }
+
+    public List<String> getParentEmailByStudentLevel(List<Long> levels) {
+        /*
+        *  Getting all parentEmail of student in a given classRoom
+        **/
+        List<String> parentEmailList = new ArrayList<>() ;
+        for (Long level : levels) {
+            List<ClassRoom> classRooms = classRepository.getClassRoomByLevel(level);
+            for (ClassRoom classRoom : classRooms) {
+                for (Student student : classRoom.getStudents()) {
+                    parentEmailList.add(student.getParentEmail());
+
+                }
+            }
+
+
+        }
+        return parentEmailList;
+    }
+
+    public List<String> getParentEmailBySection(List<Long> sectionIDs) {
+        List<String> parentEmailList = new ArrayList<>() ;
+        for (Long sectionID : sectionIDs) {
+            ClassRoomOption classRoomOption = classRoomOptionRepository.findClassRoomOptionByClassOptionID(sectionID);
+            List<ClassRoom> classRooms = classRepository.getClassRoomByClassRoomOption(classRoomOption);
+            for (ClassRoom classRoom : classRooms) {
+                for (Student student : classRoom.getStudents()) {
+                    parentEmailList.add(student.getParentEmail());
+
+                }
+            }
+        }
+        return  parentEmailList;
+    }
+
+
 }
