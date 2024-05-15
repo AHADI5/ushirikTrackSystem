@@ -21,8 +21,8 @@ public record SchoolController(
         CommuniqueService communiqueService ,
         SchoolAdminService schoolAdminService,
 
-        ClassRoomService classRoomService ,
-        CommuniqueTypeService communiqueTypeService
+        ClassRoomService classRoomService
+
                              ) {
     @PostMapping("/register-school")
     public SchoolResponse registerSchool(@RequestBody  SchoolRegistrationRequest request  /*@RequestHeader String userName*/) {
@@ -47,10 +47,6 @@ public record SchoolController(
     }
 
 
-    @PostMapping("{schoolID}/newCommuniqueType")
-    public ResponseEntity<CommuniqueTypeRequest> createNewCommuniqueType (@RequestBody CommuniqueTypeRequest communicationType, @PathVariable long schoolID) {
-       return communiqueTypeService.createCommunicationType( schoolID, communicationType );
-    }
 
 
     @PostMapping("{schoolID}/newCommunique")

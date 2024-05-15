@@ -14,15 +14,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recepient {
+public class Recipient {
     @Id
     @SequenceGenerator(
-            name = "rule_id_sequence",
+            name = "recipient_id_sequence",
             sequenceName = "rule_id_sequence"
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "rule_id_sequence"
+            generator = "recipient_id_sequence"
     )
     private  long recipientID ;
     private  String recipient ;

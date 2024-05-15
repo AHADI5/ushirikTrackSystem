@@ -6,11 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.naming.CommunicationException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Data
@@ -31,12 +28,7 @@ public class Communique {
     private String title;
     private String content ;
     private Date dateCreated;
-//    private List<Integer> reach = new ArrayList<>() ;
 
-//    private CommuniqueType communiqueType ;
-    @ManyToOne
-    @JoinColumn(name = "type_id")
-    private CommunicationType type;
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
@@ -46,7 +38,7 @@ public class Communique {
             name = "recipients",
             joinColumns = @JoinColumn(name = "communique_id"),
             inverseJoinColumns = @JoinColumn(name = "recipient_id"))
-    private List<Recepient> recipientIDs ;
+    private List<Recipient> recipientIDs ;
 
 
 

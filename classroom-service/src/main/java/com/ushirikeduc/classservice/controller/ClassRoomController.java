@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @Slf4j
@@ -109,6 +110,17 @@ public class ClassRoomController {
     @PostMapping("/studentSection/parentEmail")
     public List<String> getParentEmailByStudentSection(@RequestBody List<Long> sectionID) {
         return classRoomService.getParentEmailBySection(sectionID) ;
+    }
+
+    @GetMapping("{schoolID}/classroomLevels")
+    public Set<Long> getAllSchoolLevel(@PathVariable long schoolID) {
+        return classRoomService.getAllSchoolLevels(schoolID) ;
+
+    }
+
+    @GetMapping("{schoolID}/getAllStudents")
+    public List<Student> getAllStudent (@PathVariable long schoolID){
+        return classRoomService.getAllSchoolStudent(schoolID);
     }
 
 

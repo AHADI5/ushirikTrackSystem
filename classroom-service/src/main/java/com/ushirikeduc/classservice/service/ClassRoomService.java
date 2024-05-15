@@ -16,10 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -282,5 +279,24 @@ public class ClassRoomService{
         return  parentEmailList;
     }
 
+    public Set<Long> getAllSchoolLevels  (long schoolID) {
+        Set<ClassRoom> classRooms = classRepository.getAllBySchoolID(schoolID);
+        Set<Long> levels = new HashSet<>();
+        for(ClassRoom classRoom : classRooms) {
+            levels.add(classRoom.getLevel());
+        }
+        return  levels ;
+    }
 
+
+    public List<Student> getAllSchoolStudent(long schoolID) {
+        List<ClassRoom> classRooms = classRepository.getClassRoomsBySchoolID(schoolID);
+        List<Student> allStudents = new ArrayList<>();
+
+        for (ClassRoom classRoom : classRooms) {
+            allStudents.addAll(classRoom.getStudents());
+        }
+
+        return allStudents;
+    }
 }

@@ -1,5 +1,6 @@
 package com.ushirikeduc.classservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class Student {
     private String gender;
     private String parentEmail ;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "class_id")
     private ClassRoom studentClass;

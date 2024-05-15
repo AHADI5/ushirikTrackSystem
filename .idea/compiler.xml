@@ -24,7 +24,7 @@
     <bytecodeTargetLevel>
       <module name="classwork-service" target="21" />
       <module name="eureka-server" target="21" />
-      <module name="Eureka-server" target="17" />
+      <module name="Eureka-server" target="21" />
       <module name="rules-service" target="21" />
       <module name="service-register" target="21" />
       <module name="service-registry" target="21" />

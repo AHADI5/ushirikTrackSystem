@@ -6,6 +6,7 @@ import com.ushirikeduc.student.request.*;
 import com.ushirikeduc.student.services.ClassWorkAssignedService;
 import com.ushirikeduc.student.services.ScoreService;
 import com.ushirikeduc.student.services.StudentService;
+import jakarta.ws.rs.Path;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -117,5 +118,7 @@ public record StudentController(
     public  List<String> getAllParentEmail () {
         return studentService.getAllParentEmails() ;
     }
+
+
 
 }

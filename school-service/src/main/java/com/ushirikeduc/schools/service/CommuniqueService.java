@@ -23,9 +23,8 @@ public record CommuniqueService (
         CommuniqueRepository communiqueRepository,
         SchoolService schoolService ,
         ClassRoomService classRoomService ,
-        CommuniqueTypeRepository communiqueTypeRepository ,
-        RecipientRepository recipientRepository ,
-        FieldsPropertyRepository fieldsPropertyRepository
+
+        RecipientRepository recipientRepository
 
 ) {
     public CommuniqueResponse registerCommunique(int schoolID,
@@ -34,33 +33,15 @@ public record CommuniqueService (
 
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
-        CommunicationType communicationType = communiqueTypeRepository.findById(request.typeID())
-                .orElseThrow( () -> new ResourceNotFoundException("Communication type not found"));
 
-        //Handling values
-
-
-        for( FieldsProperty fieldsProperty : communicationType.getFieldsProperties() ) {
-            Long fieldsPropertyID = fieldsProperty.getPropertyID();
-            log.info(fieldsPropertyID.toString());
-
-
-
-
-        }
-        //Update communique type
-//        CommunicationType savedTypeCommunication = communiqueTypeRepository.save(communicationType);
         assert communiqueRecipientTypeType != null;
-        List<Recepient> recipients = getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , request.recipientIDs()));
-        log.info("Recepients" + recipients);
-
+        List<Recipient> recipients = getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , request.recipientIDs()));
         Communique communique = Communique.builder()
                 .title(request.title())
                 .content(request.content())
                 .dateCreated(new Date())
                 .school(school)
                 .recipientIDs(recipients)
-
                 .build();
         Communique savedCommunique = communiqueRepository.save(communique);
         return  new CommuniqueResponse(
@@ -202,14 +183,14 @@ public record CommuniqueService (
         return parentsEmail;
     }
 
-    public List<Recepient> getListRecipient (List<String>  emails )  {
-        List<Recepient> recipients = new ArrayList<>();
+    public List<Recipient> getListRecipient (List<String>  emails )  {
+        List<Recipient> recipients = new ArrayList<>();
         for (String email: emails) {
-            Recepient recepient = Recepient
+            Recipient recipient = Recipient
                     .builder()
                     .recipient(email)
                     .build();
-            Recepient savedRecipient  = recipientRepository.save(recepient);
+            Recipient savedRecipient  = recipientRepository.save(recipient);
             recipients.add(savedRecipient);
 
         }
