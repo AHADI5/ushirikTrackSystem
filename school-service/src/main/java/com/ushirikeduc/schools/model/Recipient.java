@@ -18,7 +18,8 @@ public class Recipient {
     @Id
     @SequenceGenerator(
             name = "recipient_id_sequence",
-            sequenceName = "rule_id_sequence"
+            sequenceName = "recipient_id_sequence",
+            allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,

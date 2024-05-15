@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,12 +18,13 @@ import java.util.List;
 public class Communique {
     @Id
     @SequenceGenerator(
-            name = "rule_id_sequence",
-            sequenceName = "rule_id_sequence"
+            name = "communique_id_sequence",
+            sequenceName = "communique_id_sequence",
+            allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "rule_id_sequence"
+            generator = "communique_id_sequence"
     )
     private long communiqueID ;
     private String title;
@@ -33,14 +35,11 @@ public class Communique {
     @JoinColumn(name = "school_id")
     private School school;
     private CommuniqueRecipientType recipientType;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "recipients",
+            name = "communique_recipients",
             joinColumns = @JoinColumn(name = "communique_id"),
             inverseJoinColumns = @JoinColumn(name = "recipient_id"))
-    private List<Recipient> recipientIDs ;
-
-
-
+    private List<Recipient> recipientIDs = new ArrayList<>();
 
 }

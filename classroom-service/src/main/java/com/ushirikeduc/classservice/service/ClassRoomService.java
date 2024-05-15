@@ -255,12 +255,10 @@ public class ClassRoomService{
             for (ClassRoom classRoom : classRooms) {
                 for (Student student : classRoom.getStudents()) {
                     parentEmailList.add(student.getParentEmail());
-
                 }
             }
-
-
         }
+        log.info("Emails found : " + parentEmailList);
         return parentEmailList;
     }
 
@@ -296,6 +294,8 @@ public class ClassRoomService{
         for (ClassRoom classRoom : classRooms) {
             allStudents.addAll(classRoom.getStudents());
         }
+
+
 
         return allStudents;
     }

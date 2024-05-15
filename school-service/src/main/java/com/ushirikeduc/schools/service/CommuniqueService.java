@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,18 @@ public record CommuniqueService (
 
 ) {
     public CommuniqueResponse registerCommunique(int schoolID,
-                                                 CommuniqueRegisterRequest request) {
+                                                 CommuniqueRegisterRequest request , String token) {
         CommuniqueRecipientType communiqueRecipientTypeType = getRecipientType(request);
 
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
+        List<Recipient> recipients = new ArrayList<>();
 
         assert communiqueRecipientTypeType != null;
-        List<Recipient> recipients = getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , request.recipientIDs()));
+
+       recipients  = communiqueRecipientTypeType.equals(CommuniqueRecipientType.INDIVIDUAL_PARENTS) ?
+               getListRecipient(request.recipientIDs()) :
+               getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , (List<Long>) request.recipientIDs(), token));
         Communique communique = Communique.builder()
                 .title(request.title())
                 .content(request.content())
@@ -146,36 +151,61 @@ public record CommuniqueService (
         return getSimpleCommunique(communique);
     }
 
-    public List<String> getConcernedParentsIDs(CommuniqueRecipientType recipientType, List<Long> ids) {
+    public List<String> getConcernedParentsIDs(
+            CommuniqueRecipientType recipientType,
+            List<Long> ids,
+            String token) {
+
         RestTemplate restTemplate = new RestTemplate();
         String baseUrl = "http://localhost:8080/api/v1";
         List<String> parentsEmail = new ArrayList<>();
 
+        // Set up headers with authorization token
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<List<Long>> requestEntity = new HttpEntity<>(ids, headers); // Include headers in the request
+
         switch (recipientType) {
             case ALL:
-                String allEndpoint = baseUrl + "/student/AllParentEmail";
-                ResponseEntity<String[]> allResponse = restTemplate.exchange(allEndpoint, HttpMethod.GET, null, String[].class);
+                String allEndpoint = baseUrl + "/student/student/AllParentEmail";
+                ResponseEntity<String[]> allResponse = restTemplate.exchange(
+                        allEndpoint,
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers), // Use headers here
+                        String[].class
+                );
                 parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(allResponse.getBody())));
                 break;
             case SELECTED_LEVELS:
                 String levelEndpoint = baseUrl + "/classroom/studentLevel/parentEmail";
-                // Assuming you need to send a POST request with the list of IDs
-                ResponseEntity<String[]> levelResponse = restTemplate.exchange(levelEndpoint, HttpMethod.POST, (HttpEntity<?>) ids, String[].class);
+                ResponseEntity<String[]> levelResponse = restTemplate.exchange(
+                        levelEndpoint,
+                        HttpMethod.POST,
+                        requestEntity, // Use requestEntity with headers
+                        String[].class
+                );
                 parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(levelResponse.getBody())));
                 break;
             case SELECTED_SECTION:
                 String sectionEndpoint = baseUrl + "/classroom/studentSection/parentEmail";
-                ResponseEntity<String[]> sectionResponse = restTemplate.exchange(sectionEndpoint, HttpMethod.POST, (HttpEntity<?>) ids, String[].class);
+                ResponseEntity<String[]> sectionResponse = restTemplate.exchange(
+                        sectionEndpoint,
+                        HttpMethod.POST,
+                        requestEntity, // Use requestEntity with headers
+                        String[].class
+                );
                 parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(sectionResponse.getBody())));
                 break;
             case INDIVIDUAL_PARENTS:
                 String individualEndpoint = baseUrl + "/student/studentIDs/parentEmail";
-                ResponseEntity<String[]> individualResponse = restTemplate.exchange(individualEndpoint, HttpMethod.POST, (HttpEntity<?>) ids, String[].class);
+                ResponseEntity<String[]> individualResponse = restTemplate.exchange(
+                        individualEndpoint,
+                        HttpMethod.POST,
+                        requestEntity, // Use requestEntity with headers
+                        String[].class
+                );
                 parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(individualResponse.getBody())));
                 break;
-
-
-
 
             // Add other cases if needed
         }
@@ -183,12 +213,13 @@ public record CommuniqueService (
         return parentsEmail;
     }
 
-    public List<Recipient> getListRecipient (List<String>  emails )  {
+
+    public List<Recipient> getListRecipient (List<?>  emails )  {
         List<Recipient> recipients = new ArrayList<>();
-        for (String email: emails) {
+        for (Object email: emails) {
             Recipient recipient = Recipient
                     .builder()
-                    .recipient(email)
+                    .recipient((String) email)
                     .build();
             Recipient savedRecipient  = recipientRepository.save(recipient);
             recipients.add(savedRecipient);

@@ -49,10 +49,11 @@ public record SchoolController(
 
 
 
-    @PostMapping("{schoolID}/newCommunique")
+    @PostMapping("/{schoolID}/newCommunique")
     public CommuniqueResponse registerCommunique(@PathVariable int schoolID ,
+                                                 @RequestHeader String token,
                                                  @RequestBody CommuniqueRegisterRequest request) {
-        return  communiqueService.registerCommunique(schoolID , request);
+        return  communiqueService.registerCommunique(schoolID , request , token);
     }
 
     @PostMapping("{schoolID}/newEvent")

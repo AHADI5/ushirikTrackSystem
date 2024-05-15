@@ -104,6 +104,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     public void populateRequestWithHeaders(ServerWebExchange exchange , String token ) {
         exchange.getRequest().mutate()
                 .header("username" , extractUsername(token))
+                .header("token" , token)
                 .build();
     }
 
