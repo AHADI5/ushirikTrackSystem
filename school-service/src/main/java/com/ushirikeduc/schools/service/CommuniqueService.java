@@ -5,6 +5,7 @@ import com.ushirikeduc.schools.repository.*;
 import com.ushirikeduc.schools.requests.ClassRoomSimpleForm;
 import com.ushirikeduc.schools.requests.CommuniqueRegisterRequest;
 import com.ushirikeduc.schools.requests.CommuniqueResponse;
+import com.ushirikeduc.schools.requests.SimpleRecipient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +46,7 @@ public record CommuniqueService (
                 .title(request.title())
                 .content(request.content())
                 .dateCreated(new Date())
+                .recipientType(communiqueRecipientTypeType)
                 .school(school)
                 .recipientIDs(recipients)
                 .build();
@@ -53,7 +55,9 @@ public record CommuniqueService (
                 savedCommunique.getTitle(),
                 savedCommunique.getContent(),
                 savedCommunique.getDateCreated(),
-                savedCommunique.getCommuniqueID()
+                savedCommunique.getCommuniqueID(),
+                savedCommunique.getRecipientType(),
+                getSimpleRecepientList(savedCommunique.getRecipientIDs())
         );
     }
 
@@ -78,7 +82,13 @@ public record CommuniqueService (
 
         for (Communique communique : communiques)  {
             CommuniqueResponse communiqueResponse = new CommuniqueResponse(
-                    communique.getTitle(), communique.getContent(),  communique.getDateCreated(),  communique.getCommuniqueID()
+                    communique.getTitle(),
+                    communique.getContent(),
+                    communique.getDateCreated(),
+                    communique.getCommuniqueID(),
+                    communique.getRecipientType(),
+                    getSimpleRecepientList(communique.getRecipientIDs())
+
             );
             communiqueResponses.add(communiqueResponse);
         }
@@ -107,8 +117,11 @@ public record CommuniqueService (
 
                 communique.getDateCreated(),
 
-                communique.getCommuniqueID()
+                communique.getCommuniqueID(),
+                communique.getRecipientType(),
+                getSimpleRecepientList(communique.getRecipientIDs())
         );
+
     }
 
     public List<ClassRoomSimpleForm> getClassRoomSimpleForm (List<ClassRoom> classRooms) {
@@ -196,16 +209,16 @@ public record CommuniqueService (
                 );
                 parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(sectionResponse.getBody())));
                 break;
-            case INDIVIDUAL_PARENTS:
-                String individualEndpoint = baseUrl + "/student/studentIDs/parentEmail";
-                ResponseEntity<String[]> individualResponse = restTemplate.exchange(
-                        individualEndpoint,
-                        HttpMethod.POST,
-                        requestEntity, // Use requestEntity with headers
-                        String[].class
-                );
-                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(individualResponse.getBody())));
-                break;
+//            case INDIVIDUAL_PARENTS:
+//                String individualEndpoint = baseUrl + "/student/studentIDs/parentEmail";
+//                ResponseEntity<String[]> individualResponse = restTemplate.exchange(
+//                        individualEndpoint,
+//                        HttpMethod.POST,
+//                        requestEntity, // Use requestEntity with headers
+//                        String[].class
+//                );
+//                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(individualResponse.getBody())));
+//                break;
 
             // Add other cases if needed
         }
@@ -227,6 +240,16 @@ public record CommuniqueService (
         }
 
         return recipients;
+    }
+
+    public  List<SimpleRecipient> getSimpleRecepientList (List<Recipient> recipients) {
+        List<SimpleRecipient> simpleRecipients = new ArrayList<>();
+        for (Recipient recipient: recipients) {
+            simpleRecipients.add(new SimpleRecipient(recipient.getRecipient()));
+        }
+
+        return simpleRecipients;
+
     }
 
 }
