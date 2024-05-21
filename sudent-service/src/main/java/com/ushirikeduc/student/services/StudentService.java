@@ -215,6 +215,9 @@ public record StudentService(
         return emails ;
     }
 
+    public ResponseEntity<List<Student>> getStudentByClassID(int classID) {
+        return ResponseEntity.ok(studentRepository.getStudentsByClassID(classID));
+    }
 
 
 //    public ResponseEntity<List<String>> getParentsByChildrenLevel(int classRoomLevel) {

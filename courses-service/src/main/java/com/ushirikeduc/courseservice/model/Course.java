@@ -24,12 +24,13 @@ public class Course {
     private String name ;
     private String description ;
     private int classRoomID ;
+    private  int credits ;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "course_tool",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn( name = "tool_id")
     )
-    private Set<RequiredTool> tools = new HashSet<>();
+    private List<RequiredTool> tools = new ArrayList<>();
     @JsonIgnore
     @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "couse_id")
@@ -41,4 +42,7 @@ public class Course {
 
     @OneToMany(mappedBy = "course" , cascade = CascadeType.ALL)
     private  List<HomeWorkQuestion> questions = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "course_category")
+    private CourseCategory courseCategory ;
 }

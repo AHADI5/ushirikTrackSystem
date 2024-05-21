@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -85,6 +84,12 @@ public class ClassRoomController {
         return classRoomService.getRecentStudents(schoolID) ;
     }
 
+    @GetMapping("/{classRoomID}/getStudentWithinClassRoom")
+    public List<Student> getStudentWithinClassRoom(@PathVariable long classRoomID ) {
+        return classRoomService.getStudentEnrolledClassroom(classRoomID);
+
+    }
+
     @PostMapping("/courses/assign-course")
     public CoursesAssigned assignCourseToTeachers (@RequestBody AssignCoursesRequest request){
         return  coursesService.assignCourseToTeacher( request);
@@ -96,6 +101,16 @@ public class ClassRoomController {
         return classRoomOptionService.createClassRoomOption(schoolID,request);
 
     }
+
+//    @PutMapping("/{schoolID}/{classRoomOptionID}/modify-classroomOption")
+//    public ResponseEntity<String> updateClassRoomOptionInformations(
+//            @PathVariable long schoolID ,
+//            @PathVariable long classRoomOptionID
+//    ) {
+//
+//        return  classRoomService.updateClassRoomOption (schoolID , classRoomOptionID) ;
+//
+//    }
 
     @GetMapping("/{schoolID}/get-section")
     public ResponseEntity<List<ClassRoomOptionResponse>> getAllClassOptionsByClassRoom(@PathVariable int schoolID ){

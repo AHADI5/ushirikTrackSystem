@@ -68,7 +68,7 @@ public record CommuniqueService (
             case  "ALL" -> communiqueRecipientTypeType = CommuniqueRecipientType.ALL;
             case "LEVELS" -> communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_LEVELS;
             case "INDIVIDUAL" -> communiqueRecipientTypeType = CommuniqueRecipientType.INDIVIDUAL_PARENTS;
-            case "SECTION" ->communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_SECTION;
+            case "SECTIONS" ->communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_SECTION;
         }
         return communiqueRecipientTypeType;
     }

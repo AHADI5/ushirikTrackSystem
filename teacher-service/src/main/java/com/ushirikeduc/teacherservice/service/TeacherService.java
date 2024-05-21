@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public record TeacherService(TeacherRepository teacherRepository,
@@ -79,5 +81,7 @@ public record TeacherService(TeacherRepository teacherRepository,
     }
 
 
-
+    public List<Teacher> getTeachersListBySchoolID(int schoolID) {
+        return teacherRepository.findTeacherBySchoolID(schoolID);
+    }
 }

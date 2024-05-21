@@ -26,8 +26,8 @@ public class ClassWorksAssigned {
     private int courseID ;
     private  int classWorkID  ;
 
-    @OneToMany(mappedBy = "classwork", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Score> scores = new ArrayList<>();
+//    @OneToMany(mappedBy = "classwork", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Score> scores = new ArrayList<>();
 
 
 }

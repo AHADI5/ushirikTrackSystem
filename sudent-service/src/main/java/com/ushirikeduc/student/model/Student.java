@@ -42,13 +42,13 @@ public class Student {
 
     @OneToOne(  cascade = CascadeType.ALL)
     private Address address;
-    @ManyToMany
-    @JoinTable(
-            name = "student_classwork",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "classwork_id")
-    )
-    private List<ClassWorksAssigned> classwork;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "student_classwork",
+//            joinColumns = @JoinColumn(name = "student_id"),
+//            inverseJoinColumns = @JoinColumn(name = "classwork_id")
+//    )
+//    private List<ClassWorksAssigned> classwork;
 
 
 

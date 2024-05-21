@@ -31,6 +31,11 @@ public record StudentController(
             ) {
         return studentService.registerNewStudent(request);
     }
+    @GetMapping("/{classID}/students")
+    public ResponseEntity<List<Student>> getStudentsByClassID(@PathVariable int classID) {
+        return studentService.getStudentByClassID(classID) ;
+
+    }
     @GetMapping("/parent/{parentId}/students")
     public ResponseEntity<List<StudentResponse>> getStudentByParent(
             @PathVariable Integer parentId

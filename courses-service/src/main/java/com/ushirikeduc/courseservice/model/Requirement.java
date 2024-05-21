@@ -19,4 +19,5 @@ public class Requirement {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int requirementID ;
     private String name ;
+    private String Description ;
 }

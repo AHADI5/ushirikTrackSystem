@@ -1,15 +1,14 @@
 package com.ushirikeduc.courseservice.controller;
 
-import com.ushirikeduc.courseservice.dto.ClassWorkRegistrationRequest;
-import com.ushirikeduc.courseservice.dto.ClassWorkRegistrationResponse;
-import com.ushirikeduc.courseservice.dto.HomeworkRegistrationRequest;
-import com.ushirikeduc.courseservice.dto.homeWorkResponse;
+import com.ushirikeduc.courseservice.dto.*;
 import com.ushirikeduc.courseservice.model.ClassWork;
 import com.ushirikeduc.courseservice.model.Course;
 import com.ushirikeduc.courseservice.service.ClassWorkService;
+import com.ushirikeduc.courseservice.service.CourseCategoryService;
 import com.ushirikeduc.courseservice.service.CoursesService;
 import com.ushirikeduc.courseservice.service.HomeWorkService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +19,20 @@ import java.util.List;
 public record CourseController(
         CoursesService coursesService,
         ClassWorkService classWorkService ,
-        HomeWorkService homeWorkService
+        HomeWorkService homeWorkService ,
+        CourseCategoryService courseCategoryService
 
 ) {
     @PostMapping("/register-new-course")
-    public Course registerCourse(@RequestBody Course course) {
-        return coursesService.registerCourse(course);
+    public ResponseEntity<String> registerCourse(@RequestBody CourseRegistrationRequest registerRequest) {
+        return coursesService.registerCourse(registerRequest);
+    }
+
+    @PostMapping("{schoolID}/register-new-courseCategory")
+    public ResponseEntity<String> registerNewCategory (
+            @PathVariable long schoolID ,
+            @RequestBody CourseCategoryRegisterRequest registerRequest){
+        return  courseCategoryService.registerCourseCategory(registerRequest , schoolID);
     }
 
     @PostMapping("{courseID}/new-classwork")
@@ -57,7 +64,18 @@ public record CourseController(
 
     }
 
+    @GetMapping("{classID}/coursesByClassID")
+    public  List<CourseGeneralInfo> getCoursesByClassRoomsID (@PathVariable int classID) {
+        return  coursesService.getCoursesByClassID (classID);
+    }
+
+
     //todo get classwork by classID
 
+    @GetMapping( "{schoolID}/getAllCoursesCategory")
+    public List<CourseCategoryResponse> getAllCourseCategory (@PathVariable long schoolID) {
+
+        return courseCategoryService.getCoursesCategoryBySchoolID(schoolID) ;
+    }
 
 }

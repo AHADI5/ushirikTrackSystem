@@ -75,6 +75,13 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id : courses-service
+          uri: lb://COURSES-SERVICE
+          predicates:
+            - Path=/api/v1/courses/**
+          filters:
+            - AuthenticationFilter
+
 
 #          metadata:
 #            cors:

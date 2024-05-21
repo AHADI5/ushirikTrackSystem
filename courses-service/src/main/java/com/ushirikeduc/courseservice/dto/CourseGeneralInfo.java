@@ -1,20 +1,21 @@
 package com.ushirikeduc.courseservice.dto;
 
+import com.ushirikeduc.courseservice.model.ClassWork;
 import com.ushirikeduc.courseservice.model.RequiredTool;
 import com.ushirikeduc.courseservice.model.Requirement;
 
 import java.util.List;
-import java.util.Set;
 
-public record CourseRegistrationRequest(
-
+public record CourseGeneralInfo(
         String name ,
         String description ,
-        int classRoomID ,
-        long credits ,
+        String category ,
+        long courseID ,
+        long credit ,
         List<RequiredTool> tools,
         List<Requirement> requirements,
-        int courseCategory
+        long assigmentNumber
+
 
 ) {
 }

@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Slf4j
 @RestController
@@ -16,6 +18,11 @@ public record Controller(TeacherService teacherService) {
     public Teacher registerTeacher(@RequestBody TeacherRegistrationRequest
                                             teacherRegistrationRequest) {
         return teacherService.saveTeacher(teacherRegistrationRequest);
+    }
+
+    @GetMapping("{schoolID}/getTeachersBySchoolID")
+    public List<Teacher> getTeacherList(@PathVariable int schoolID) {
+        return teacherService.getTeachersListBySchoolID(schoolID) ;
     }
 
     @PutMapping("/{userEMail}/modifyTeacherInfo")

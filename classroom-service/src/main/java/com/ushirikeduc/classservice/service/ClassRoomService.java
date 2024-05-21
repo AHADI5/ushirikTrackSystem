@@ -294,9 +294,16 @@ public class ClassRoomService{
         for (ClassRoom classRoom : classRooms) {
             allStudents.addAll(classRoom.getStudents());
         }
-
-
-
         return allStudents;
     }
+
+    public List<Student> getStudentEnrolledClassroom(long classRoomID) {
+        ClassRoom classRoom = classRepository.findById( classRoomID)
+                .orElseThrow(() -> new ResourceNotFoundException("ClassRoom not found") );
+        return  classRoom.getStudents();
+    }
+
+//    public ResponseEntity<String> updateClassRoomOption(long schoolID, long classRoomOptionID) {
+//        ClassRoomOption
+//    }
 }
