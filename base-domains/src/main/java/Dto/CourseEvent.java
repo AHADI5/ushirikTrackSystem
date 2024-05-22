@@ -11,5 +11,6 @@ public class CourseEvent {
     private String name ;
     private int courseID ;
     private int classId ;
+    private String category ;
 
 }

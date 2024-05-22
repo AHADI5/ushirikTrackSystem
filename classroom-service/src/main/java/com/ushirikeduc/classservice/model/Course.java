@@ -22,6 +22,7 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private  int AssignedCourseID ;
     private String name ;
+    private String category ;
     private int courseID ;
 
 

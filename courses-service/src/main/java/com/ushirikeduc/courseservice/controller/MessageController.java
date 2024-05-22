@@ -24,16 +24,16 @@ import java.util.Map;
 @Slf4j
 public class MessageController {
 
-//    final KafkaTemplate<String , CourseEvent> kafkaTemplateCourse;
+    final KafkaTemplate<String , CourseEvent> kafkaTemplateCourse;
     final KafkaTemplate<String, ClassWorkEvent> kafkaTemplateClasswork;
 //    private static  final String TOPIC = "classwork-created";
 
     public MessageController(
-//            @Qualifier("kafkaTemplateCourse")
-//            KafkaTemplate<String, CourseEvent> kafkaTemplateCourse,
-//            @Qualifier("kafkaTemplateClasswork")
+            @Qualifier("kafkaTemplateCourse")
+            KafkaTemplate<String, CourseEvent> kafkaTemplateCourse,
+            @Qualifier("kafkaTemplate")
             KafkaTemplate<String, ClassWorkEvent> kafkaTemplateClasswork) {
-//        this.kafkaTemplateCourse = kafkaTemplateCourse;
+        this.kafkaTemplateCourse = kafkaTemplateCourse;
         this.kafkaTemplateClasswork = kafkaTemplateClasswork;
     }
 
@@ -46,7 +46,7 @@ public class MessageController {
 
 
 
-//        kafkaTemplateCourse.send("course-created",courseEvent);
+        kafkaTemplateCourse.send("course-created",courseEvent);
         log.info(String.format("Course Event Created  => %s ", courseEvent));
     }
 

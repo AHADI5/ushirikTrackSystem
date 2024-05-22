@@ -3,6 +3,7 @@ package com.ushirikeduc.classservice.service;
 import Dto.CourseEvent;
 import com.ushirikeduc.classservice.dto.AssignCoursesRequest;
 import com.ushirikeduc.classservice.dto.CoursesAssigned;
+import com.ushirikeduc.classservice.dto.SimpleCourseForm;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Course;
 import com.ushirikeduc.classservice.model.Teacher;
@@ -34,6 +35,7 @@ public record CoursesService (
                 .orElseThrow(() -> new ResourceNotFoundException("ClassRoom Not found"));
         Course course = Course.builder()
                 .name(courseEvent.getName())
+                .category(courseEvent.getCategory())
                 .classRoom(classRoom)
                 .courseID(courseEvent.getCourseID())
                 .build();
@@ -68,11 +70,12 @@ public record CoursesService (
 
 //        ClassRoom classRoom = classRoomService.getClassIfExists(classID);
         Teacher teacher = teacherService.getTeacherByID(request.teacherID());
+//        log.info(teacher.toString());
         List<Course> courses = new ArrayList<>();
         for (int ID : request.courseIDs()) {
-            Course course = courseRepository.findById(ID)
-                    .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-            courses.add(course);
+            Course course = courseRepository.findCourseByCourseID(ID);
+            course.setTeacher(teacher);
+            courses.add(courseRepository.save(course));
         }
         teacher.setCourses(courses);
         Teacher updatedTeacher  = teacherRepository.save(teacher);
@@ -80,5 +83,26 @@ public record CoursesService (
                 updatedTeacher.getName(),
                 updatedTeacher.getCourses()
         );
+    }
+
+    public List<SimpleCourseForm> getCoursesAssignedByTeacherID(long teacherID) {
+        Teacher teacher  = teacherRepository.getTeacherByTeacherID(teacherID);
+        List<SimpleCourseForm> coursesAssigned = new ArrayList<>();
+
+        for (Course course:teacher.getCourses()) {
+            SimpleCourseForm simpleCourseForm = new SimpleCourseForm(
+                    course.getName() ,
+                    course.getCategory() ,
+                    course.getTeacher().getName() ,
+                    course.getClassRoom().getLevel() + " " + course.getClassRoom().getName() + " " +course.getClassRoom().getClassRoomOption().getOptionName(),
+                    course.getCourseID()
+            );
+
+            coursesAssigned.add(simpleCourseForm);
+
+
+        }
+
+        return  coursesAssigned ;
     }
 }

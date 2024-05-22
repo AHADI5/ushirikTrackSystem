@@ -138,6 +138,16 @@ public class ClassRoomController {
         return classRoomService.getAllSchoolStudent(schoolID);
     }
 
+    @GetMapping("{schoolID}/getAllCourses")
+    public List<CoursesResponse> getAllClassRooms (@PathVariable long schoolID) {
+        return  classRoomService.getAllCourses(schoolID);
+    }
 
 
+
+    @GetMapping("{teacherID}/getAllCoursesAssigned")
+    public List<SimpleCourseForm> getClassesAssigned (@PathVariable long teacherID) {
+        return coursesService.getCoursesAssignedByTeacherID(teacherID) ;
+
+    }
 }

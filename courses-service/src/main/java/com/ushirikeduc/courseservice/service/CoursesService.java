@@ -71,7 +71,7 @@ public record CoursesService(
                 .name(courseRegistrationRequest.name())
                 .description(courseRegistrationRequest.description())
                 .courseCategory(courseCategory)
-                .credits((int) courseRegistrationRequest.Credits())
+                .credits((int) courseRegistrationRequest.credits())
                 .tools(requiredToolSaved)
                 .classRoomID(courseRegistrationRequest.classRoomID())
                 .requirements(savedRequirement)
@@ -112,7 +112,7 @@ public record CoursesService(
                     course.getDescription(),
                     course.getCourseCategory().getName() ,
                     course.getCourseID(),
-                    courses.getFirst().getCredits(),
+                    course.getCredits(),
                     course.getTools(),
                     course.getRequirements(),
                     course.getClassWorks().size()

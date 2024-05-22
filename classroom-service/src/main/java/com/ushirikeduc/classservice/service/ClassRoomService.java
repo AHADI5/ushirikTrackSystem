@@ -4,9 +4,7 @@ import Dto.ClassRoomEvent;
 import Dto.StudentEvent;
 import com.ushirikeduc.classservice.controller.MessageController;
 import com.ushirikeduc.classservice.dto.*;
-import com.ushirikeduc.classservice.model.ClassRoom;
-import com.ushirikeduc.classservice.model.ClassRoomOption;
-import com.ushirikeduc.classservice.model.Student;
+import com.ushirikeduc.classservice.model.*;
 import com.ushirikeduc.classservice.repository.ClassRoomOptionRepository;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
 import com.ushirikeduc.classservice.repository.EnrolledStudentRepository;
@@ -302,6 +300,47 @@ public class ClassRoomService{
                 .orElseThrow(() -> new ResourceNotFoundException("ClassRoom not found") );
         return  classRoom.getStudents();
     }
+
+    public List<CoursesResponse> getAllCourses(long schoolID) {
+        //getting all classrooms
+        List<CoursesResponse> courseList = new ArrayList<>();
+
+        List<ClassRoom> classRoomList = classRepository.getClassRoomBySchoolID(schoolID);
+        for (ClassRoom classRoom : classRoomList) {
+            CoursesResponse coursesResponse = new CoursesResponse(
+                    classRoom.getClassesID() ,
+                    classRoom.getLevel() + classRoom.getName() ,
+                    simpleCourseFormList(classRoom.getCourses())
+
+            );
+            courseList.add(coursesResponse);
+
+        }
+
+        return  courseList ;
+    }
+
+    public  List<SimpleCourseForm> simpleCourseFormList (List<Course> courses) {
+        List<SimpleCourseForm> simpleCourseFormList = new ArrayList<>();
+        for (Course course : courses) {
+            SimpleCourseForm simpleCourseForm = new SimpleCourseForm(
+                    course.getName() ,
+                    course.getCategory(),
+                    course.getTeacher() == null  ? "" : course.getTeacher().getName() ,
+                    course.getClassRoom().getLevel()+ course.getClassRoom().getName(),
+                    course.getCourseID()
+
+            );
+            simpleCourseFormList.add(simpleCourseForm);
+        }
+
+        return  simpleCourseFormList;
+    }
+
+//    public List<CoursesAssigned> getCoursesAssignedByTeacherID(long teacherID) {
+//        Teacher teacher =
+//    }
+
 
 //    public ResponseEntity<String> updateClassRoomOption(long schoolID, long classRoomOptionID) {
 //        ClassRoomOption
