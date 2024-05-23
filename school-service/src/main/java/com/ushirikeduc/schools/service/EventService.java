@@ -47,7 +47,8 @@ public record EventService (
                 savedSchoolEvent.getPlace(),
                 savedSchoolEvent.getStartingDate(),
                 savedSchoolEvent.getEndingDate(),
-                savedSchoolEvent.getColor()
+                savedSchoolEvent.getColor() ,
+                savedSchoolEvent.getSchoolEventId()
         );
 
     }
@@ -64,7 +65,8 @@ public record EventService (
                 event.getPlace(),
                 event.getStartingDate(),
                 event.getEndingDate(),
-                event.getColor()
+                event.getColor() ,
+                event.getSchoolEventId()
         );
     }
 
@@ -86,7 +88,8 @@ public record EventService (
                     schoolEvent.getPlace(),
                     schoolEvent.getStartingDate(),
                     schoolEvent.getEndingDate() ,
-                    event.getColor()
+                    event.getColor() ,
+                    event.getSchoolEventId()
             );
             eventResponses.add(eventResponse);
         }
@@ -106,7 +109,8 @@ public record EventService (
                     event.getPlace(),
                     event.getStartingDate(),
                     event.getEndingDate(),
-                    event.getColor()
+                    event.getColor() ,
+                    event.getSchoolEventId()
             );
 
             eventResponses.add(eventResponse);
@@ -138,7 +142,8 @@ public record EventService (
                     events.getPlace(),
                     events.getStartingDate(),
                     events.getEndingDate(),
-                    events.getColor()
+                    events.getColor(),
+                    events.getSchoolEventId()
             );
             upComingEventsResponse.add(upComingEvent);
         }

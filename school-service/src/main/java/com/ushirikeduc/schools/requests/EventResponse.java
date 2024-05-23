@@ -10,6 +10,8 @@ public record EventResponse (
         Date startingDate ,
 
         Date endingDate,
-        String color
+        String color,
+
+        long eventID
 ) {
 }
