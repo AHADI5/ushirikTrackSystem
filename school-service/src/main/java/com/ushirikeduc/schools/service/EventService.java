@@ -37,19 +37,17 @@ public record EventService (
                 .school(school)
                 .endingDate(endingDate)
                 .place(request.place())
-                .openingTime(parseTime(request.openingDate()))
-                .closingTime(parseTime(request.closingDate()))
                 .description(request.description())
+                .color(request.color())
                 .build();
         SchoolEvent savedSchoolEvent =eventRepository.save(schoolEvent);
         return  new EventResponse(
                 savedSchoolEvent.getTitle(),
                 savedSchoolEvent.getDescription(),
                 savedSchoolEvent.getPlace(),
-                savedSchoolEvent.getOpeningTime(),
-                savedSchoolEvent.getOpeningTime(),
                 savedSchoolEvent.getStartingDate(),
-                savedSchoolEvent.getEndingDate()
+                savedSchoolEvent.getEndingDate(),
+                savedSchoolEvent.getColor()
         );
 
     }
@@ -64,10 +62,9 @@ public record EventService (
                 event.getTitle(),
                 event.getDescription(),
                 event.getPlace(),
-                event.getOpeningTime(),
-                event.getOpeningTime(),
                 event.getStartingDate(),
-                event.getEndingDate()
+                event.getEndingDate(),
+                event.getColor()
         );
     }
 
@@ -87,10 +84,9 @@ public record EventService (
                     schoolEvent.getTitle(),
                     schoolEvent.getDescription(),
                     schoolEvent.getPlace(),
-                    schoolEvent.getOpeningTime(),
-                    schoolEvent.getClosingTime(),
                     schoolEvent.getStartingDate(),
-                    schoolEvent.getEndingDate()
+                    schoolEvent.getEndingDate() ,
+                    event.getColor()
             );
             eventResponses.add(eventResponse);
         }
@@ -108,10 +104,9 @@ public record EventService (
                     event.getTitle(),
                     event.getDescription(),
                     event.getPlace(),
-                    event.getOpeningTime(),
-                    event.getOpeningTime(),
                     event.getStartingDate(),
-                    event.getEndingDate()
+                    event.getEndingDate(),
+                    event.getColor()
             );
 
             eventResponses.add(eventResponse);
@@ -141,10 +136,9 @@ public record EventService (
                     events.getTitle(),
                     events.getDescription(),
                     events.getPlace(),
-                    events.getOpeningTime(),
-                    events.getOpeningTime(),
                     events.getStartingDate(),
-                    events.getEndingDate()
+                    events.getEndingDate(),
+                    events.getColor()
             );
             upComingEventsResponse.add(upComingEvent);
         }

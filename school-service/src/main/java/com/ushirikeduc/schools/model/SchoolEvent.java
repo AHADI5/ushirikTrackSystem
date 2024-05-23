@@ -27,12 +27,11 @@ public class SchoolEvent {
     )
     private Integer schoolEventId ;
     private Date startingDate ;
-    private Date endingDate ;
-    private LocalTime openingTime ;
-    private LocalTime closingTime ;
+    private Date endingDate;
     private String place ;
     private String title ;
     private String description ;
+    private String color ;
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
