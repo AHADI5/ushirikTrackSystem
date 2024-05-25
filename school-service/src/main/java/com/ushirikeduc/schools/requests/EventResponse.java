@@ -11,7 +11,6 @@ public record EventResponse (
 
         Date endingDate,
         String color,
-
         long eventID
 ) {
 }

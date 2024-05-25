@@ -41,6 +41,12 @@ public record CourseController(
         return classWorkService.registerNewClassWork(courseID, request);
     }
 
+    @GetMapping("{classID}/getClassWorksByType")
+    public List<ClassWorkRegistrationRequest> getClassWorksByType (@PathVariable int classID ,
+                                                                   @RequestBody String classWorkType) {
+        return classWorkService.getClassworksByType(classID , classWorkType) ;
+    }
+
     @PostMapping("{classID}/new-homework")
     public homeWorkResponse newHomework(@PathVariable  int classID ,
                                         @RequestBody HomeworkRegistrationRequest request){

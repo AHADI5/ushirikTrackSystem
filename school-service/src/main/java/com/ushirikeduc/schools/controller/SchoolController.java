@@ -63,6 +63,13 @@ public record SchoolController(
 
     }
 
+    @PutMapping("{schoolID}/newEvent/{eventID}")
+    public  EventResponse updateEvent(@PathVariable int schoolID ,
+                                      @PathVariable int eventID ,@RequestBody EventRegisterRequest request){
+        return  eventService.updateEvent(eventID , request);
+    }
+
+
     @GetMapping("{schoolID}/communications")
     public List<CommuniqueResponse> getCommuniqueBySchoolID(@PathVariable  int schoolID) {
         return  communiqueService.getAllCommuniqueBySchoolID(schoolID);

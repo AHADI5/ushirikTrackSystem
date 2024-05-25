@@ -8,6 +8,7 @@ import com.ushirikeduc.schools.requests.EventRegisterRequest;
 import com.ushirikeduc.schools.requests.EventResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.asm.Advice;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -172,5 +173,29 @@ public record EventService (
     public LocalTime parseTime(String timeString) {
 
         return LocalTime.parse(timeString);
+    }
+
+    public EventResponse updateEvent(int eventID, EventRegisterRequest request) {
+        SchoolEvent schoolEvent = eventRepository.findById(eventID)
+                .orElseThrow(() -> new ResourceNotFoundException("School Event not found"));
+        log.info("request " + request);
+        schoolEvent.setColor(request.color());
+        schoolEvent.setDescription(request.description());
+        schoolEvent.setPlace(request.place());
+        schoolEvent.setStartingDate(parseDate(request.startingDate()));
+        schoolEvent.setEndingDate(parseDate(request.endingDate()));
+        schoolEvent.setTitle(request.title());
+
+        SchoolEvent updatedSchoolEvent = eventRepository.save(schoolEvent);
+
+        return new EventResponse(
+                updatedSchoolEvent.getTitle(),
+                updatedSchoolEvent.getDescription(),
+                updatedSchoolEvent.getPlace(),
+                updatedSchoolEvent.getStartingDate(),
+                updatedSchoolEvent.getEndingDate(),
+                updatedSchoolEvent.getColor(),
+                updatedSchoolEvent.getSchoolEventId()
+        );
     }
 }
