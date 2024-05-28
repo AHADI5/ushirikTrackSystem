@@ -101,6 +101,12 @@ public class ClassRoomController {
 
     }
 
+    @GetMapping ("{classID}/getTitular")
+    public TeacherResponse getClassRoomTitular(@PathVariable int classID) {
+        return classRoomService.getClassRoomTitular(classID);
+
+    }
+
     @PostMapping("/{schoolID}/new-classRoomOption")
     public  ResponseEntity<ClassRoomOption> registerNewClassRoomOption (@PathVariable int schoolID,@RequestBody ClassRoomOptionRequest request) {
 

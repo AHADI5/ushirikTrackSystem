@@ -47,6 +47,7 @@ public record TeacherService(TeacherRepository teacherRepository,
         Teacher teacher = Teacher.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
+                .phone(request.phone())
 //                .classID(request.classID())
                 .address(address)
                 .email(request.email())

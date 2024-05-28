@@ -11,9 +11,9 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -246,31 +246,52 @@ public class ClassRoomService{
 
     //TODO ASSIGN TITULAR TEACHER
 
-    public ResponseEntity<String> assignTitularTeacher(AssignPrincipalTeacherRequest request ) {
-        ClassRoom classRoom = getClassById(request.classID()) ;
+
+
+    // Deep copy utility
+    private List<Course> deepCopyCourses(List<Course> courses) {
+        return courses.stream()
+                .map(course -> new Course(course.getAssignedCourseID(), course.getName(), course.getCategory(), course.getCourseID() , course.getClassRoom() ,course.getTeacher()))
+                .collect(Collectors.toList());
+    }
+
+    //This function assigns a teacher to a classRoom as a titular
+    public ResponseEntity<String> assignTitularTeacher(AssignPrincipalTeacherRequest request) {
+        ClassRoom classRoom = getClassById(request.classID());
         Teacher teacher = teacherRepository.getTeacherByTeacherID(request.teacherID());
-        PrincipalTeacher principalTeacher = (PrincipalTeacher) PrincipalTeacher
-                .builder()
+        PrincipalTeacher principalTeacher = PrincipalTeacher.principalTeacherBuilder()
                 .name(teacher.getName())
                 .isTitular(true)
                 .build();
+
         if (Objects.equals(request.schoolType(), "SECONDARY")) {
             principalTeacher.setClassRoom(classRoom);
             classRoom.setPrincipalTeacher(principalTeacherRepository.save(principalTeacher));
             classRepository.save(classRoom);
-        } else if ( Objects.equals(request.schoolType(), "PRIMARY")){
-            List<Course>  courses = classRoom.getCourses();
-            principalTeacher.setCourses(courses);
+        } else if (Objects.equals(request.schoolType(), "PRIMARY")) {
+            List<Course> copiedCourses = deepCopyCourses(classRoom.getCourses());
+            principalTeacher.setCourses(copiedCourses);
             principalTeacher.setClassRoom(classRoom);
             classRoom.setPrincipalTeacher(principalTeacherRepository.save(principalTeacher));
             classRepository.save(classRoom);
-
         }
 
-        return  ResponseEntity.ok("Success");
+        return ResponseEntity.ok("Success");
+    }
+
+    public TeacherResponse getClassRoomTitular (long classID) {
+        ClassRoom classRoom = getClassById(classID) ;
+        PrincipalTeacher principalTeacher = classRoom.getPrincipalTeacher();
+
+        return new TeacherResponse(
+                principalTeacher.getName(),
+                principalTeacher.getTeacherID()
+        );
 
 
     }
+
+
 
 //     public String getSchoolType (long schoolID) {
 //         RestTemplate restTemplate = new RestTemplate();
