@@ -138,4 +138,8 @@ public Director getDirector(long schoolId) {
 
         return Math.toIntExact(school.getSchoolID());
     }
+
+    public String getSchoolType(int schoolID) {
+        return  getSchool(schoolID).getSchoolType().toString();
+    }
 }

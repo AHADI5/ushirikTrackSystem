@@ -95,6 +95,12 @@ public class ClassRoomController {
         return  coursesService.assignCourseToTeacher( request);
     }
 
+    @PostMapping("/assignTitular")
+    public ResponseEntity<String> assignTitular (@RequestBody AssignPrincipalTeacherRequest request) {
+        return  classRoomService.assignTitularTeacher(request);
+
+    }
+
     @PostMapping("/{schoolID}/new-classRoomOption")
     public  ResponseEntity<ClassRoomOption> registerNewClassRoomOption (@PathVariable int schoolID,@RequestBody ClassRoomOptionRequest request) {
 

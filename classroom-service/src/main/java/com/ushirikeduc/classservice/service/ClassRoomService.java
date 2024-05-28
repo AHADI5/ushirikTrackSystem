@@ -5,14 +5,13 @@ import Dto.StudentEvent;
 import com.ushirikeduc.classservice.controller.MessageController;
 import com.ushirikeduc.classservice.dto.*;
 import com.ushirikeduc.classservice.model.*;
-import com.ushirikeduc.classservice.repository.ClassRoomOptionRepository;
-import com.ushirikeduc.classservice.repository.ClassRoomRepository;
-import com.ushirikeduc.classservice.repository.EnrolledStudentRepository;
+import com.ushirikeduc.classservice.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -25,12 +24,15 @@ public class ClassRoomService{
     final MessageController messageController ;
     final ClassRoomOptionRepository classRoomOptionRepository;
 
+    final TeacherRepository teacherRepository;
+    final PrincipalTeacherRepository principalTeacherRepository ;
+
 //    final ClassRoomProducer classRoomProducer;
 
     public ClassRoomService(ClassRoomRepository classRepository,
                             EnrolledStudentRepository enrolledStudentRepository,
                             MessageController messageController,
-                            ClassRoomOptionRepository classRoomOptionRepository
+                            ClassRoomOptionRepository classRoomOptionRepository, TeacherRepository teacherRepository,  PrincipalTeacherRepository principalTeacherRepository
 
     ) {
         this.classRepository = classRepository;
@@ -38,6 +40,9 @@ public class ClassRoomService{
 //        this.classRoomProducer = classRoomProducer;
         this.messageController = messageController;
         this.classRoomOptionRepository = classRoomOptionRepository;
+
+        this.teacherRepository = teacherRepository;
+        this.principalTeacherRepository = principalTeacherRepository;
 
     }
 
@@ -238,6 +243,38 @@ public class ClassRoomService{
         return classGeneralInformations;
 
     }
+
+    //TODO ASSIGN TITULAR TEACHER
+
+    public ResponseEntity<String> assignTitularTeacher(AssignPrincipalTeacherRequest request ) {
+        ClassRoom classRoom = getClassById(request.classID()) ;
+        Teacher teacher = teacherRepository.getTeacherByTeacherID(request.teacherID());
+        PrincipalTeacher principalTeacher = (PrincipalTeacher) PrincipalTeacher
+                .builder()
+                .name(teacher.getName())
+                .isTitular(true)
+                .build();
+        if (Objects.equals(request.schoolType(), "SECONDARY")) {
+            principalTeacher.setClassRoom(classRoom);
+            classRoom.setPrincipalTeacher(principalTeacherRepository.save(principalTeacher));
+            classRepository.save(classRoom);
+        } else if ( Objects.equals(request.schoolType(), "PRIMARY")){
+            List<Course>  courses = classRoom.getCourses();
+            principalTeacher.setCourses(courses);
+            principalTeacher.setClassRoom(classRoom);
+            classRoom.setPrincipalTeacher(principalTeacherRepository.save(principalTeacher));
+            classRepository.save(classRoom);
+
+        }
+
+        return  ResponseEntity.ok("Success");
+
+
+    }
+
+//     public String getSchoolType (long schoolID) {
+//         RestTemplate restTemplate = new RestTemplate();
+//     }
 
     public List<Student> getRecentStudents(int schoolID) {
         return enrolledStudentRepository.findTopByStudentClassSchoolIDOrderByDateEnrolledDesc(schoolID,PageRequest.of(0,5));

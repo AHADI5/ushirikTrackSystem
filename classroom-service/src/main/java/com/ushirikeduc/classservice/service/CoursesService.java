@@ -85,6 +85,7 @@ public record CoursesService (
         );
     }
 
+
     public List<SimpleCourseForm> getCoursesAssignedByTeacherID(long teacherID) {
         Teacher teacher  = teacherRepository.getTeacherByTeacherID(teacherID);
         List<SimpleCourseForm> coursesAssigned = new ArrayList<>();

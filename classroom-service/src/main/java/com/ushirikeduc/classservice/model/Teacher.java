@@ -1,10 +1,7 @@
 package com.ushirikeduc.classservice.model;
 
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,13 +15,17 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public class Teacher {
     @Id
     @GeneratedValue
     private long id ;
     private long teacherID ;
     private String name ;
+    private  boolean isTitular ;
 
     @OneToMany(mappedBy = "teacher")
     private List<Course> courses;
+
 }

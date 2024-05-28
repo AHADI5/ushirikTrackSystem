@@ -65,6 +65,7 @@ public class KafkaListeners {
         Teacher teacher = Teacher.builder()
 //                .classID((long) teacherEvent.getClassID())
                 .teacherID((long) teacherEvent.getTeacherID())
+                .isTitular(false)
                 .name(teacherEvent.getFirstName() + " " + teacherEvent.getLastName())
                 .build();
         Teacher savedTeacher = teacherRepository.save(teacher);

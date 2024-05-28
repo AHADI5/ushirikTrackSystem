@@ -46,6 +46,12 @@ public record SchoolController(
 
     }
 
+    @GetMapping("{schoolID}/getSchoolType")
+    public String getSchoolType(@PathVariable int schoolID) {
+        return schoolService.getSchoolType(schoolID);
+
+    }
+
 
 
 
