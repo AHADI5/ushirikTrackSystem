@@ -9,11 +9,8 @@ import com.ushirikeduc.classservice.repository.TeacherRepository;
 import com.ushirikeduc.classservice.service.ClassRoomService;
 import com.ushirikeduc.classservice.service.CoursesService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Component
 @Slf4j
@@ -32,6 +29,7 @@ public class KafkaListeners {
         this.classRoomRepository = classRoomRepository;
         this.teacherRepository = teacherRepository;
         this.coursesService = coursesService;
+
     }
 
     /*
@@ -62,17 +60,16 @@ public class KafkaListeners {
     void listener(TeacherEvent teacherEvent) {
         log.info(String.format("Teacher  Event received in school service => %s",teacherEvent.toString()));
         // save the teacher in the database
+
         Teacher teacher = Teacher.builder()
 //                .classID((long) teacherEvent.getClassID())
                 .teacherID((long) teacherEvent.getTeacherID())
                 .isTitular(false)
+                .email(teacherEvent.getEmail())
                 .name(teacherEvent.getFirstName() + " " + teacherEvent.getLastName())
                 .build();
         Teacher savedTeacher = teacherRepository.save(teacher);
         log.info("Class Assigned Successfully" + savedTeacher);
-
-        //singing teacher to the selected ClassRoom
-//        classRoomService.assignTeacherToClass(savedTeacher);
     }
 
     /***

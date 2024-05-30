@@ -46,6 +46,7 @@ public record TeacherService(TeacherRepository teacherRepository,
         addressRepository.save(address);
         Teacher teacher = Teacher.builder()
                 .firstName(request.firstName())
+                .SchoolType(request.schoolType())
                 .lastName(request.lastName())
                 .phone(request.phone())
 //                .classID(request.classID())

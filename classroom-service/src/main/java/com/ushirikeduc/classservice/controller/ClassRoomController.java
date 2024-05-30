@@ -1,10 +1,7 @@
 package com.ushirikeduc.classservice.controller;
 
 import com.ushirikeduc.classservice.dto.*;
-import com.ushirikeduc.classservice.model.ClassRoom;
-import com.ushirikeduc.classservice.model.ClassRoomOption;
-import com.ushirikeduc.classservice.model.Course;
-import com.ushirikeduc.classservice.model.Student;
+import com.ushirikeduc.classservice.model.*;
 import com.ushirikeduc.classservice.service.ClassRoomOptionService;
 import com.ushirikeduc.classservice.service.ClassRoomService;
 import com.ushirikeduc.classservice.service.CoursesService;
@@ -101,7 +98,7 @@ public class ClassRoomController {
 
     }
 
-    @GetMapping ("{classID}/getTitular")
+    @GetMapping("{classID}/getTitular")
     public TeacherResponse getClassRoomTitular(@PathVariable int classID) {
         return classRoomService.getClassRoomTitular(classID);
 
@@ -127,6 +124,10 @@ public class ClassRoomController {
     @GetMapping("/{schoolID}/get-section")
     public ResponseEntity<List<ClassRoomOptionResponse>> getAllClassOptionsByClassRoom(@PathVariable int schoolID ){
         return  classRoomOptionService.getAllClassSection(schoolID);
+    }
+    @GetMapping("{teacherEmail}/getTeacherByEmail")
+    public Teacher getTeacherByEmail(@PathVariable String teacherEmail){
+        return classRoomService.loadTeacherByEmail(teacherEmail);
     }
 
     @PostMapping("/studentLevel/parentEmail")

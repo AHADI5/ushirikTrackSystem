@@ -1,5 +1,6 @@
 package com.ushirikeduc.classservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,17 +16,20 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-public class Teacher {
+
+public  class Teacher {
     @Id
     @GeneratedValue
     private long id ;
     private long teacherID ;
     private String name ;
-    private  boolean isTitular ;
+    private String email;
+    private boolean isTitular ;
+    @OneToMany(mappedBy = "teacher" , cascade = CascadeType.ALL)
+    List<Course> courses ;
+    @JsonIgnore
+    @OneToOne(mappedBy = "principalTeacher")
+    ClassRoom classRoom;
 
-    @OneToMany(mappedBy = "teacher")
-    private List<Course> courses;
 
 }

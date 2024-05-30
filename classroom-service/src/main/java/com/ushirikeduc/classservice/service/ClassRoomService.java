@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -25,14 +24,14 @@ public class ClassRoomService{
     final ClassRoomOptionRepository classRoomOptionRepository;
 
     final TeacherRepository teacherRepository;
-    final PrincipalTeacherRepository principalTeacherRepository ;
+
 
 //    final ClassRoomProducer classRoomProducer;
 
     public ClassRoomService(ClassRoomRepository classRepository,
                             EnrolledStudentRepository enrolledStudentRepository,
                             MessageController messageController,
-                            ClassRoomOptionRepository classRoomOptionRepository, TeacherRepository teacherRepository,  PrincipalTeacherRepository principalTeacherRepository
+                            ClassRoomOptionRepository classRoomOptionRepository, TeacherRepository teacherRepository
 
     ) {
         this.classRepository = classRepository;
@@ -42,7 +41,7 @@ public class ClassRoomService{
         this.classRoomOptionRepository = classRoomOptionRepository;
 
         this.teacherRepository = teacherRepository;
-        this.principalTeacherRepository = principalTeacherRepository;
+
 
     }
 
@@ -249,46 +248,32 @@ public class ClassRoomService{
 
 
     // Deep copy utility
-    private List<Course> deepCopyCourses(List<Course> courses) {
-        return courses.stream()
-                .map(course -> new Course(course.getAssignedCourseID(), course.getName(), course.getCategory(), course.getCourseID() , course.getClassRoom() ,course.getTeacher()))
-                .collect(Collectors.toList());
-    }
+//    private List<Course> deepCopyCourses(List<Course> courses) {
+//        return courses.stream()
+//                .map(course -> new Course(course.getAssignedCourseID(), course.getName(), course.getCategory(), course.getCourseID() , course.getClassRoom() ,course.getTeacher()))
+//                .collect(Collectors.toList());
+//    }
 
     //This function assigns a teacher to a classRoom as a titular
     public ResponseEntity<String> assignTitularTeacher(AssignPrincipalTeacherRequest request) {
         ClassRoom classRoom = getClassById(request.classID());
-        Teacher teacher = teacherRepository.getTeacherByTeacherID(request.teacherID());
-        PrincipalTeacher principalTeacher = PrincipalTeacher.principalTeacherBuilder()
-                .name(teacher.getName())
-                .isTitular(true)
-                .build();
+        Teacher principalTeacher = teacherRepository.getTeacherByTeacherID(request.teacherID());
+        principalTeacher.setTitular(true);
+        classRoom.setPrincipalTeacher(teacherRepository.save(principalTeacher));
+        classRepository.save(classRoom);
 
-        if (Objects.equals(request.schoolType(), "SECONDARY")) {
-            principalTeacher.setClassRoom(classRoom);
-            classRoom.setPrincipalTeacher(principalTeacherRepository.save(principalTeacher));
-            classRepository.save(classRoom);
-        } else if (Objects.equals(request.schoolType(), "PRIMARY")) {
-            List<Course> copiedCourses = deepCopyCourses(classRoom.getCourses());
-            principalTeacher.setCourses(copiedCourses);
-            principalTeacher.setClassRoom(classRoom);
-            classRoom.setPrincipalTeacher(principalTeacherRepository.save(principalTeacher));
-            classRepository.save(classRoom);
-        }
 
         return ResponseEntity.ok("Success");
     }
 
     public TeacherResponse getClassRoomTitular (long classID) {
         ClassRoom classRoom = getClassById(classID) ;
-        PrincipalTeacher principalTeacher = classRoom.getPrincipalTeacher();
 
-        return new TeacherResponse(
-                principalTeacher.getName(),
-                principalTeacher.getTeacherID()
-        );
-
-
+            Teacher titular = classRoom.getPrincipalTeacher();
+            return new TeacherResponse(
+                    titular.getName(),
+                    titular.getTeacherID()
+            );
     }
 
 
@@ -393,6 +378,10 @@ public class ClassRoomService{
         }
 
         return  simpleCourseFormList;
+    }
+
+    public Teacher loadTeacherByEmail(String teacherEmail) {
+        return  teacherRepository.findTeacherByEmail(teacherEmail);
     }
 
 //    public List<CoursesAssigned> getCoursesAssignedByTeacherID(long teacherID) {

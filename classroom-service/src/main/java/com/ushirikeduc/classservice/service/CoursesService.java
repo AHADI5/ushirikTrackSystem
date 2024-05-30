@@ -7,9 +7,7 @@ import com.ushirikeduc.classservice.dto.SimpleCourseForm;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Course;
 import com.ushirikeduc.classservice.model.Teacher;
-import com.ushirikeduc.classservice.repository.ClassRoomRepository;
-import com.ushirikeduc.classservice.repository.CourseRepository;
-import com.ushirikeduc.classservice.repository.TeacherRepository;
+import com.ushirikeduc.classservice.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,6 +23,7 @@ public record CoursesService (
         CourseRepository courseRepository  ,
         TeacherService teacherService,
         TeacherRepository teacherRepository
+
 
 
 ) {
@@ -69,7 +68,7 @@ public record CoursesService (
     public CoursesAssigned assignCourseToTeacher( AssignCoursesRequest request) {
 
 //        ClassRoom classRoom = classRoomService.getClassIfExists(classID);
-        Teacher teacher = teacherService.getTeacherByID(request.teacherID());
+        Teacher teacher =teacherRepository.getTeacherByTeacherID(request.teacherID());
 //        log.info(teacher.toString());
         List<Course> courses = new ArrayList<>();
         for (int ID : request.courseIDs()) {
@@ -78,7 +77,7 @@ public record CoursesService (
             courses.add(courseRepository.save(course));
         }
         teacher.setCourses(courses);
-        Teacher updatedTeacher  = teacherRepository.save(teacher);
+        Teacher updatedTeacher  =  teacherRepository.save(teacher);
         return new CoursesAssigned(
                 updatedTeacher.getName(),
                 updatedTeacher.getCourses()

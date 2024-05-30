@@ -45,7 +45,8 @@ public class ClassRoom {
     private List<Course> courses = new ArrayList<>();
 
    @OneToOne
-    private PrincipalTeacher principalTeacher;
+    private Teacher principalTeacher;
+
 
 
 
