@@ -47,6 +47,12 @@ public class ClassRoomController {
         return  coursesService.courseByClassID(classRoomId);
     }
 
+//    @GetMapping("{schoolID}/get-students-stats")
+//    public List<StudentStatsByLevels> getStudentStatsByLevel (@PathVariable int schoolID) {
+//        return  classRoomService.getStudentStatByLevel(schoolID);
+//    }
+
+
     @GetMapping("/{classRoomId}/courses/{courseId}")
     public Course getSpecieCourseInClassRoom(
             @PathVariable int classRoomId, @PathVariable int courseId
@@ -126,9 +132,11 @@ public class ClassRoomController {
         return  classRoomOptionService.getAllClassSection(schoolID);
     }
     @GetMapping("{teacherEmail}/getTeacherByEmail")
-    public Teacher getTeacherByEmail(@PathVariable String teacherEmail){
+    public SimpleTeacherForm getTeacherByEmail(@PathVariable String teacherEmail){
         return classRoomService.loadTeacherByEmail(teacherEmail);
     }
+
+
 
     @PostMapping("/studentLevel/parentEmail")
     public List<String> getParentEmailByStudentLevel(@RequestBody List<Long> levels) {

@@ -22,6 +22,8 @@ public  class Teacher {
     @GeneratedValue
     private long id ;
     private long teacherID ;
+    private String  schoolType ;
+    private long schoolID ;
     private String name ;
     private String email;
     private boolean isTitular ;

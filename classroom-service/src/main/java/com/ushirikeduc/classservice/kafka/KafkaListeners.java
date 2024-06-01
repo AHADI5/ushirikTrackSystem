@@ -64,6 +64,7 @@ public class KafkaListeners {
         Teacher teacher = Teacher.builder()
 //                .classID((long) teacherEvent.getClassID())
                 .teacherID((long) teacherEvent.getTeacherID())
+                .schoolType(teacherEvent.getSchoolType())
                 .isTitular(false)
                 .email(teacherEvent.getEmail())
                 .name(teacherEvent.getFirstName() + " " + teacherEvent.getLastName())

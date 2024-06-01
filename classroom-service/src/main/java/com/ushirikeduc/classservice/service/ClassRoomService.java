@@ -196,8 +196,10 @@ public class ClassRoomService{
         return new ClassInfoResponse(
                 classRoom.getName(),
                 Math.toIntExact(classRoom.getLevel()),
-                classRoom.getName(),//make a call to school microservice to get School name.
+                classRoom.getName(),
+                //make a call to school microservice to get School name.
                 (int) classRoom.getSchoolID(),
+                (int) classRoom.getClassesID(),
                 classRoom.getClassRoomOption().getOptionName()
 
         );
@@ -380,8 +382,27 @@ public class ClassRoomService{
         return  simpleCourseFormList;
     }
 
-    public Teacher loadTeacherByEmail(String teacherEmail) {
-        return  teacherRepository.findTeacherByEmail(teacherEmail);
+    public SimpleTeacherForm loadTeacherByEmail(String teacherEmail) {
+
+        Teacher teacher =  teacherRepository.findTeacherByEmail(teacherEmail);
+
+        return  new SimpleTeacherForm(
+                teacher.getName(),
+                teacher.getEmail(),
+                teacher.isTitular(),
+                teacher.getSchoolType(),
+                ((teacher.isTitular() || Objects.equals(teacher.getSchoolType(), "PRIMARY")) && teacher.getClassRoom() != null) ?  new ClassInfoResponse(
+                         teacher.getClassRoom().getName() ,
+                        Math.toIntExact(teacher.getClassRoom().getLevel()),
+                        "",
+                        (int) teacher.getSchoolID(),
+                        (int) teacher.getClassRoom().getClassesID(),
+                        teacher.getClassRoom().getClassRoomOption().getOptionName()
+
+                ) : null,
+                Objects.equals(teacher.getSchoolType(), "SECONDARY") ? simpleCourseFormList(teacher.getCourses()) : null
+
+        );
     }
 
 //    public List<CoursesAssigned> getCoursesAssignedByTeacherID(long teacherID) {

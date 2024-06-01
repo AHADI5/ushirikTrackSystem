@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassInfoResponse  {
-    String className ;
+    String letter ;
     int level;
     String schoolName;
     int schoolID;
+    int classRoomID;
     String optionName ;
 }
