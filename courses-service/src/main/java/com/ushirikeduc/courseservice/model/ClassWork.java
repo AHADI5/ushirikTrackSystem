@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
+
 @Entity
 @Slf4j
 @Builder
@@ -23,6 +25,8 @@ public class ClassWork {
     private String description ;
     private  int credits;
     private int classID ;
+    private Date createdAt ;
+    private Date dateToBeDone ;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "course_id")

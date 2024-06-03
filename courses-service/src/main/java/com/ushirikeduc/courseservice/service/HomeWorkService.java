@@ -29,9 +29,10 @@ public record HomeWorkService (
         // Build the Homework object first
         Homework homework = Homework.builder()
                 .creationDate(new Date())
-                .title(request.title())
+                .dateToBeDone(request.dueDate())
+                .title("Devoir à Domicile")
                 .classRoomID(classID)
-                .description(request.Description())
+                .description(request.description())
                 .build();
 
         // Save the Homework entity
@@ -44,7 +45,7 @@ public record HomeWorkService (
         // Get Questions from the request
         for (QuestionRegistrationRequest question : request.questions()) {
             HomeWorkQuestion homeWorkQuestion = new HomeWorkQuestion();
-            homeWorkQuestion.setQuestion(question.question());
+            homeWorkQuestion.setQuestion(question.content());
             homeWorkQuestion.setDescription(question.description());
             homeWorkQuestion.setInstruction(question.instruction());
 

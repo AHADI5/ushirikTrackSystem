@@ -19,9 +19,9 @@ public class HomeWorkQuestion {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private  long homeQuestionID ;
     private String question ;
+    private double max ;
     private String description ;
     private String instruction  ;
-
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course ;

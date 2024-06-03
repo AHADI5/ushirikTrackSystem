@@ -2,7 +2,7 @@ package com.ushirikeduc.courseservice.dto;
 
 public record QuestionRegistrationRequest (
         int courseID ,
-        String question ,
+        String content ,
         String instruction,
         String description
 

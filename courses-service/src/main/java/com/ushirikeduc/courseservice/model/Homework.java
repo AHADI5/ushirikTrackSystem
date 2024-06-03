@@ -25,6 +25,7 @@ public class Homework {
     private String description ;
     private int classRoomID ;
     private Date creationDate ;
+    private Date dateToBeDone  ;
     @OneToMany(mappedBy = "homework" , cascade = CascadeType.ALL)
     private List<HomeWorkQuestion> questions = new ArrayList<>();
 
