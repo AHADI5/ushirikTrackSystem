@@ -1,9 +1,8 @@
 package com.ushirikeduc.courseservice.model;
 
 public enum ClassworkType {
-    INTERROGATION ,
+    QUIZ,
     CLASSWORK,
     TEST,
-    EXAMINATION,
-    MANUAL_WORK
+
 }

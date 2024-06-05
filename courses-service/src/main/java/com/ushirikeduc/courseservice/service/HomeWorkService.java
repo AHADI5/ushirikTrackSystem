@@ -103,6 +103,7 @@ public record HomeWorkService (
 
         return new homeWorkResponse(
                 coursesInvolved ,
+                "HomeWork",
                 homework.getTitle(),
                 homework.getDescription(),
                 homework.getCreationDate(),

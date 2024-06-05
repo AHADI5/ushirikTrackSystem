@@ -1,15 +1,18 @@
 package com.ushirikeduc.courseservice.dto;
 
+import com.ushirikeduc.courseservice.model.ClassworkType;
 import com.ushirikeduc.courseservice.model.Course;
 
 import java.util.Date;
 
 public record ClassWorkRegistrationRequest (
-       String name ,
-       String description ,
+        String type ,
 
-       String classWorkType ,
-       int classID,
-       int credits
+        String description ,
+
+        Date dateTobeDone  ,
+        int courseID ,
+        int classID,
+        int maxScore
 ) {
 }

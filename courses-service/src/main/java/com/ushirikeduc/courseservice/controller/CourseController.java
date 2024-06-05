@@ -3,10 +3,7 @@ package com.ushirikeduc.courseservice.controller;
 import com.ushirikeduc.courseservice.dto.*;
 import com.ushirikeduc.courseservice.model.ClassWork;
 import com.ushirikeduc.courseservice.model.Course;
-import com.ushirikeduc.courseservice.service.ClassWorkService;
-import com.ushirikeduc.courseservice.service.CourseCategoryService;
-import com.ushirikeduc.courseservice.service.CoursesService;
-import com.ushirikeduc.courseservice.service.HomeWorkService;
+import com.ushirikeduc.courseservice.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +17,8 @@ public record CourseController(
         CoursesService coursesService,
         ClassWorkService classWorkService ,
         HomeWorkService homeWorkService ,
-        CourseCategoryService courseCategoryService
+        CourseCategoryService courseCategoryService,
+        WorksService worksService
 
 ) {
     @PostMapping("/register-new-course")
@@ -59,12 +57,23 @@ public record CourseController(
 
     }
 
+    @GetMapping("{classID}/classWorks")
+    public  List<ClassWorkRegistrationResponse> getClassWorksByClassID(@PathVariable int classID) {
+        return  classWorkService.getClassWorksByClassRoomID(classID);
+
+    }
+
+    @GetMapping("{classID}/classRoomWorks")
+    public Works  getWorksByClassID (@PathVariable int classID) {
+        return  worksService.getAllWorks(classID);
+    }
+
     @GetMapping("/classwork/{classWorkID}")
     public ClassWork getClassWorkByID(@PathVariable int classWorkID) {
         return classWorkService.getClassWorkByID( classWorkID) ;
 
     }
-    @GetMapping("/{courseID}/classWorks")
+    @GetMapping("/{courseID}/classWorksByCourseID")
     public List<ClassWork> getClassWorkByCourseID(@PathVariable int courseID) {
         return classWorkService.getClassWorkByCourseID( courseID) ;
 

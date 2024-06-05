@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ClassWorkRepository extends JpaRepository<ClassWork , Integer> {
     List<ClassWork> getClassWorkByClassworkType(ClassworkType classworkType) ;
+    List<ClassWork> getClassWorkByClassID(long classID);
 }

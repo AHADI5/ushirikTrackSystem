@@ -57,8 +57,6 @@ public class MessageController {
             classWorkEvent.setClassWorkID(classWork.getClassWorkID());
             classWorkEvent.setClassWorkType(classWork.getClassworkType().toString());
 
-            classWorkEvent.setTitle(classWork.getName());
-
         kafkaTemplateClasswork.send("classwork-created" , classWorkEvent);
 //        KafkaProducer<String , ClassWorkEvent> producer = createKafkaProducer();
 //        producer.send(new ProducerRecord<String, ClassWorkEvent>("classwork-created", classWorkEvent));

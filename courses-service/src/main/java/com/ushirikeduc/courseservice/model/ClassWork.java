@@ -21,10 +21,10 @@ public class ClassWork {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int classWorkID ;
     private  ClassworkType classworkType;
-    private  String name ;
+
     private String description ;
-    private  int credits;
     private int classID ;
+    private long maxScore  ;
     private Date createdAt ;
     private Date dateToBeDone ;
     @JsonIgnore
