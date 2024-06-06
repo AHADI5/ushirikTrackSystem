@@ -102,6 +102,7 @@ public record HomeWorkService (
         log.info("the date saved is  " + homework.getCreationDate() );
 
         return new homeWorkResponse(
+                (int) homework.getHomeWorkID(),
                 coursesInvolved ,
                 "HomeWork",
                 homework.getTitle(),

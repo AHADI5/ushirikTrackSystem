@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public record homeWorkResponse  (
+        int homeWorkID ,
         List<String> courseInvolved,
 
         String type  ,
