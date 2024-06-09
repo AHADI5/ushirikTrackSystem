@@ -13,6 +13,7 @@ public class ClassWorkEvent {
     private String title ;
     private int courseID ;
     private String courseName ;
+    private int classID ;
     private int classWorkID ;
     private String classWorkType ;
 }

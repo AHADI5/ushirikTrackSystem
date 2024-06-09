@@ -13,9 +13,10 @@ public record ClassWorkAssignedService(
 
     public void registerAssignedClassWork(ClassWorkEvent classWorkEvent) {
         ClassWorksAssigned classwork = ClassWorksAssigned.builder()
-                .title(classWorkEvent.getTitle())
+
                 .courseName(classWorkEvent.getCourseName())
                 .classWorkType(classWorkEvent.getClassWorkType())
+                .classRoomID(classWorkEvent.getClassID())
                 .courseID(classWorkEvent.getCourseID())
                 .classWorkID(classWorkEvent.getClassWorkID())
                 .build();

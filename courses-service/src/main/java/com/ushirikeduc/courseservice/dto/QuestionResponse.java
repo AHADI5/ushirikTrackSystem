@@ -4,6 +4,7 @@ public record QuestionResponse(
         String question ,
         String description,
         String instruction ,
-        String courseName
+        String courseName ,
+        double maxScore
 ) {
 }

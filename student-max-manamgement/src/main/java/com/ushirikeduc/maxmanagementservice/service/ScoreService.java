@@ -51,7 +51,7 @@ public record ScoreService(
                     .orElseThrow(() -> new ResourceNotFoundException("Score Not found"));
 
             ScoreResponse scoreResponse = new ScoreResponse(
-                    realScore.getClasswork().getCourseName(),realScore.getClasswork().getTitle(), realScore.getScore()
+                    realScore.getClasswork().getCourseName(), realScore.getScore()
             );
             studentScoreList.add(scoreResponse);
         }

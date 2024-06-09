@@ -123,7 +123,8 @@ public record HomeWorkService (
                 question.getQuestion(),
                 question.getDescription(),
                 question.getInstruction(),
-                question.getCourse().getName()
+                question.getCourse().getName(),
+                question.getMax()
         );
 
     }

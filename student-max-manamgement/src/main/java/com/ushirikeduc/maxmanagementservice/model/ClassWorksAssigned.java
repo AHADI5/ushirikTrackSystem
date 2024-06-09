@@ -19,7 +19,7 @@ public class ClassWorksAssigned {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long classWorkAssignedID;
-    private String title ;
+    private  long classRoomID ;
     private String classWorkType;
     private String courseName ;
     private int courseID ;

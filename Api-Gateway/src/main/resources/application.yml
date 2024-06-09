@@ -82,6 +82,13 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id : max-service
+          uri: lb://MAX-SERVICE
+          predicates:
+            - Path=/api/v1/score/**
+          filters:
+            - AuthenticationFilter
+
 
 #          metadata:
 #            cors:
