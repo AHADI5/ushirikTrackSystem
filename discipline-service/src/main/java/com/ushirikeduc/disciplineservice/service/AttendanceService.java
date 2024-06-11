@@ -1,7 +1,6 @@
 package com.ushirikeduc.disciplineservice.service;
 
-import com.ushirikeduc.disciplineservice.Dto.AttendanceRegisterRequest;
-import com.ushirikeduc.disciplineservice.Dto.AttendanceResponse;
+import com.ushirikeduc.disciplineservice.Dto.*;
 import com.ushirikeduc.disciplineservice.model.Attendance;
 import com.ushirikeduc.disciplineservice.model.Discipline;
 import com.ushirikeduc.disciplineservice.repository.AttendanceRepository;
@@ -18,41 +17,65 @@ public record AttendanceService(
         AttendanceRepository attendanceRepository
 ) {
     //Record Attendance
-    public AttendanceResponse recordAttendance(int studentID, AttendanceRegisterRequest request) {
-        Discipline discipline = disciplineRepository.getDisciplineByOwnerID(studentID);
-
-
-        Attendance attendance = Attendance.builder()
-                .date(new Date())
-                .discipline(discipline)
-                .isPresent(request.isPresent())
-                .build();
-       Attendance savedAttendance = attendanceRepository.save(attendance);
-
-
-        return new AttendanceResponse(
-                savedAttendance.getDate(),
-                savedAttendance.isPresent()
-
-        );
+    public List<AttendanceResponse> recordAttendance(AttendanceRegisterRequest attendanceRegisterRequestList , int classRoomId ) {
+        List<AttendanceResponse>  attendanceResponses = new ArrayList<>() ;
+        List<Discipline> disciplines = disciplineRepository.getDisciplineByClassRoomID(classRoomId);
+        for (AttendanceSimpleForm attendanceRegisterRequest: attendanceRegisterRequestList.attendanceSimpleFormList()) {
+            Discipline discipline = disciplineRepository.getDisciplineByOwnerID(attendanceRegisterRequest.studentID());
+            Attendance attendance = Attendance.builder()
+                    .discipline(discipline)
+                    .isPresent(attendanceRegisterRequest.isPresent())
+                    .date(attendanceRegisterRequestList.date())
+                    .build();
+            attendanceResponses.add(new AttendanceResponse(
+                    attendance.getDate() ,
+                    attendance.getDiscipline().getOwner(),
+                    attendance.isPresent()
+            ));
+        }
+        return attendanceResponses;
     }
 
-    public List<AttendanceResponse> getAttendanceList(Long studentID){
-        List<Attendance> attendances = attendanceRepository.getAttendanceByDiscipline_OwnerID(studentID);
+    public AttendanceListInClassRoom getAttendancesByDateInClassRoom(AttendanceByDateRequest attendance){
+        List<AttendanceResponse> attendanceResponses = new ArrayList<>() ;
+        List<Attendance> attendanceList = attendanceRepository.getAttendanceByDisciplineClassRoomIDAndDate(attendance.classRoomId() , attendance.date());
 
-        //this list will store , attendances in more flexible format
 
-        List<AttendanceResponse> attendanceResponses = new ArrayList<>();
+        //If attendance is null set every thing to false , and give back the response
 
-        for (Attendance attendance : attendances ) {
-            AttendanceResponse attendanceResponse = new AttendanceResponse(
-                    attendance.getDate(),
-                    attendance.isPresent()
+        if(attendanceList.isEmpty()) {
+            List<Discipline> disciplines = disciplineRepository.getDisciplineByClassRoomID(attendance.classRoomId());
+            for(Discipline discipline : disciplines) {
+                AttendanceResponse attendanceResponse = new AttendanceResponse(
+                        attendance.date() ,
+                        discipline.getOwner(),
+                        false
+                );
+                attendanceResponses.add(attendanceResponse);
+            }
+
+           return  new AttendanceListInClassRoom(
+                    attendance.date() ,
+                    attendanceResponses
             );
-            attendanceResponses.add(attendanceResponse);
+
+
         }
 
 
-        return  attendanceResponses;
+        for (Attendance attendanceItem : attendanceList) {
+            AttendanceResponse attendanceResponse = new AttendanceResponse(
+                    attendanceItem.getDate() ,
+                    attendanceItem.getDiscipline().getOwner(),
+                    attendanceItem.isPresent()
+            );
+            attendanceResponses.add(attendanceResponse);
+        }
+        return  new AttendanceListInClassRoom(
+                attendance.date() ,
+                attendanceResponses
+        );
     }
+
+
 }

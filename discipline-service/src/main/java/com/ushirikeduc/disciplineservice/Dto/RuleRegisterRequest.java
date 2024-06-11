@@ -9,6 +9,5 @@ public record RuleRegisterRequest (
         int schoolID ,
         String content ,
         List<ViolationRegisterRequest>  violationType
-
 ){
 }

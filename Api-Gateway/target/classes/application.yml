@@ -89,6 +89,14 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id : discipline-service
+          uri : lb://DISCIPLINE-SERVICE
+          predicates:
+            - Path=/api/v1/discipline/**
+          filters:
+            - AuthenticationFilter
+
+
 
 #          metadata:
 #            cors:
