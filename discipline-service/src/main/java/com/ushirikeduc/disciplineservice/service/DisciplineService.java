@@ -59,6 +59,7 @@ public record DisciplineService(
         for(Attendance attendance : attendances){
             AttendanceResponse attendanceResponse = new AttendanceResponse(
                     attendance.getDate(),
+                    (int) attendance.getDiscipline().getOwnerID(),
                     attendance.getDiscipline().getOwner(),
                     attendance.isPresent()
             );

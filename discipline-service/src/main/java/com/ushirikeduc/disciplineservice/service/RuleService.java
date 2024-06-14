@@ -6,6 +6,7 @@ import com.ushirikeduc.disciplineservice.Dto.RuleResponse;
 import com.ushirikeduc.disciplineservice.Dto.ViolationRegisterRequest;
 import com.ushirikeduc.disciplineservice.Dto.ViolationResponse;
 import com.ushirikeduc.disciplineservice.model.Rule;
+import com.ushirikeduc.disciplineservice.model.SanctionType;
 import com.ushirikeduc.disciplineservice.model.ViolationType;
 import com.ushirikeduc.disciplineservice.repository.RuleRepository;
 import com.ushirikeduc.disciplineservice.repository.ViolationRepository;
@@ -34,10 +35,12 @@ public record RuleService(
 
             List<ViolationType> violationList = new ArrayList<>(); // Créer une nouvelle liste à chaque itération
             for (ViolationRegisterRequest violationRegisterRequest : ruleRegisterRequest.violationType()) {
+                SanctionType sanctionType = getSanctionType(violationRegisterRequest);
                 ViolationType violationType = ViolationType.builder()
                         .rule(savedRule)  // Utiliser la règle enregistrée
                         .occurrence(violationRegisterRequest.occurrenceNumber())
                         .sanction(violationRegisterRequest.sanctionType())
+                        .sanctionType(sanctionType)
                         .build();
                 violationRepository.save(violationType);
                 violationList.add(violationType);
@@ -48,6 +51,19 @@ public record RuleService(
             ruleList.add(savedRule);
         }
         return simpleRule(ruleList);
+    }
+
+    private static SanctionType getSanctionType(ViolationRegisterRequest violationRegisterRequest) {
+        SanctionType sanctionType = null ;
+        switch (violationRegisterRequest.sanctionPredefinedType()) {
+            case "Remark" -> sanctionType = SanctionType.REMARK;
+            case "Temp_exclude" -> sanctionType = SanctionType.TEMP_EXCLUDE ;
+            case "def_exclude" -> sanctionType = SanctionType.DEF_EXCLUDE ;
+            case "invite_parent" -> sanctionType = SanctionType.INVITE_PARENT ;
+            case "warning" -> sanctionType = SanctionType.WARNING;
+
+        }
+        return sanctionType;
     }
 
     public List<RuleResponse> simpleRule(List<Rule> rules) {

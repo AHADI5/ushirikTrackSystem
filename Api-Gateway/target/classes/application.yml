@@ -45,20 +45,7 @@ spring:
             - AuthenticationFilter
 
 
-#        - id : classroom-service
-#          uri : lb://CLASSROOM-SERVICE
-#          predicates:
-#            - Path=/api/v1/classRoom/**'
-#          filters:
-#            - AuthenticationFilter
-#          metadata:
-#            cors:
-#              allowedOrigins: '*'
-#              allowedMethods:
-#                - GET
-#                - POST
-#              allowedHeaders: '*'
-#              maxAge: 30
+
 
         - id : student-service
           uri : lb://STUDENT-SERVICE

@@ -4,6 +4,7 @@ public record ViolationRegisterRequest(
         String title ,
         String description ,
         int occurrenceNumber,
+        String sanctionPredefinedType,
         String sanctionType
 ) {
 }

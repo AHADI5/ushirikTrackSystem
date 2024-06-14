@@ -5,6 +5,6 @@ import java.util.List;
 
 public record AttendanceRegisterRequest(
        Date date,
-       List<AttendanceSimpleForm> attendanceSimpleFormList
+       List<AttendanceSimpleForm> attendances
 ) {
 }

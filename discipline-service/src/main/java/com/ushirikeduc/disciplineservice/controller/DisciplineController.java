@@ -39,4 +39,9 @@ public record DisciplineController(
         return attendanceService.getAttendancesByDateInClassRoom(attendance);
     }
 
+    @GetMapping("{studentID}/getIncidentByOwnerID")
+    public List<IncidentResponse> incidentListByOwnerID(@PathVariable int studentID){
+        return  incidentService.getIncidentsByDiscipline(studentID) ;
+    }
+
 }

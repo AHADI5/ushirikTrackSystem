@@ -5,41 +5,66 @@ import com.ushirikeduc.disciplineservice.model.Attendance;
 import com.ushirikeduc.disciplineservice.model.Discipline;
 import com.ushirikeduc.disciplineservice.repository.AttendanceRepository;
 import com.ushirikeduc.disciplineservice.repository.DisciplineRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public record AttendanceService(
         DisciplineRepository disciplineRepository ,
         AttendanceRepository attendanceRepository
 ) {
     //Record Attendance
-    public List<AttendanceResponse> recordAttendance(AttendanceRegisterRequest attendanceRegisterRequestList , int classRoomId ) {
-        List<AttendanceResponse>  attendanceResponses = new ArrayList<>() ;
+    public List<AttendanceResponse> recordAttendance(AttendanceRegisterRequest attendanceRegisterRequestList, int classRoomId) {
+        List<AttendanceResponse> attendanceResponses = new ArrayList<>();
         List<Discipline> disciplines = disciplineRepository.getDisciplineByClassRoomID(classRoomId);
-        for (AttendanceSimpleForm attendanceRegisterRequest: attendanceRegisterRequestList.attendanceSimpleFormList()) {
+
+        for (AttendanceSimpleForm attendanceRegisterRequest : attendanceRegisterRequestList.attendances()) {
             Discipline discipline = disciplineRepository.getDisciplineByOwnerID(attendanceRegisterRequest.studentID());
-            Attendance attendance = Attendance.builder()
-                    .discipline(discipline)
-                    .isPresent(attendanceRegisterRequest.isPresent())
-                    .date(attendanceRegisterRequestList.date())
-                    .build();
+
+            // Check if the attendance already exists
+            Optional<Attendance> existingAttendanceOpt = attendanceRepository.findByDateAndDiscipline(
+                    attendanceRegisterRequestList.date(), discipline);
+
+            Attendance attendance;
+            if (existingAttendanceOpt.isPresent()) {
+                // Update existing attendance
+                attendance = existingAttendanceOpt.get();
+                attendance.setPresent(attendanceRegisterRequest.isPresent());
+            } else {
+                // Create new attendance
+                attendance = Attendance.builder()
+                        .discipline(discipline)
+                        .isPresent(attendanceRegisterRequest.isPresent())
+                        .date(attendanceRegisterRequestList.date())
+                        .build();
+            }
+
+            // Save attendance (either new or updated)
+            Attendance savedAttendance = attendanceRepository.save(attendance);
             attendanceResponses.add(new AttendanceResponse(
-                    attendance.getDate() ,
-                    attendance.getDiscipline().getOwner(),
-                    attendance.isPresent()
+                    savedAttendance.getDate(),
+                    (int) savedAttendance.getDiscipline().getOwnerID(),
+                    savedAttendance.getDiscipline().getOwner(),
+                    savedAttendance.isPresent()
             ));
         }
+
         return attendanceResponses;
     }
 
+
     public AttendanceListInClassRoom getAttendancesByDateInClassRoom(AttendanceByDateRequest attendance){
         List<AttendanceResponse> attendanceResponses = new ArrayList<>() ;
-        List<Attendance> attendanceList = attendanceRepository.getAttendanceByDisciplineClassRoomIDAndDate(attendance.classRoomId() , attendance.date());
+        List<Attendance> attendanceList = attendanceRepository.findAttendancesByDate(attendance.date());
+//        List<Attendance> attendanceList = attendanceRepository.findByDateAndDiscipline_ClassRoomID( attendance.date(),attendance.classRoomId() );
 
+//        log.info(attendanceList.toString());
 
         //If attendance is null set every thing to false , and give back the response
 
@@ -48,34 +73,28 @@ public record AttendanceService(
             for(Discipline discipline : disciplines) {
                 AttendanceResponse attendanceResponse = new AttendanceResponse(
                         attendance.date() ,
-                        discipline.getOwner(),
+                        (int) discipline.getOwnerID() ,
+                        discipline.getOwner() ,
                         false
                 );
                 attendanceResponses.add(attendanceResponse);
             }
 
-           return  new AttendanceListInClassRoom(
-                    attendance.date() ,
-                    attendanceResponses
-            );
-
-
-        }
-
-
-        for (Attendance attendanceItem : attendanceList) {
-            AttendanceResponse attendanceResponse = new AttendanceResponse(
-                    attendanceItem.getDate() ,
-                    attendanceItem.getDiscipline().getOwner(),
-                    attendanceItem.isPresent()
-            );
-            attendanceResponses.add(attendanceResponse);
+        } else {
+            for (Attendance attendanceItem : attendanceList) {
+                AttendanceResponse attendanceResponse = new AttendanceResponse(
+                        attendanceItem.getDate() ,
+                        (int) attendanceItem.getDiscipline().getOwnerID(),
+                        attendanceItem.getDiscipline().getOwner(),
+                        attendanceItem.isPresent()
+                );
+                attendanceResponses.add(attendanceResponse);
+            }
         }
         return  new AttendanceListInClassRoom(
-                attendance.date() ,
-                attendanceResponses
-        );
+                 attendance.date() ,
+                 attendanceResponses
+         );
     }
-
 
 }

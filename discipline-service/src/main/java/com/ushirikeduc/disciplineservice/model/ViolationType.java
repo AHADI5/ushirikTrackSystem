@@ -16,6 +16,7 @@ public class ViolationType {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int violationID ;
     private  int occurrence ;
+    private SanctionType sanctionType ;
     private  String sanction ;
 
     @ManyToOne

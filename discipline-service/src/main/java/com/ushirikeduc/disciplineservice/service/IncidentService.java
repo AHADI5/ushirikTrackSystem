@@ -13,7 +13,9 @@ import com.ushirikeduc.disciplineservice.repository.ViolationRepository;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public record IncidentService(
@@ -67,4 +69,29 @@ public record IncidentService(
                 byPassedRule.getTitle()
         );
     }
+
+    public List<IncidentResponse> getIncidentsByDiscipline(int ownerID) {
+        Discipline discipline = disciplineRepository.getDisciplineByOwnerID(ownerID);
+        List<IncidentResponse> incidentResponseList = new ArrayList<>();
+        List<Incident> incidentResponses = incidentRepository.getIncidentByDiscipline(discipline);
+
+        for (Incident incident : incidentResponses) {
+            IncidentResponse incidentResponse = new IncidentResponse(
+                    incident.getTitle(),
+                    incident.getDescription() ,
+                    incident.getDate() ,
+                    incident.getSanction() ,
+                    incident.getRuleBypassed().getTitle()
+            );
+            incidentResponseList.add(incidentResponse);
+        }
+
+
+        return  incidentResponseList ;
+
+    }
+
+
+
+
 }
