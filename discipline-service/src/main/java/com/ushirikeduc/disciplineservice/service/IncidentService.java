@@ -1,11 +1,10 @@
 package com.ushirikeduc.disciplineservice.service;
 
+import Dto.DisciplineEvent;
 import com.ushirikeduc.disciplineservice.Dto.IncidentRegisterRequest;
 import com.ushirikeduc.disciplineservice.Dto.IncidentResponse;
-import com.ushirikeduc.disciplineservice.model.Discipline;
-import com.ushirikeduc.disciplineservice.model.Incident;
-import com.ushirikeduc.disciplineservice.model.Rule;
-import com.ushirikeduc.disciplineservice.model.ViolationType;
+import com.ushirikeduc.disciplineservice.controller.MessageController;
+import com.ushirikeduc.disciplineservice.model.*;
 import com.ushirikeduc.disciplineservice.repository.DisciplineRepository;
 import com.ushirikeduc.disciplineservice.repository.IncidentRepository;
 import com.ushirikeduc.disciplineservice.repository.RuleRepository;
@@ -22,7 +21,8 @@ public record IncidentService(
         DisciplineRepository disciplineRepository ,
         IncidentRepository incidentRepository,
         RuleRepository ruleRepository,
-        ViolationRepository violationRepository
+        ViolationRepository violationRepository,
+        MessageController messageController
 ) {
     public IncidentResponse registerIncident(long studentID ,
                                              IncidentRegisterRequest request){
@@ -60,6 +60,7 @@ public record IncidentService(
 
 
         Incident savedIncident = incidentRepository.save(incident);
+        messageController.publishDiscipline(createDisciplineContent(incident                                ));
 
         return  new IncidentResponse(
                 savedIncident.getTitle(),
@@ -91,7 +92,34 @@ public record IncidentService(
 
     }
 
+    //Create content to publish to kafka
+    public DisciplineEvent  createDisciplineContent(Object object) {
+        DisciplineEvent disciplineEvent = new DisciplineEvent();
+        if (object.getClass().getName().equals("Incident")) {
+            Incident incident = (Incident) object ;
+            disciplineEvent.setTitle(incident.getTitle());
+            //Create incident content
+            disciplineEvent.setContent(createIncidentContent(incident));
 
+        } else if (object.getClass().getName().equals("Attendance")) {
+            Attendance attendance = (Attendance) object;
+            disciplineEvent.setTitle("Absence");
+            disciplineEvent.setContent("L'enfant n'est pas venue à l'école aujourd'hui");
+            //Create Attendance Content
+        }
+
+        return  disciplineEvent ;
+
+    }
+
+    private String createIncidentContent(Incident incident) {
+        String date = incident.getDate().toString();
+        String description = incident.getDescription() ;
+
+        return(
+                "En data du " + date + " " + description + "/n"
+                );
+    }
 
 
 }
