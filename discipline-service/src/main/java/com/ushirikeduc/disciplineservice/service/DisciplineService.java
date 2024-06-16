@@ -50,7 +50,8 @@ public record DisciplineService(
                     incident.getDescription(),
                     incident.getDate(),
                     incident.getSanction(),
-                    incident.getRuleBypassed().getTitle()
+                    incident.getRuleBypassed().getTitle(),
+                    incident.getOccurrenceNumber()
             );
             incidentResponses.add(incidentResponse);
 

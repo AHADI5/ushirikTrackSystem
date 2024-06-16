@@ -3,6 +3,7 @@ package com.ushirikeduc.disciplineservice.service;
 import Dto.DisciplineEvent;
 import com.ushirikeduc.disciplineservice.Dto.IncidentRegisterRequest;
 import com.ushirikeduc.disciplineservice.Dto.IncidentResponse;
+import com.ushirikeduc.disciplineservice.Dto.OwnerIncidentsList;
 import com.ushirikeduc.disciplineservice.controller.MessageController;
 import com.ushirikeduc.disciplineservice.model.*;
 import com.ushirikeduc.disciplineservice.repository.DisciplineRepository;
@@ -67,11 +68,12 @@ public record IncidentService(
                 savedIncident.getDescription(),
                 savedIncident.getDate(),
                 savedIncident.getSanction(),
-                byPassedRule.getTitle()
+                byPassedRule.getTitle(),
+                savedIncident.getOccurrenceNumber()
         );
     }
 
-    public List<IncidentResponse> getIncidentsByDiscipline(int ownerID) {
+    public OwnerIncidentsList getIncidentsByDiscipline(int ownerID) {
         Discipline discipline = disciplineRepository.getDisciplineByOwnerID(ownerID);
         List<IncidentResponse> incidentResponseList = new ArrayList<>();
         List<Incident> incidentResponses = incidentRepository.getIncidentByDiscipline(discipline);
@@ -82,31 +84,30 @@ public record IncidentService(
                     incident.getDescription() ,
                     incident.getDate() ,
                     incident.getSanction() ,
-                    incident.getRuleBypassed().getTitle()
+                    incident.getRuleBypassed().getTitle(),
+                    incident.getOccurrenceNumber()
             );
             incidentResponseList.add(incidentResponse);
         }
 
 
-        return  incidentResponseList ;
+        return new OwnerIncidentsList(
+                discipline.getOwner(),
+                (int) discipline.getOwnerID(),
+                incidentResponseList
+        );
 
     }
 
     //Create content to publish to kafka
-    public DisciplineEvent  createDisciplineContent(Object object) {
+    public DisciplineEvent  createDisciplineContent(Incident incident) {
         DisciplineEvent disciplineEvent = new DisciplineEvent();
-        if (object.getClass().getName().equals("Incident")) {
-            Incident incident = (Incident) object ;
+
             disciplineEvent.setTitle(incident.getTitle());
             //Create incident content
             disciplineEvent.setContent(createIncidentContent(incident));
 
-        } else if (object.getClass().getName().equals("Attendance")) {
-            Attendance attendance = (Attendance) object;
-            disciplineEvent.setTitle("Absence");
-            disciplineEvent.setContent("L'enfant n'est pas venue à l'école aujourd'hui");
-            //Create Attendance Content
-        }
+
 
         return  disciplineEvent ;
 
@@ -117,9 +118,42 @@ public record IncidentService(
         String description = incident.getDescription() ;
 
         return(
-                "En data du " + date + " " + description + "/n"
+                "En date du " + date + " " + description + "/n"
                 );
     }
 
 
+    public List<OwnerIncidentsList> getIncidentsByClassRoomId(int classRoomID) {
+        List<Discipline> disciplines = disciplineRepository.getDisciplineByClassRoomID(classRoomID);
+        List<OwnerIncidentsList> ownerIncidentsLists = new ArrayList<>();
+        for(Discipline disciplineOwner  : disciplines) {
+            OwnerIncidentsList ownerIncidentsList = new OwnerIncidentsList(
+                    disciplineOwner.getOwner(),
+                    (int) disciplineOwner.getOwnerID(),
+                    getIncidentsListSimpleForm(disciplineOwner.getIncident())
+            );
+            ownerIncidentsLists.add(ownerIncidentsList);
+
+        }
+
+        return  ownerIncidentsLists;
+
+    }
+
+    private List<IncidentResponse> getIncidentsListSimpleForm(List<Incident> incidents) {
+        List<IncidentResponse> incidentResponseList = new ArrayList<>();
+        for (Incident incident : incidents) {
+            IncidentResponse incidentResponse = new IncidentResponse(
+                    incident.getTitle(),
+                    incident.getDescription() ,
+                    incident.getDate() ,
+                    incident.getSanction() ,
+                    incident.getRuleBypassed().getTitle(),
+                    incident.getOccurrenceNumber()
+            );
+            incidentResponseList.add(incidentResponse);
+        }
+
+        return  incidentResponseList;
+    }
 }

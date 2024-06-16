@@ -1,6 +1,8 @@
 package com.ushirikeduc.disciplineservice.service;
 
+import Dto.DisciplineEvent;
 import com.ushirikeduc.disciplineservice.Dto.*;
+import com.ushirikeduc.disciplineservice.controller.MessageController;
 import com.ushirikeduc.disciplineservice.model.Attendance;
 import com.ushirikeduc.disciplineservice.model.Discipline;
 import com.ushirikeduc.disciplineservice.repository.AttendanceRepository;
@@ -17,7 +19,8 @@ import java.util.Optional;
 @Slf4j
 public record AttendanceService(
         DisciplineRepository disciplineRepository ,
-        AttendanceRepository attendanceRepository
+        AttendanceRepository attendanceRepository,
+        MessageController messageController
 ) {
     //Record Attendance
     public List<AttendanceResponse> recordAttendance(AttendanceRegisterRequest attendanceRegisterRequestList, int classRoomId) {
@@ -47,6 +50,8 @@ public record AttendanceService(
 
             // Save attendance (either new or updated)
             Attendance savedAttendance = attendanceRepository.save(attendance);
+            if (!attendance.isPresent())
+                messageController.publishDiscipline(createAttendanceEvent(savedAttendance));
             attendanceResponses.add(new AttendanceResponse(
                     savedAttendance.getDate(),
                     (int) savedAttendance.getDiscipline().getOwnerID(),
@@ -95,6 +100,16 @@ public record AttendanceService(
                  attendance.date() ,
                  attendanceResponses
          );
+    }
+
+
+    public DisciplineEvent createAttendanceEvent(Attendance attendance) {
+        DisciplineEvent disciplineEvent = new DisciplineEvent();
+        disciplineEvent.setTitle("Absence");
+        disciplineEvent.setContent("L'enfant n'est pas venue à l'école aujourd'hui");
+
+        return  disciplineEvent ;
+
     }
 
 }

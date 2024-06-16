@@ -7,6 +7,10 @@ public record IncidentResponse (
         String Description ,
         Date date ,
         String disciplineDecision ,
-        String rule
+        String rule ,
+
+        int occurrenceNumber
+
+
 ) {
 }

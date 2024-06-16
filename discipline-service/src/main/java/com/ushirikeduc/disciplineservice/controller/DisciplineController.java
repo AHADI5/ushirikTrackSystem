@@ -41,7 +41,13 @@ public record DisciplineController(
 
     @GetMapping("{studentID}/getIncidentByOwnerID")
     public List<IncidentResponse> incidentListByOwnerID(@PathVariable int studentID){
-        return  incidentService.getIncidentsByDiscipline(studentID) ;
+        return incidentService.getIncidentsByDiscipline(studentID).incidents();
+    }
+
+    @GetMapping("{classRoomID}/getIncidentInClassRoom")
+    public  List<OwnerIncidentsList> getIncidentInClassRoom  (@PathVariable int classRoomID) {
+        return incidentService.getIncidentsByClassRoomId(classRoomID);
+
     }
 
 }
