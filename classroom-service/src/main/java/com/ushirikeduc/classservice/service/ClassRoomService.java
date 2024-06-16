@@ -391,6 +391,7 @@ public class ClassRoomService{
                 teacher.getEmail(),
                 teacher.isTitular(),
                 teacher.getSchoolType(),
+                Math.toIntExact(teacher.getSchoolID()),
                 ((teacher.isTitular() || Objects.equals(teacher.getSchoolType(), "PRIMARY")) && teacher.getClassRoom() != null) ?  new ClassInfoResponse(
                          teacher.getClassRoom().getName() ,
                         Math.toIntExact(teacher.getClassRoom().getLevel()),
@@ -400,6 +401,7 @@ public class ClassRoomService{
                         teacher.getClassRoom().getClassRoomOption().getOptionName()
 
                 ) : null,
+
                 Objects.equals(teacher.getSchoolType(), "SECONDARY") ? simpleCourseFormList(teacher.getCourses()) : null
 
         );

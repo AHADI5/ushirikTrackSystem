@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public record IncidentService(
@@ -25,45 +26,59 @@ public record IncidentService(
         ViolationRepository violationRepository,
         MessageController messageController
 ) {
-    public IncidentResponse registerIncident(long studentID ,
-                                             IncidentRegisterRequest request){
-
+    public IncidentResponse registerIncident(int ownerID, IncidentRegisterRequest request) {
+        // Fetch the rule for the incident
         Rule byPassedRule = ruleRepository.findById(request.byPassedRule())
                 .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
-        Incident existingIncident = incidentRepository.getIncidentByDiscipline_OwnerIDAndRuleBypassed(studentID ,byPassedRule);
-        Discipline discipline = disciplineRepository.getDisciplineByOwnerID(studentID);
 
+        // Fetch all incidents for the given owner and rule
+        List<Incident> existingIncidents = incidentRepository.getAllByDisciplineOwnerIDAndRuleBypassed(ownerID, byPassedRule);
+
+        // Find the maximum occurrence number among existing incidents
+        int maxOccurrenceNumber = existingIncidents.stream()
+                .mapToInt(Incident::getOccurrenceNumber)
+                .max()
+                .orElse(0);
+
+        // Fetch all violation occurrences for the rule
+        List<Integer> violationOccurrences = byPassedRule.getViolationList().stream()
+                .map(ViolationType::getOccurrence)
+                .toList();
+
+        // Find the maximum violation occurrence
+        int maxOccurrenceViolation = violationOccurrences.stream()
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        // Ensure occurrence number uniqueness
+        int newOccurrenceNumber = maxOccurrenceNumber + 1;
+        if (newOccurrenceNumber > maxOccurrenceViolation) {
+            newOccurrenceNumber = 1; // Reset to 1 if exceeds maximum violation occurrence
+        }
+
+        // Create a new incident with the determined occurrence number
         Incident incident = Incident.builder()
                 .date(new Date())
                 .title(request.title())
                 .ruleBypassed(byPassedRule)
                 .description(request.Description())
                 .place(request.place())
-                .discipline(discipline)
+                .discipline(disciplineRepository.getDisciplineByOwnerID(ownerID))
+                .occurrenceNumber(newOccurrenceNumber)
                 .build();
-        int occurrence;
-        if (existingIncident != null) {
-            occurrence = existingIncident.getOccurrenceNumber() + 1;
-            incident.setOccurrenceNumber(occurrence);
-            ViolationType violationType = violationRepository.findViolationTypeByOccurrenceAndRule(incident.getOccurrenceNumber(), byPassedRule);
-            incident.setSanction(violationType.getSanction());
 
+        // Fetch the appropriate violation type based on the occurrence number and rule
+        ViolationType violationType = violationRepository.findViolationTypeByOccurrenceAndRule(newOccurrenceNumber, byPassedRule);
+        incident.setSanction(violationType.getSanction());
 
-        } else {
-            occurrence = incident.getOccurrenceNumber() + 1;
-            incident.setOccurrenceNumber(occurrence);
-
-            ViolationType violationType = violationRepository.findViolationTypeByOccurrenceAndRule(incident.getOccurrenceNumber(), byPassedRule);
-            incident.setSanction(violationType.getSanction());
-
-        }
-        incidentRepository.save(incident);
-
-
+        // Save the new incident
         Incident savedIncident = incidentRepository.save(incident);
-        messageController.publishDiscipline(createDisciplineContent(incident                                ));
 
-        return  new IncidentResponse(
+        // Publish a message related to the incident
+        messageController.publishDiscipline(createDisciplineContent(savedIncident));
+
+        // Return an IncidentResponse with details of the saved incident
+        return new IncidentResponse(
                 savedIncident.getTitle(),
                 savedIncident.getDescription(),
                 savedIncident.getDate(),
@@ -72,6 +87,8 @@ public record IncidentService(
                 savedIncident.getOccurrenceNumber()
         );
     }
+
+
 
     public OwnerIncidentsList getIncidentsByDiscipline(int ownerID) {
         Discipline discipline = disciplineRepository.getDisciplineByOwnerID(ownerID);

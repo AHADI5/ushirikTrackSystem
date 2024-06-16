@@ -50,4 +50,9 @@ public record DisciplineController(
 
     }
 
+    @GetMapping("{schoolID}/getRulesBySchoolID")
+    public  List<RuleResponse> getRulesBySchoolID (@PathVariable int schoolID) {
+        return  ruleService.getRulesBySchoolID (schoolID) ;
+    }
+
 }

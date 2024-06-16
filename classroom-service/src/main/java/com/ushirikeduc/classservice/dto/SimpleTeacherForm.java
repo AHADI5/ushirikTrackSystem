@@ -7,6 +7,8 @@ public record SimpleTeacherForm (
         String email ,
         boolean isTitular ,
         String schoolType ,
+
+        int schoolID  ,
         ClassInfoResponse classRoom  ,
         List <SimpleCourseForm> courses
 ){

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface IncidentRepository extends JpaRepository<Incident , Integer> {
     public List<Incident> getIncidentByDiscipline_OwnerID(long studentID);
-    public Incident getIncidentByDiscipline_OwnerIDAndRuleBypassed(long ownerID , Rule rule);
+    public List<Incident> getAllByDisciplineOwnerIDAndRuleBypassed(long ownerID , Rule rule);
 
     public  List<Incident> getIncidentByDiscipline(Discipline discipline) ;
 }

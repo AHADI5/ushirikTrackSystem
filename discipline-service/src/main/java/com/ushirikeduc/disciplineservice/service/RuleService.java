@@ -99,5 +99,21 @@ public record RuleService(
     }
 
 
+    public List<RuleResponse> getRulesBySchoolID(int schoolID) {
+        List<RuleResponse> ruleResponseList = new ArrayList<>() ;
+        List<Rule> rules  = ruleRepository.findRuleBySchoolID(schoolID) ;
 
+        for (Rule rule : rules ) {
+            RuleResponse ruleResponse = new RuleResponse(
+                    rule.getRuleId(),
+                    rule.getTitle(),
+                    rule.getContent(),
+                    getSimpleViolation(rule.getViolationList())
+
+            );
+            ruleResponseList.add(ruleResponse);
+        }
+
+        return  ruleResponseList;
+    }
 }
