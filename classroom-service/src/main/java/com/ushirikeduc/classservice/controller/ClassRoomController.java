@@ -2,6 +2,8 @@ package com.ushirikeduc.classservice.controller;
 
 import com.ushirikeduc.classservice.dto.*;
 import com.ushirikeduc.classservice.model.*;
+import com.ushirikeduc.classservice.repository.ClassRoomEventRepository;
+import com.ushirikeduc.classservice.service.ClassRoomEventService;
 import com.ushirikeduc.classservice.service.ClassRoomOptionService;
 import com.ushirikeduc.classservice.service.ClassRoomService;
 import com.ushirikeduc.classservice.service.CoursesService;
@@ -19,12 +21,15 @@ public class ClassRoomController {
     private final ClassRoomService classRoomService;
     private final CoursesService coursesService;
     private  final ClassRoomOptionService classRoomOptionService;
+    private  final ClassRoomEventService classRoomEventService;
 
-    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService, ClassRoomService classRoomOptionService, ClassRoomOptionService classRoomOptionService1) {
+    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService, ClassRoomService classRoomOptionService, ClassRoomOptionService classRoomOptionService1, ClassRoomEventRepository classRoomEventRepository, ClassRoomEventService classRoomEventService) {
         this.classRoomService = classRoomService;
         this.coursesService = coursesService;
 
         this.classRoomOptionService = classRoomOptionService1;
+        this.classRoomEventService = classRoomEventService;
+
     }
 
     @PostMapping("/newClassRoom")
@@ -116,6 +121,12 @@ public class ClassRoomController {
         return classRoomOptionService.createClassRoomOption(schoolID,request);
 
     }
+    @PostMapping("{classID}/newEvent")
+    public ClassRoomEventResponse registerEvent (@PathVariable int classID,
+                                        @RequestBody EventRegisterRequest request) {
+        return  classRoomEventService.registerNewEvent(classID , request);
+
+    }
 
 //    @PutMapping("/{schoolID}/{classRoomOptionID}/modify-classroomOption")
 //    public ResponseEntity<String> updateClassRoomOptionInformations(
@@ -135,6 +146,8 @@ public class ClassRoomController {
     public SimpleTeacherForm getTeacherByEmail(@PathVariable String teacherEmail){
         return classRoomService.loadTeacherByEmail(teacherEmail);
     }
+
+
 
 
 

@@ -47,6 +47,11 @@ public class ClassRoom {
    @OneToOne
     private Teacher principalTeacher;
 
+   @JsonIgnore
+   @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL)
+   private  List<ClassRoomEvent> classRoomEvents = new ArrayList<>();
+
+
 
 
 
