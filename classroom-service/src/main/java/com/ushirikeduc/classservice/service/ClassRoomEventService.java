@@ -29,6 +29,7 @@ public record ClassRoomEventService(
         ClassRoomEvent classRoomEvent = ClassRoomEvent.builder()
                 .title(request.title())
                 .startingDate(startingDate)
+
                 .classRoom(classRoom)
                 .endingDate(endingDate)
                 .place(request.place())
@@ -47,7 +48,7 @@ public record ClassRoomEventService(
         );
     }
 
-    public List<ClassRoomEventResponse> getClassRoomByClassRoomID(int classID) {
+    public List<ClassRoomEventResponse> getClassRoomEventysByClassRoomID(int classID) {
         ClassRoom classRoom = classRoomService.getClassById((long) classID);
         List<ClassRoomEvent> classRoomEvents = classRoom.getClassRoomEvents();
         List<ClassRoomEventResponse> classRoomEventResponses = new ArrayList<>();
@@ -66,18 +67,16 @@ public record ClassRoomEventService(
 
         }
         return  classRoomEventResponses;
-
-
     }
 
-    public Date  parseDate(String dateString) {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public Date parseDate(String dateString) {
+        // Define the date format to include both date and time
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         try {
-            return dateFormat.parse(dateString) ;
+            return dateFormat.parse(dateString);
         } catch (ParseException e) {
-            throw new IllegalStateException("Invalid date format ");
+            throw new IllegalStateException("Invalid date format", e);
         }
-
     }
+
 }

@@ -6,7 +6,6 @@ public record EventRegisterRequest(
         String startingDate  ,
         String endingDate,
 
-        String createdAt ,
         String place ,
         String description,
         String color

@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +47,8 @@ public record ClassWorkService (
         ClassWork classWork = ClassWork.builder()
                 .classID(request.classID())
                 .course(course)
+                .startTime(parseStringToLocalTime(request.startTime()))
+                .endTime(parseStringToLocalTime(request.endTime()))
                 .description(request.description())
                 .classworkType(classworkType)
                 .createdAt(new Date())
@@ -78,6 +83,8 @@ public record ClassWorkService (
                 classWork.getCourse().getName(),
 
                 classWork.getDateToBeDone(),
+                classWork.getStartTime() ,
+                classWork.getEndTime(),
 
                 classWork.getCreatedAt()
 
@@ -106,6 +113,7 @@ public record ClassWorkService (
             ClassWorkRegistrationResponse classWorkRegistrationResponse = new ClassWorkRegistrationResponse(
                     classWork.getClassWorkID(),
 
+
                     classWork.getClassworkType(),
                     classWork.getDescription(),
                     (int) classWork.getMaxScore(),
@@ -113,7 +121,8 @@ public record ClassWorkService (
                     classWork.getCourse().getName(),
 
                     classWork.getDateToBeDone(),
-
+                    classWork.getStartTime(),
+                    classWork.getEndTime(),
                     classWork.getCreatedAt()
 
             );
@@ -121,6 +130,24 @@ public record ClassWorkService (
         }
         return  classWorkRegistrationResponses;
     }
+
+    public static LocalTime parseStringToLocalTime(String timeString) {
+        DateTimeFormatter[] formatters = {
+                DateTimeFormatter.ofPattern("HH:mm:ss"),
+                DateTimeFormatter.ofPattern("HH:mm")
+        };
+
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                return LocalTime.parse(timeString, formatter);
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+
+        System.err.println("Invalid time format: " + timeString);
+        return null;
+    }
+
 
 
 }

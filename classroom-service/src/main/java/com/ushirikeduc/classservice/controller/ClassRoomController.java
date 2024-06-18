@@ -128,6 +128,11 @@ public class ClassRoomController {
 
     }
 
+    @GetMapping("{classID}/getEventsByClassID")
+    public  List<ClassRoomEventResponse> getEventsByClassID (@PathVariable int classID) {
+        return  classRoomEventService.getClassRoomEventysByClassRoomID(classID);
+    }
+
 //    @PutMapping("/{schoolID}/{classRoomOptionID}/modify-classroomOption")
 //    public ResponseEntity<String> updateClassRoomOptionInformations(
 //            @PathVariable long schoolID ,

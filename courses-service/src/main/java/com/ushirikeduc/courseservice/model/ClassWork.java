@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -27,6 +28,8 @@ public class ClassWork {
     private long maxScore  ;
     private Date createdAt ;
     private Date dateToBeDone ;
+    private LocalTime startTime ;
+    private LocalTime endTime  ;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "course_id")
