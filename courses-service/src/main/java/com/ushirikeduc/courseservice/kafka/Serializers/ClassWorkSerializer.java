@@ -28,7 +28,7 @@ public class ClassWorkSerializer implements Serializer<ClassWorkEvent> {
             return objectMapper.writeValueAsBytes(data);
 
         } catch (Exception e) {
-            throw new SerializationException("Error when Serializing Classwork Event to byte");
+            throw new SerializationException("Error when Serializing Classwork Event to byte" + e);
 
         }
     }

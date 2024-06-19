@@ -2,8 +2,10 @@ package com.ushirikeduc.courseservice.kafka;
 
 import Dto.ClassWorkEvent;
 import Dto.CourseEvent;
+import Dto.HomeWorkEvent;
 import com.ushirikeduc.courseservice.kafka.Serializers.ClassWorkSerializer;
 import com.ushirikeduc.courseservice.kafka.Serializers.CourseSerializer;
+import com.ushirikeduc.courseservice.kafka.Serializers.HomeWorkSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 @Configuration
 public class ProducerConfig {
-    public Map<String , Object> producerFactory() {
+    public Map<String , Object> producerConfigClassWork() {
         HashMap<String , Object> props = new HashMap<>();
         props.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -25,12 +27,12 @@ public class ProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String , ClassWorkEvent> producerFactoryClasswork() {
-        return  new DefaultKafkaProducerFactory<>(producerFactory());
+    public ProducerFactory<String , ClassWorkEvent> producerFactoryClassWork() {
+        return  new DefaultKafkaProducerFactory<>(producerConfigClassWork());
     }
     @Bean
-    public KafkaTemplate<String , ClassWorkEvent> kafkaTemplate() {
-        return  new KafkaTemplate<>(producerFactoryClasswork());
+    public KafkaTemplate<String , ClassWorkEvent> kafkaTemplateClassWork() {
+        return  new KafkaTemplate<>(producerFactoryClassWork());
     }
 
     //todo publish courseEvent
@@ -54,4 +56,22 @@ public class ProducerConfig {
         return  new KafkaTemplate<>(producerFactoryCourse());
     }
     //todo publish homeworkEvent
+
+    public Map<String , Object> producerFactoryHomeWorks() {
+        HashMap<String , Object> props = new HashMap<>();
+        props.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, HomeWorkSerializer.class);
+        return props;
+
+    }
+
+    @Bean
+    public ProducerFactory<String , HomeWorkEvent> producerFactoryHomeWork() {
+        return  new DefaultKafkaProducerFactory<>(producerFactoryHomeWorks());
+    }
+    @Bean
+    public KafkaTemplate<String , HomeWorkEvent> kafkaTemplateHomeWork() {
+        return  new KafkaTemplate<>(producerFactoryHomeWork());
+    }
 }

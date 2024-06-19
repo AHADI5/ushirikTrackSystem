@@ -1,6 +1,7 @@
 package com.ushirikeduc.courseservice.service;
 
 
+import com.ushirikeduc.courseservice.controller.MessageController;
 import com.ushirikeduc.courseservice.dto.HomeworkRegistrationRequest;
 import com.ushirikeduc.courseservice.dto.QuestionRegistrationRequest;
 import com.ushirikeduc.courseservice.dto.QuestionResponse;
@@ -23,7 +24,8 @@ import java.util.List;
 public record HomeWorkService (
         HomeWorkRepository homeWorkRepository ,
         QuestionRepository questionRepository ,
-        CourseRepository courseRepository
+        CourseRepository courseRepository,
+        MessageController messageController
 ) {
     public homeWorkResponse registerHomeWork(int classID, HomeworkRegistrationRequest request) {
         // Build the Homework object first
@@ -37,7 +39,7 @@ public record HomeWorkService (
 
         // Save the Homework entity
         Homework savedHomework = homeWorkRepository.save(homework);
-        log.info("Saved homework " + savedHomework);
+//        log.info("Saved homework " + savedHomework);
 
         // List to hold the saved questions
         List<HomeWorkQuestion> savedQuestions = new ArrayList<>();
@@ -68,6 +70,11 @@ public record HomeWorkService (
 
         // Set the list of questions to the Homework entity
         savedHomework.setQuestions(savedQuestions);
+        //Publish new Homework created
+
+        messageController.publishNewHomework(savedHomework);
+
+
 
         return simpleHomework(savedHomework);
     }

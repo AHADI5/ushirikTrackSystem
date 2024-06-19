@@ -22,7 +22,7 @@ public class HomeWorkSerializer implements Serializer<HomeWorkEvent> {
             return objectMapper.writeValueAsBytes(data);
 
         } catch (Exception e) {
-            throw new SerializationException("Error when Serializing Classwork Event to byte");
+            throw new SerializationException("Error when Serializing Homework Event to byte");
 
         }
     }
