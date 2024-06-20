@@ -1,8 +1,10 @@
 package com.ushirikeduc.app.kfka;
 
+import Dto.ClassRoomEventEvent;
 import Dto.ClassWorkEvent;
 import Dto.DisciplineEvent;
 import Dto.StudentEvent;
+import com.ushirikeduc.app.kfka.Deserializers.ClassRoomEventDeserializer;
 import com.ushirikeduc.app.kfka.Deserializers.DisciplineDeserializer;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -22,20 +24,11 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private  String boostrapServers;
 
-    /*
-    *
-    * Consuming Student event
-    * */
-//    public Map<String , Object> consumerConfigStudent() {
-//        return getStringObjectMap();
-//    }
-//
-    /*
-     *
-     * Consuming Student event
-     * */
 
-
+/*
+* Consuming Discipline event for discipline notifications
+*
+* */
     private ConsumerFactory<String, DisciplineEvent> consumerFactoryDiscipline() {
         Map<String, Object> propsStudent = new HashMap<>();
         propsStudent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
@@ -50,53 +43,35 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String ,DisciplineEvent> kafkaListenerContainerFactoryStudent(){
+    public ConcurrentKafkaListenerContainerFactory<String ,DisciplineEvent> kafkaListenerContainerFactoryDiscipline(){
         ConcurrentKafkaListenerContainerFactory<String , DisciplineEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryDiscipline());
         return factory;
     }
+/*
+*Consuming ClassWorkEvent
+* */
+private ConsumerFactory<String, ClassRoomEventEvent> consumerFactoryClassRoomEvent() {
+    Map<String, Object> propsClassRoomEvent = new HashMap<>();
+    propsClassRoomEvent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+    propsClassRoomEvent.put(ConsumerConfig.GROUP_ID_CONFIG, "classroom-Event");
+    propsClassRoomEvent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-    /*
-     * Consuming Classwork Event
-     *
-     * */
+    // Use ErrorHandlingDeserializer for value deserializer
+    ErrorHandlingDeserializer<ClassRoomEventEvent> errorHandlingDeserializer =
+            new ErrorHandlingDeserializer<>(new ClassRoomEventDeserializer());
 
-//    public ConsumerFactory<String, ClassWorkEvent> consumerFactoryClasswork(){
-//        Map<String, Object> config = new HashMap<>();
-//        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
-//        config.put(ConsumerConfig.GROUP_ID_CONFIG, "classwork-max");
-//        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-//        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ClassWorkDeserializer.class);
-//
-//        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new ClassWorkDeserializer());
-//
-//    }
-//
-//    @Bean
-//    public ConcurrentKafkaListenerContainerFactory<String, ClassWorkEvent> kafkaListenerContainerFactoryClasswork() {
-//        ConcurrentKafkaListenerContainerFactory<String, ClassWorkEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-//        factory.setConsumerFactory(consumerFactoryClasswork());
-//        return factory;
-//    }
+    return new DefaultKafkaConsumerFactory<>(propsClassRoomEvent, new StringDeserializer(), errorHandlingDeserializer);
+}
 
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,ClassRoomEventEvent> kafkaListenerContainerFactoryClassWorkEvent(){
+        ConcurrentKafkaListenerContainerFactory<String , ClassRoomEventEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryClassRoomEvent());
+        return factory;
+    }
 
-//    @Bean
-//    public ConsumerFactory<String , ClassWorkEvent> consumerFactoryClasswork() {
-//        return new DefaultKafkaConsumerFactory<>(
-//                classWorkConsumer(),
-//                new StringDeserializer(),
-//                new ClassWorkDeserializer()
-//        );
-//
-//    }
-//    @Bean
-//    public ConcurrentKafkaListenerContainerFactory<String ,ClassWorkEvent> kafkaListenerContainerFactoryClasswork(){
-//        ConcurrentKafkaListenerContainerFactory<String , ClassWorkEvent> factory =
-//                new ConcurrentKafkaListenerContainerFactory<>();
-//        factory.setConsumerFactory(consumerFactoryClasswork());
-//        return factory;
-//    }
 
 }

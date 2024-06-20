@@ -1,9 +1,11 @@
 package com.ushirikeduc.classservice.kafka;
 
 import Dto.ClassRoomEvent;
+import Dto.ClassRoomEventEvent;
 import Dto.ParentEvent;
 import Dto.StudentEvent;
 import com.ushirikeduc.classservice.kafka.Serializer.ClassRoomSerializer;
+import com.ushirikeduc.classservice.kafka.Serializer.EventSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +45,30 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String , ClassRoomEvent> kafkaTemplateClassRoom(
     ) {
         return  new KafkaTemplate<>(producerFactoryClassRoom());
+    }
+
+
+    /*
+    * Producing Events
+    *
+    * */
+
+    public Map<String , Object> producerConfigClassRoomEvent() {
+        HashMap<String , Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EventSerializer.class);
+        return props ;
+    }
+    @Bean
+    public ProducerFactory<String , ClassRoomEventEvent> producerFactoryClassRoomEvent() {
+        return new DefaultKafkaProducerFactory<>(producerConfigClassRoomEvent());
+
+    }
+    @Bean
+    public KafkaTemplate<String , ClassRoomEventEvent> kafkaTemplateClassRoomEvent(
+    ) {
+        return  new KafkaTemplate<>(producerFactoryClassRoomEvent());
     }
 
 

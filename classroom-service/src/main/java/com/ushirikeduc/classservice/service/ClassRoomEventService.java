@@ -79,4 +79,15 @@ public record ClassRoomEventService(
         }
     }
 
+
+/*
+* This method will executed every time , some minutes , hours ,
+* days before the targeted period
+* */
+
+    public void setReminder () {
+        //get all classrooms events
+
+    }
+
 }

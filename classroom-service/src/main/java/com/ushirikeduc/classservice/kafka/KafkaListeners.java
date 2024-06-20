@@ -117,7 +117,7 @@ public class KafkaListeners {
 
     void listener(ClassWorkEvent classWorkEventEvent) {
         log.info(String.format("ClassWork  Event received in school service => %s",classWorkEventEvent.toString()));
-        //TODO METHOD TO CREATE STARTING DATE AND END DATE
+
         EventRegisterRequest eventRegisterRequest = new EventRegisterRequest(
                 classWorkEventEvent.getTitle(),
                formatDateTime(classWorkEventEvent.getDateToBeDone(),classWorkEventEvent.getStartTime()),
