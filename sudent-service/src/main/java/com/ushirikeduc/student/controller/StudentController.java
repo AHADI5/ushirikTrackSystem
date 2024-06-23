@@ -71,7 +71,7 @@ public record StudentController(
                     student.getLastName(),
                     student.getFirstName(),
                     student.getClassID(),
-                    classInfo.getClassName(),
+                    classInfo.getLevel() + " " +classInfo.getOptionName() + " " + classInfo.getLetter(),
                     classInfo.getLevel(),
                     classInfo.getSchoolName() ,
                     classInfo.getSchoolID()

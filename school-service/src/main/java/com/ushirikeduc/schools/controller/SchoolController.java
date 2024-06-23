@@ -140,6 +140,17 @@ public record SchoolController(
                                                    @RequestBody CommuniqueRegisterRequest request ) {
         return communiqueService.updateCommunique(communiqueID, request);
     }
+    @PostMapping("communique/reviewCommunique")
+    public ResponseEntity<String> reviewCommunique(@RequestBody ReviewCommunique reviewCommunique) {
+        return  communiqueService.reviewACommunique(reviewCommunique);
+
+    }
+
+    @PostMapping("communique/getCommuniqueByRecipient")
+    public List<CommuniqueResponse> getCommuniqueByRecipient(@RequestBody CommuniqueRequest reviewer){
+        return  communiqueService.getCommuniqueByRecipients(reviewer);
+    }
+
 
     //Events
     @PostMapping ("{schoolID}/getEventByStartingDate")
@@ -153,5 +164,7 @@ public record SchoolController(
                                                  @RequestBody EventDateRequest date){
         return  eventService.getEventListByStartingDate(schoolID , date.date());
     }
+
+
 }
 

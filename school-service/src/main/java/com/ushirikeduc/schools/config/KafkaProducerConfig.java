@@ -2,7 +2,9 @@ package com.ushirikeduc.schools.config;
 
 import Dto.DirectorEvent;
 import Dto.ParentEvent;
+import Dto.SchoolCommuniqueEvent;
 import Dto.StudentEvent;
+import com.ushirikeduc.schools.config.Serializers.CommuniqueSerializer;
 import com.ushirikeduc.schools.config.Serializers.DirectorSerializer;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -47,5 +49,30 @@ public class KafkaProducerConfig {
     ) {
         return new KafkaTemplate<>(producerFactoryDirector());
     }
+
+    /*
+    * Producing communique event
+    * */
+    public Map<String, Object> producerConfigCommunique() {
+        HashMap<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CommuniqueSerializer.class);
+        return props;
+    }
+
+    @Bean
+    public ProducerFactory<String, SchoolCommuniqueEvent> producerFactoryCommunique() {
+        return new DefaultKafkaProducerFactory<>(producerConfigCommunique());
+
+    }
+
+    @Bean
+    public KafkaTemplate<String,SchoolCommuniqueEvent> kafkaTemplateCommunique(
+    ) {
+        return new KafkaTemplate<>(producerFactoryCommunique());
+    }
+
+
 }
 

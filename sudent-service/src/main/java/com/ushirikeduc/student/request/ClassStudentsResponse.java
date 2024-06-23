@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ClassStudentsResponse {
-    String className ;
+    String letter ;
     int level;
     String schoolName;
     int schoolID;
+    int classRoomID;
+    String optionName ;
 }

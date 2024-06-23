@@ -1,18 +1,28 @@
 package com.ushirikeduc.schools.controller;
 
 import Dto.DirectorEvent;
+import Dto.SchoolCommuniqueEvent;
+import com.ushirikeduc.schools.model.Communique;
 import com.ushirikeduc.schools.model.Director;
+import com.ushirikeduc.schools.model.Recipient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
 @Service
 @Slf4j
 public record MessageController(
+        @Qualifier("kafkaTemplateStudent")
+        KafkaTemplate<String , DirectorEvent> kafkaTemplateStudent,
+        @Qualifier("kafkaTemplateCommunique")
+        KafkaTemplate<String , SchoolCommuniqueEvent> kafkaTemplateCommunique
 
-        KafkaTemplate<String , DirectorEvent> kafkaTemplateStudent
 
         ) {
 
@@ -36,5 +46,22 @@ public record MessageController(
         String lastName = director.getLastName();
         //Combine teacher information with the generated random number to form teacher's password
         return firstName.substring(0,3) + lastName.substring(0,3) +randomNumber;
+    }
+
+    public void publishCommunique(Communique communique)  {
+        SchoolCommuniqueEvent schoolCommuniqueEvent = new SchoolCommuniqueEvent();
+        List<Recipient> recipientObject = communique.getRecipientIDs();
+        List<String> recipientEmails = new ArrayList<>();
+        for (Recipient recipient : recipientObject) {
+            String email = recipient.getRecipient();
+            recipientEmails.add(email);
+        }
+        schoolCommuniqueEvent.setSender("School");
+        schoolCommuniqueEvent.setContent(communique.getContent());
+        schoolCommuniqueEvent.setTitle(communique.getTitle());
+        schoolCommuniqueEvent.setRecipients(recipientEmails);
+
+        kafkaTemplateCommunique.send("communique-created",schoolCommuniqueEvent);
+        log.info(String.format("Student Event created  => %s ", schoolCommuniqueEvent));
     }
 }

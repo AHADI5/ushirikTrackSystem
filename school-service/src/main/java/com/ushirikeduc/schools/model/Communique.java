@@ -31,15 +31,19 @@ public class Communique {
     private String content ;
     private Date dateCreated;
 
+
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
     private CommuniqueRecipientType recipientType;
+    private boolean isReviewed  ;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "communique_recipients",
             joinColumns = @JoinColumn(name = "communique_id"),
             inverseJoinColumns = @JoinColumn(name = "recipient_id"))
     private List<Recipient> recipientIDs = new ArrayList<>();
+    @OneToMany(mappedBy = "communique", cascade = CascadeType.ALL)
+    private  List<CommuniqueReview> reviews = new ArrayList<>();
 
 }

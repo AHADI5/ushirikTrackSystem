@@ -10,6 +10,4 @@ import java.util.List;
 
 public interface CommuniqueRepository extends JpaRepository<Communique , Integer> {
  public List<Communique> findTop1BySchoolOrderByDateCreatedDesc(School school, PageRequest pageRequest);
-
-
 }

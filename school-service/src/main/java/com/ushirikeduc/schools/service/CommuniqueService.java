@@ -1,11 +1,9 @@
 package com.ushirikeduc.schools.service;
 
+import com.ushirikeduc.schools.controller.MessageController;
 import com.ushirikeduc.schools.model.*;
 import com.ushirikeduc.schools.repository.*;
-import com.ushirikeduc.schools.requests.ClassRoomSimpleForm;
-import com.ushirikeduc.schools.requests.CommuniqueRegisterRequest;
-import com.ushirikeduc.schools.requests.CommuniqueResponse;
-import com.ushirikeduc.schools.requests.SimpleRecipient;
+import com.ushirikeduc.schools.requests.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,7 +25,9 @@ public record CommuniqueService (
         SchoolService schoolService ,
         ClassRoomService classRoomService ,
 
-        RecipientRepository recipientRepository
+        RecipientRepository recipientRepository ,
+        CommuniqueReviewRepository communiqueReviewRepository ,
+        MessageController messageController
 
 ) {
     public CommuniqueResponse registerCommunique(int schoolID,
@@ -36,6 +37,10 @@ public record CommuniqueService (
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
         List<Recipient> recipients = new ArrayList<>();
+
+        //this will contain all communique review
+        List<CommuniqueReview> reviews = new ArrayList<>();
+
 
         assert communiqueRecipientTypeType != null;
 
@@ -48,9 +53,29 @@ public record CommuniqueService (
                 .dateCreated(new Date())
                 .recipientType(communiqueRecipientTypeType)
                 .school(school)
+                .isReviewed(false)
                 .recipientIDs(recipients)
                 .build();
-        Communique savedCommunique = communiqueRepository.save(communique);
+        //Setting a future reviewList
+        Communique communiqueSaved = communiqueRepository.save(communique);
+        for (Recipient recipient : recipients) {
+            CommuniqueReviewRegisterRequest communiqueReview = new CommuniqueReviewRegisterRequest(
+                    recipient.getRecipient() ,
+                    null ,
+                    false ,
+                    communiqueSaved
+            );
+
+
+
+            reviews.add(buildCommuniquereview(communiqueReview));
+        }
+        //saving reviews list to Db
+
+        communiqueSaved.setReviews(communiqueReviewRepository.saveAll(reviews));
+
+        Communique savedCommunique = communiqueRepository.save(communiqueSaved);
+        messageController.publishCommunique(savedCommunique);
         return  new CommuniqueResponse(
                 savedCommunique.getTitle(),
                 savedCommunique.getContent(),
@@ -60,6 +85,28 @@ public record CommuniqueService (
                 getSimpleRecepientList(savedCommunique.getRecipientIDs())
         );
     }
+
+    public ResponseEntity<String> reviewACommunique (ReviewCommunique reviewCommunique) {
+        Communique communique = communiqueRepository.findById(reviewCommunique.communiqueID()).orElseThrow(()
+                -> new ResourceNotFoundException("Communique not found"));
+        communique.setReviewed(true);
+        Communique updatedCommunique  = communiqueRepository.save(communique);
+
+        //Review communique
+
+        CommuniqueReview communiqueReview = communiqueReviewRepository.getCommuniqueReviewByReviewOwnerAndCommunique_CommuniqueID(reviewCommunique.reviewer() , reviewCommunique.communiqueID());
+        communiqueReview.setDateReviewed(new Date());
+        communiqueReview.setReviewStatus(true);
+        communiqueReview.setCommunique(updatedCommunique);
+
+        communiqueReviewRepository.save(communiqueReview);
+
+        return ResponseEntity.ok("Reviewed !");
+
+
+    }
+
+
 
     private static CommuniqueRecipientType getRecipientType(CommuniqueRegisterRequest request) {
         CommuniqueRecipientType communiqueRecipientTypeType = null ;
@@ -251,5 +298,36 @@ public record CommuniqueService (
         return simpleRecipients;
 
     }
+
+    public List<CommuniqueResponse> getCommuniqueByRecipients(CommuniqueRequest recipient) {
+        List<CommuniqueResponse> communiqueResponses = new ArrayList<>() ;
+        List<Communique> communique = communiqueRepository.findAll();
+
+        //Filter communique by recipient
+
+        List<Communique> communiquesFiltered  =  communique.stream()
+                .filter(communiqueItem -> communiqueItem.getRecipientIDs().stream().anyMatch(recipien -> recipien.getRecipient().equals(recipient.reviewer())) )
+                .collect(Collectors.toList());
+
+        for (Communique communiq : communiquesFiltered) {
+            CommuniqueResponse communiqueResponse = getSimpleCommunique(communiq);
+            communiqueResponses.add(communiqueResponse);
+        }
+
+        return  communiqueResponses;
+
+    }
+
+    private CommuniqueReview buildCommuniquereview(CommuniqueReviewRegisterRequest communiqueReviewRegisterRequest) {
+        return  CommuniqueReview.builder()
+                .communique(communiqueReviewRegisterRequest.communique())
+                .dateReviewed(communiqueReviewRegisterRequest.date())
+                .reviewOwner(communiqueReviewRegisterRequest.recipient())
+                .reviewStatus(communiqueReviewRegisterRequest.status())
+
+                .build();
+
+    }
+
 
 }

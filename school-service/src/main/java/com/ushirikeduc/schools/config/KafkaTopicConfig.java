@@ -15,6 +15,12 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("director-created")
                 .build();
     }
+    @Bean
+    public NewTopic communiqueTopic() {
+        return TopicBuilder.name("communique-created")
+                .build();
+    }
+
 
 
 }

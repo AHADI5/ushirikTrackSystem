@@ -1,5 +1,6 @@
 package com.ushirikeduc.users.service;
 
+import com.ushirikeduc.users.auth.MessageController;
 import com.ushirikeduc.users.config.JwtService;
 import com.ushirikeduc.users.dtoRequests.*;
 import com.ushirikeduc.users.model.Operation;
@@ -25,7 +26,8 @@ public record AuthenticationService(
         JwtService jwtService,
         AuthenticationManager authenticationManager,
         UserRepository userRepository ,
-        UserOperationService userOperationService
+        UserOperationService userOperationService ,
+        MessageController messageController
 ) {
     public void register(RegisterRequest request, Role role) {
         Users user = Users.builder()
@@ -78,9 +80,16 @@ public record AuthenticationService(
                         request.getPassword()
                 )
         );
-        Optional<Users> user = userRepository.findByEmail(request.getEmail());
-        var jwToken = jwtService.generateToken(user.get());
-        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user.get());
+        Users user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("userNot found"));
+        user.setDeviceUniqueKey(request.getDeviceKey());
+        //save the user after updating the uniqueDeviceToken
+        Users updatedUser = userRepository.save(user);
+        //Publish the user as Recepient
+        messageController.publishUniqueDeviceKey(updatedUser.getEmail() , updatedUser.getDeviceUniqueKey());
+        var jwToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+
         return AuthenticationResponse.builder()
                 .token(jwToken)
                 .refreshToken(refreshToken)
@@ -214,6 +223,13 @@ public record AuthenticationService(
 
         return responses;
 
+    }
+
+    public String getUniDeviceKeyByUserName(DeviceRequest request) {
+        //load user
+        Users user  = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return user.getDeviceUniqueKey();
     }
 
 

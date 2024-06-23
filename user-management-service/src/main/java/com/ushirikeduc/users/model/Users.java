@@ -29,6 +29,7 @@ public class Users implements UserDetails {
     String password;
     String email;
     int schoolID ;
+    String deviceUniqueKey;
     boolean enabled;
     Date createdAt ;
     @JsonIgnore

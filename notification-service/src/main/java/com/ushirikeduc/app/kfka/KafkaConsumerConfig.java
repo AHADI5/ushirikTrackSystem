@@ -1,12 +1,11 @@
 package com.ushirikeduc.app.kfka;
 
-import Dto.ClassRoomEventEvent;
-import Dto.ClassWorkEvent;
-import Dto.DisciplineEvent;
-import Dto.StudentEvent;
+import Dto.*;
 import com.ushirikeduc.app.kfka.Deserializers.ClassRoomEventDeserializer;
 import com.ushirikeduc.app.kfka.Deserializers.DisciplineDeserializer;
 
+import com.ushirikeduc.app.kfka.Deserializers.RecipientDeserializer;
+import com.ushirikeduc.app.kfka.Deserializers.SchoolCommuniqueDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,24 +51,73 @@ public class KafkaConsumerConfig {
 /*
 *Consuming ClassWorkEvent
 * */
-private ConsumerFactory<String, ClassRoomEventEvent> consumerFactoryClassRoomEvent() {
-    Map<String, Object> propsClassRoomEvent = new HashMap<>();
-    propsClassRoomEvent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
-    propsClassRoomEvent.put(ConsumerConfig.GROUP_ID_CONFIG, "classroom-Event");
-    propsClassRoomEvent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+    private ConsumerFactory<String, ClassRoomEventEvent> consumerFactoryClassRoomEvent() {
+        Map<String, Object> propsClassRoomEvent = new HashMap<>();
+        propsClassRoomEvent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsClassRoomEvent.put(ConsumerConfig.GROUP_ID_CONFIG, "classroom-Event");
+        propsClassRoomEvent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-    // Use ErrorHandlingDeserializer for value deserializer
-    ErrorHandlingDeserializer<ClassRoomEventEvent> errorHandlingDeserializer =
-            new ErrorHandlingDeserializer<>(new ClassRoomEventDeserializer());
+        // Use ErrorHandlingDeserializer for value deserializer
+        ErrorHandlingDeserializer<ClassRoomEventEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new ClassRoomEventDeserializer());
 
-    return new DefaultKafkaConsumerFactory<>(propsClassRoomEvent, new StringDeserializer(), errorHandlingDeserializer);
-}
+        return new DefaultKafkaConsumerFactory<>(propsClassRoomEvent, new StringDeserializer(), errorHandlingDeserializer);
+    }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String ,ClassRoomEventEvent> kafkaListenerContainerFactoryClassWorkEvent(){
         ConcurrentKafkaListenerContainerFactory<String , ClassRoomEventEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryClassRoomEvent());
+        return factory;
+    }
+
+    /*
+    * Consuming School Communique
+    *
+    * */
+    private ConsumerFactory<String, SchoolCommuniqueEvent> schoolCommuniqueEventConsumerFactory() {
+        Map<String, Object> propsClassRoomEvent = new HashMap<>();
+        propsClassRoomEvent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsClassRoomEvent.put(ConsumerConfig.GROUP_ID_CONFIG, "communique");
+        propsClassRoomEvent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Use ErrorHandlingDeserializer for value deserializer
+        ErrorHandlingDeserializer<SchoolCommuniqueEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new SchoolCommuniqueDeserializer());
+
+        return new DefaultKafkaConsumerFactory<>(propsClassRoomEvent, new StringDeserializer(), errorHandlingDeserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,SchoolCommuniqueEvent> kafkaListenerContainerFactoryCommunique(){
+        ConcurrentKafkaListenerContainerFactory<String , SchoolCommuniqueEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(schoolCommuniqueEventConsumerFactory());
+        return factory;
+    }
+
+    /**
+     * Consuming recipient with uniqeDeviceKey
+     * */
+    private ConsumerFactory<String, RecepientInfoEvent> recepientInfoEventConsumerFactory() {
+        Map<String, Object> propsClassRoomEvent = new HashMap<>();
+        propsClassRoomEvent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsClassRoomEvent.put(ConsumerConfig.GROUP_ID_CONFIG, "unique-device-key");
+        propsClassRoomEvent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Use ErrorHandlingDeserializer for value deserializer
+        ErrorHandlingDeserializer<RecepientInfoEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new RecipientDeserializer());
+
+        return new DefaultKafkaConsumerFactory<>(propsClassRoomEvent, new StringDeserializer(), errorHandlingDeserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,RecepientInfoEvent> kafkaListenerContainerFactoryRecipient(){
+        ConcurrentKafkaListenerContainerFactory<String , RecepientInfoEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(recepientInfoEventConsumerFactory());
         return factory;
     }
 

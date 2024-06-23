@@ -93,4 +93,10 @@ public record AuthenticationController(
         return  authenticationService.disableUser(userName);
 
     }
+
+    @PostMapping("/getUniqueDeviceKey")
+    public String getUniqueDeviceKeyByUser(@RequestBody DeviceRequest userName) {
+        return authenticationService.getUniDeviceKeyByUserName(userName);
+
+    }
 }

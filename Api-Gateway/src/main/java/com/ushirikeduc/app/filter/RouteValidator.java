@@ -18,6 +18,7 @@ public class RouteValidator {
             "/api/v1/auth/admin",
             "/api/v1/auth/authenticate",
             "/api/v1/school/schoolAdmin",
+            "/api/v1/auth/getUniqueDeviceKey",
             "/eureka"
     );
 
