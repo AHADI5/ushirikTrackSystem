@@ -13,8 +13,7 @@ public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
     List<ClassRoom> getClassRoomByLevel(Long level);
 
     List<ClassRoom> getClassRoomByClassRoomOption(ClassRoomOption classRoomOption);
-
-    Set<ClassRoom> getAllBySchoolID(long schoolID);
+    List<ClassRoom> getAllBySchoolID(long schoolID);
 
     List<ClassRoom> getClassRoomsBySchoolID(long schoolID);
 

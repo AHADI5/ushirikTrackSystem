@@ -25,6 +25,7 @@ public record MaxOwnerService(
                 .ownerName(studentEvent.getName())
                 .studentID(Long.valueOf(studentEvent.getStudentID()))
                 .classID((long) studentEvent.getClassID())
+                .parentEmail(studentEvent.getParentEmail())
                 .build();
         maxOwnerRepository.save(maxOwner);
     }
@@ -33,9 +34,9 @@ public record MaxOwnerService(
 
         ClassWorksAssigned classWorksAssigned = classworkRepository.findClassWorksAssignedByClassWorkID(classWorkID);
 
-        return  new ClassWorkResponse(
+        return new ClassWorkResponse(
                 classWorksAssigned.getClassWorkID(),
-                getScoreStudentSimpleFormat(classWorksAssigned.getScores() , classWorksAssigned)
+                getScoreStudentSimpleFormat(classWorksAssigned.getScores() , classWorksAssigned), classWorksAssigned.isGraded()
         );
 
     }

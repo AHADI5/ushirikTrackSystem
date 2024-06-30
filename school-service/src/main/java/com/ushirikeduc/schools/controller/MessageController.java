@@ -57,6 +57,7 @@ public record MessageController(
             recipientEmails.add(email);
         }
         schoolCommuniqueEvent.setSender("School");
+        schoolCommuniqueEvent.setCommuniqueID(communique.getCommuniqueID());
         schoolCommuniqueEvent.setContent(communique.getContent());
         schoolCommuniqueEvent.setTitle(communique.getTitle());
         schoolCommuniqueEvent.setRecipients(recipientEmails);

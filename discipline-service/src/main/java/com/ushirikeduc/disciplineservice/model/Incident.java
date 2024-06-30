@@ -27,6 +27,7 @@ public class Incident {
     private Date date ;
     private  String description ;
     private String sanction ;
+    private SanctionType sanctionType ;
 
     @ManyToOne
     private Discipline discipline;

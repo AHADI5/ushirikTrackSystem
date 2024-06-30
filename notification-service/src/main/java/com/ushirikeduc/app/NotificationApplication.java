@@ -16,7 +16,7 @@ public class NotificationApplication {
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
         GoogleCredentials googleCredentials= GoogleCredentials
-                .fromStream(new ClassPathResource("ushirik-educ-system-firebase-adminsdk-4yn7u-ebbf3a88b3.json").getInputStream()
+                .fromStream(new ClassPathResource("ushirik-educ-system-firebase-adminsdk-4yn7u-301bc47c0b.json").getInputStream()
         );
         FirebaseOptions firebaseOptions = FirebaseOptions.builder()
                 .setCredentials(googleCredentials).build();

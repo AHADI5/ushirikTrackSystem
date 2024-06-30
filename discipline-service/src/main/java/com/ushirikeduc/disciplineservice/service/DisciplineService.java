@@ -27,6 +27,7 @@ public record DisciplineService(
                 .owner(studentEvent.getName())
                 .classRoomID(studentEvent.getClassID())
                 .ownerID(studentEvent.getStudentID())
+                .parentEmail(studentEvent.getParentEmail())
                 .build();
 
         disciplineRepository.save(discipline);
@@ -51,6 +52,7 @@ public record DisciplineService(
                     incident.getDate(),
                     incident.getSanction(),
                     incident.getRuleBypassed().getTitle(),
+                    incident.getSanctionType(),
                     incident.getOccurrenceNumber()
             );
             incidentResponses.add(incidentResponse);

@@ -1,5 +1,6 @@
 package com.ushirikeduc.courseservice.model;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class Homework {
     private int classRoomID ;
     private Date creationDate ;
     private Date dateToBeDone  ;
+
     @OneToMany(mappedBy = "homework" , cascade = CascadeType.ALL)
     private List<HomeWorkQuestion> questions = new ArrayList<>();
 

@@ -21,10 +21,20 @@ public class Discipline {
     private long ownerID ;
     private  String classRoomName ;
     private  long classRoomID ;
+    private  String parentEmail ;
 
     @OneToMany(mappedBy = "discipline")
     List<Attendance> attendances = new ArrayList<>();
     @OneToMany(mappedBy = "discipline")
     List<Incident> incident = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "discipline_homework",
+            joinColumns = @JoinColumn(name = "discipline_id"),
+            inverseJoinColumns = @JoinColumn(name = "homework_id")
+    )
+    List<HomeWorkToBeDone> homeWorkToBeDone = new ArrayList<>();
+
+
 
 }

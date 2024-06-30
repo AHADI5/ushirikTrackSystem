@@ -35,5 +35,13 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "class_id")
     private ClassRoom studentClass;
+    @ManyToMany
+    @JoinTable(
+            name = "eleve_devoir",
+            joinColumns = @JoinColumn(name = "eleve_id"),
+            inverseJoinColumns = @JoinColumn(name = "devoir_id")
+    )
+    private List<HomeWorkAssigned> homeWorks = new ArrayList<>();
+
 
 }

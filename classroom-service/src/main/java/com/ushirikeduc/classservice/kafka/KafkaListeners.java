@@ -2,6 +2,7 @@ package com.ushirikeduc.classservice.kafka;
 
 import Dto.*;
 import com.ushirikeduc.classservice.dto.EventRegisterRequest;
+import com.ushirikeduc.classservice.dto.HomeWorkAssignedRegisterRequest;
 import com.ushirikeduc.classservice.model.ClassRoom;
 import com.ushirikeduc.classservice.model.Teacher;
 import com.ushirikeduc.classservice.repository.ClassRoomRepository;
@@ -9,6 +10,7 @@ import com.ushirikeduc.classservice.repository.TeacherRepository;
 import com.ushirikeduc.classservice.service.ClassRoomEventService;
 import com.ushirikeduc.classservice.service.ClassRoomService;
 import com.ushirikeduc.classservice.service.CoursesService;
+import com.ushirikeduc.classservice.service.HomeWorkServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -32,17 +34,19 @@ public class KafkaListeners {
     final CoursesService coursesService ;
 
     final ClassRoomEventService classRoomEventService ;
+    final HomeWorkServices homeWorkServices ;
 
     public KafkaListeners(ClassRoomService classRoomService,
                           ClassRoomRepository classRoomRepository,
                           TeacherRepository teacherRepository,
-                          CoursesService coursesService, ClassRoomEventService classRoomEventService) {
+                          CoursesService coursesService, ClassRoomEventService classRoomEventService, HomeWorkServices homeWorkServices) {
         this.classRoomService = classRoomService;
         this.classRoomRepository = classRoomRepository;
         this.teacherRepository = teacherRepository;
         this.coursesService = coursesService;
 
         this.classRoomEventService = classRoomEventService;
+        this.homeWorkServices = homeWorkServices;
     }
 
     /*
@@ -125,8 +129,6 @@ public class KafkaListeners {
                 "" ,
                 classWorkEventEvent.getDescription(),
                 generateRandomColor()
-
-
         );
         classRoomEventService.registerNewEvent(classWorkEventEvent.getClassID(),  eventRegisterRequest);
     }
@@ -158,8 +160,6 @@ public class KafkaListeners {
         return combinedDateTime.format(outputFormatter);
     }
 
-
-
     public static String generateRandomColor() {
         // Create a random number generator
         Random random = new Random();
@@ -176,6 +176,24 @@ public class KafkaListeners {
 
         // Combine the hexadecimal strings with a hash symbol (#)
         return "#" + hexRed + hexGreen + hexBlue;
+    }
+
+
+    @KafkaListener(
+            topics = "",
+            groupId = "homework-classroom",
+            containerFactory = "kafkaListenerContainerFactoryHomeWork"
+    )
+
+    void listener(HomeWorkEvent homeWorkEvent) {
+        log.info(String.format("HomeWork  Event received in school service => %s",homeWorkEvent.toString()));
+        HomeWorkAssignedRegisterRequest request = new HomeWorkAssignedRegisterRequest(
+                homeWorkEvent.getTitle(),
+                homeWorkEvent.getDateToBeDone(),
+                homeWorkEvent.getStudentIDs());
+        homeWorkServices.registerNewHomeWork(request);
+
+
     }
 
 }

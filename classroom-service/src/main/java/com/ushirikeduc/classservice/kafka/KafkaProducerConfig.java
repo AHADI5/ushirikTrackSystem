@@ -1,11 +1,9 @@
 package com.ushirikeduc.classservice.kafka;
 
-import Dto.ClassRoomEvent;
-import Dto.ClassRoomEventEvent;
-import Dto.ParentEvent;
-import Dto.StudentEvent;
+import Dto.*;
 import com.ushirikeduc.classservice.kafka.Serializer.ClassRoomSerializer;
 import com.ushirikeduc.classservice.kafka.Serializer.EventSerializer;
+import com.ushirikeduc.classservice.model.HomeWorkAssigned;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,6 +70,27 @@ public class KafkaProducerConfig {
     }
 
 
+/*
+
+*Consuming homework Assigned
+**/
+public Map<String , Object> producerConfigHomeWork() {
+    HashMap<String , Object> props = new HashMap<>();
+    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, HomeWorkAssignedEvent.class);
+    return props ;
+}
+    @Bean
+    public ProducerFactory<String , HomeWorkAssignedEvent> producerFactoryHomeWork() {
+        return new DefaultKafkaProducerFactory<>(producerConfigHomeWork());
+
+    }
+    @Bean
+    public KafkaTemplate<String , HomeWorkAssignedEvent> kafkaTemplateHomeWork(
+    ) {
+        return  new KafkaTemplate<>(producerFactoryHomeWork());
+    }
 
 
 }

@@ -7,13 +7,12 @@ import java.util.Date;
 
 public record ClassWorkRegistrationRequest (
         String type ,
-
         String description ,
-        Date dateTobeDone ,
+        Date dateToBeDone ,
         String startTime ,
         String endTime ,
         int courseID ,
-        int classID,
+        int classRoomID,
         int maxScore
 ) {
 }

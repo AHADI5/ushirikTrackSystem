@@ -16,4 +16,10 @@ public class KafkaConfig {
         return TopicBuilder.name(classRoomTopic)
                 .build();
     }
+    @Bean
+    public NewTopic homeworkTopic() {
+        return TopicBuilder.name("homework-assigned-created")
+                .build();
+    }
+
 }

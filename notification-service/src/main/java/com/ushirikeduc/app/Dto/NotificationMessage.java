@@ -12,7 +12,8 @@ public record NotificationMessage (
         String recipientToken ,
          String recipientID ,
          String title  ,
-         String body
+         String body ,
+        Map<String, String> data
 
 ){
 

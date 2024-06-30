@@ -1,7 +1,9 @@
 package com.ushirikeduc.disciplineservice.kafka;
 
+import Dto.HomeWorkAssignedEvent;
 import Dto.RuleEvent;
 import Dto.StudentEvent;
+import com.ushirikeduc.disciplineservice.kafka.Deserializers.HomeWorkDeserializer;
 import com.ushirikeduc.disciplineservice.kafka.Deserializers.StudentDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -24,15 +26,6 @@ public class KafkaConsumerConfig {
     *
     * Consuming Student event
     * */
-//    public Map<String , Object> consumerConfigStudent() {
-//        return getStringObjectMap();
-//    }
-//
-    /*
-     *
-     * Consuming Student event
-     * */
-
 
     private ConsumerFactory<String, StudentEvent> consumerFactoryStudent() {
         Map<String, Object> propsStudent = new HashMap<>();
@@ -54,6 +47,38 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(consumerFactoryStudent());
         return factory;
     }
+
+
+    /*
+     *
+     * Consuming HomeworkAssignedEvent
+     * */
+
+    private ConsumerFactory<String, HomeWorkAssignedEvent> consumerFactoryHomeWork() {
+        Map<String, Object> propsStudent = new HashMap<>();
+        propsStudent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsStudent.put(ConsumerConfig.GROUP_ID_CONFIG, "homeworkAssigned");
+        propsStudent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Use ErrorHandlingDeserializer for value deserializer
+        ErrorHandlingDeserializer<HomeWorkAssignedEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new HomeWorkDeserializer());
+
+        return new DefaultKafkaConsumerFactory<>(propsStudent, new StringDeserializer(), errorHandlingDeserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,HomeWorkAssignedEvent> kafkaListenerContainerFactoryHomeWork(){
+        ConcurrentKafkaListenerContainerFactory<String , HomeWorkAssignedEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryHomeWork());
+        return factory;
+    }
+
+
+
+
+
 
 
 }

@@ -1,13 +1,7 @@
 package com.ushirikeduc.classservice.kafka;
 
-import Dto.ClassWorkEvent;
-import Dto.CourseEvent;
-import Dto.StudentEvent;
-import Dto.TeacherEvent;
-import com.ushirikeduc.classservice.kafka.Deserializers.ClassWorkDeserializer;
-import com.ushirikeduc.classservice.kafka.Deserializers.CourseDeserializer;
-import com.ushirikeduc.classservice.kafka.Deserializers.StudentDeserializer;
-import com.ushirikeduc.classservice.kafka.Deserializers.TeacherDeserializer;
+import Dto.*;
+import com.ushirikeduc.classservice.kafka.Deserializers.*;
 import com.ushirikeduc.classservice.model.Teacher;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -122,5 +116,28 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(consumerFactoryClassWork());
         return factory;
     }
+
+/*
+* Consuming homeWork
+* */
+private ConsumerFactory<String, HomeWorkEvent> consumerFactoryHomeWork() {
+    Map<String , Object> propsCourse = new HashMap<>();
+    propsCourse.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+    propsCourse.put(ConsumerConfig.GROUP_ID_CONFIG, "homework-classroom");
+    propsCourse.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+    ErrorHandlingDeserializer<HomeWorkEvent> errorHandlingDeserializer =
+            new ErrorHandlingDeserializer<>(new HomeworkDeserialiser());
+
+    return new DefaultKafkaConsumerFactory<>(propsCourse, new StringDeserializer(), errorHandlingDeserializer);
+}
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,HomeWorkEvent> kafkaListenerContainerFactoryHomeWork(){
+        ConcurrentKafkaListenerContainerFactory<String , HomeWorkEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryHomeWork());
+        return factory;
+    }
+
 
 }

@@ -19,6 +19,13 @@ public class KafkaTopicConfig {
     }
 
 
+    @Bean
+    public NewTopic homeWorkStatusTopic() {
+        return TopicBuilder.name("homework-status-created")
+                .build();
+    }
+
+
 
 
 }

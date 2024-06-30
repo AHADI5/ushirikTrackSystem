@@ -13,6 +13,7 @@ public class SchoolCommuniqueEvent {
     private String sender ;
     private String title ;
     private String content ;
+    private long communiqueID ;
     private List<String> recipients ;
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 public record ClassWorkResponse(
         long classWorkID ,
-        List<ScoreStudentResponse> scoreList
+        List<ScoreStudentResponse> scoreList,
+        boolean isGraded
 ) {
 }

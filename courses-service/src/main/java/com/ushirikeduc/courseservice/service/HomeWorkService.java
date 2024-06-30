@@ -28,6 +28,8 @@ public record HomeWorkService (
         MessageController messageController
 ) {
     public homeWorkResponse registerHomeWork(int classID, HomeworkRegistrationRequest request) {
+
+
         // Build the Homework object first
         Homework homework = Homework.builder()
                 .creationDate(new Date())
@@ -72,7 +74,7 @@ public record HomeWorkService (
         savedHomework.setQuestions(savedQuestions);
         //Publish new Homework created
 
-        messageController.publishNewHomework(savedHomework);
+        messageController.publishNewHomework(savedHomework, request.students().studentIDs());
 
 
 

@@ -2,6 +2,7 @@ package com.ushirikeduc.maxmanagementservice.service;
 
 import com.ushirikeduc.maxmanagementservice.Dto.ScoreRequest;
 import com.ushirikeduc.maxmanagementservice.Dto.ScoreResponse;
+import com.ushirikeduc.maxmanagementservice.controller.MessageController;
 import com.ushirikeduc.maxmanagementservice.model.ClassWorksAssigned;
 import com.ushirikeduc.maxmanagementservice.model.MaxOwner;
 import com.ushirikeduc.maxmanagementservice.model.Score;
@@ -12,13 +13,15 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public record ScoreService(
        ClassworkRepository classworkRepository ,
        MaxOwnerRepository maxOwnerRepository ,
-       ScoreRepository scoreRepository
+       ScoreRepository scoreRepository,
+       MessageController messageController
 ) {
     public List<Score> recordScore(int classWorkID , List<ScoreRequest> request) {
         //getting the classWork if exists
@@ -33,9 +36,17 @@ public record ScoreService(
                     .score(score.score())
                     .student(student)
                     .classwork(classWork)
+                    .teacherComment(score.teacherComment())
                     .build();
-           savedScoreRequests.add(scoreRepository.save(studentScore));
+            Score savedScore = scoreRepository.save(studentScore);
+            classWork.setGraded(true);
+            classWork.setGradedDate(new Date());
+            classworkRepository.save(classWork);
+            messageController.publishMax(savedScore);
+
+           savedScoreRequests.add(savedScore);
         }
+
         return savedScoreRequests;
     }
     public List<ScoreResponse> getScoreByStudentID(int studentID){

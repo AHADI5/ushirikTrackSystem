@@ -3,10 +3,7 @@ package com.ushirikeduc.classservice.controller;
 import com.ushirikeduc.classservice.dto.*;
 import com.ushirikeduc.classservice.model.*;
 import com.ushirikeduc.classservice.repository.ClassRoomEventRepository;
-import com.ushirikeduc.classservice.service.ClassRoomEventService;
-import com.ushirikeduc.classservice.service.ClassRoomOptionService;
-import com.ushirikeduc.classservice.service.ClassRoomService;
-import com.ushirikeduc.classservice.service.CoursesService;
+import com.ushirikeduc.classservice.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +19,16 @@ public class ClassRoomController {
     private final CoursesService coursesService;
     private  final ClassRoomOptionService classRoomOptionService;
     private  final ClassRoomEventService classRoomEventService;
+    private  final HomeWorkServices homeWorkServices ;
 
-    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService, ClassRoomService classRoomOptionService, ClassRoomOptionService classRoomOptionService1, ClassRoomEventRepository classRoomEventRepository, ClassRoomEventService classRoomEventService) {
+    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService, ClassRoomService classRoomOptionService, ClassRoomOptionService classRoomOptionService1, ClassRoomEventRepository classRoomEventRepository, ClassRoomEventService classRoomEventService, HomeWorkServices homeWorkServices) {
         this.classRoomService = classRoomService;
         this.coursesService = coursesService;
 
         this.classRoomOptionService = classRoomOptionService1;
         this.classRoomEventService = classRoomEventService;
 
+        this.homeWorkServices = homeWorkServices;
     }
 
     @PostMapping("/newClassRoom")
@@ -157,17 +156,17 @@ public class ClassRoomController {
 
 
     @PostMapping("/studentLevel/parentEmail")
-    public List<String> getParentEmailByStudentLevel(@RequestBody List<Long> levels) {
+    public List<String> getParentEmailByStudentLevel(@RequestBody List<Integer> levels) {
         return classRoomService.getParentEmailByStudentLevel(levels) ;
     }
 
     @PostMapping("/studentSection/parentEmail")
-    public List<String> getParentEmailByStudentSection(@RequestBody List<Long> sectionID) {
+    public List<String> getParentEmailByStudentSection(@RequestBody List<Integer> sectionID) {
         return classRoomService.getParentEmailBySection(sectionID) ;
     }
 
     @GetMapping("{schoolID}/classroomLevels")
-    public Set<Long> getAllSchoolLevel(@PathVariable long schoolID) {
+    public List<Long> getAllSchoolLevel(@PathVariable Integer schoolID) {
         return classRoomService.getAllSchoolLevels(schoolID) ;
 
     }
@@ -188,5 +187,12 @@ public class ClassRoomController {
     public List<SimpleCourseForm> getClassesAssigned (@PathVariable long teacherID) {
         return coursesService.getCoursesAssignedByTeacherID(teacherID) ;
 
+    }
+
+    //HomeWorks end Point
+
+    @PostMapping("/homeWork/reportHomeWork/")
+    public void  reportHomeWork(@RequestBody ReportHomeWorkRequest request) {
+        homeWorkServices.reportHomeWork(request);
     }
 }

@@ -21,6 +21,7 @@ public class MaxOwner {
     private Long studentID;
     private String ownerName ;
     private Long classID ;
+    private String parentEmail ;
     @ManyToMany
     @JoinTable(
             name = "student_classwork",

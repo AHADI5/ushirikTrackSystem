@@ -104,9 +104,15 @@ public record AttendanceService(
 
 
     public DisciplineEvent createAttendanceEvent(Attendance attendance) {
+        List<String> emails = new ArrayList<>();
         DisciplineEvent disciplineEvent = new DisciplineEvent();
         disciplineEvent.setTitle("Absence");
         disciplineEvent.setContent("L'enfant n'est pas venue à l'école aujourd'hui");
+       disciplineEvent.setSender("Discipline");
+       disciplineEvent.setConcern("Attendance");
+       emails.add(attendance.getDiscipline().getParentEmail());
+       disciplineEvent.setRecipient(emails);
+       disciplineEvent.setId(Math.toIntExact(attendance.getAttendanceID()));
 
         return  disciplineEvent ;
 

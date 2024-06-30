@@ -1,11 +1,8 @@
 package com.ushirikeduc.app.kfka;
 
 import Dto.*;
-import com.ushirikeduc.app.kfka.Deserializers.ClassRoomEventDeserializer;
-import com.ushirikeduc.app.kfka.Deserializers.DisciplineDeserializer;
+import com.ushirikeduc.app.kfka.Deserializers.*;
 
-import com.ushirikeduc.app.kfka.Deserializers.RecipientDeserializer;
-import com.ushirikeduc.app.kfka.Deserializers.SchoolCommuniqueDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -122,4 +119,79 @@ public class KafkaConsumerConfig {
     }
 
 
+
+    /**
+     * Consuming maxEvent
+     * */
+    private ConsumerFactory<String, MaxEvent> maxEventConsumerFactory() {
+        Map<String, Object> propsClassRoomEvent = new HashMap<>();
+        propsClassRoomEvent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsClassRoomEvent.put(ConsumerConfig.GROUP_ID_CONFIG, "max-event");
+        propsClassRoomEvent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Use ErrorHandlingDeserializer for value deserializer
+        ErrorHandlingDeserializer<MaxEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new MaxEventDeserializer());
+
+        return new DefaultKafkaConsumerFactory<>(propsClassRoomEvent, new StringDeserializer(), errorHandlingDeserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,MaxEvent> kafkaListenerContainerFactoryMaxEvent(){
+        ConcurrentKafkaListenerContainerFactory<String , MaxEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(maxEventConsumerFactory());
+        return factory;
+    }
+
+    /*
+    Consuming homewework event
+    *
+    **/
+
+    private ConsumerFactory<String, HomeWorkAssignedEvent> homeWorkEventConsumerFactory() {
+        Map<String, Object> propsClassRoomEvent = new HashMap<>();
+        propsClassRoomEvent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsClassRoomEvent.put(ConsumerConfig.GROUP_ID_CONFIG, "homework-event");
+        propsClassRoomEvent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Use ErrorHandlingDeserializer for value deserializer
+        ErrorHandlingDeserializer<HomeWorkAssignedEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new HomeWorkDeserializer());
+
+        return new DefaultKafkaConsumerFactory<>(propsClassRoomEvent, new StringDeserializer(), errorHandlingDeserializer);
+    }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,HomeWorkAssignedEvent> kafkaListenerContainerFactoryHomeWork(){
+        ConcurrentKafkaListenerContainerFactory<String , HomeWorkAssignedEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(homeWorkEventConsumerFactory());
+        return factory;
+    }
+
+
+        /*
+    Consuming homeweworkStatus event
+    *
+    **/
+
+    private ConsumerFactory<String, HomeWorkStatusEvent> homeWorkStatusEventConsumerFactory() {
+        Map<String, Object> propsClassRoomEvent = new HashMap<>();
+        propsClassRoomEvent.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsClassRoomEvent.put(ConsumerConfig.GROUP_ID_CONFIG, "homework-status-event");
+        propsClassRoomEvent.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Use ErrorHandlingDeserializer for value deserializer
+        ErrorHandlingDeserializer<HomeWorkStatusEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new HomeWorkStatusDeserializer());
+
+        return new DefaultKafkaConsumerFactory<>(propsClassRoomEvent, new StringDeserializer(), errorHandlingDeserializer);
+    }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,HomeWorkStatusEvent> kafkaListenerContainerFactoryHomeWorkStatus(){
+        ConcurrentKafkaListenerContainerFactory<String , HomeWorkStatusEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(homeWorkStatusEventConsumerFactory());
+        return factory;
+    }
 }

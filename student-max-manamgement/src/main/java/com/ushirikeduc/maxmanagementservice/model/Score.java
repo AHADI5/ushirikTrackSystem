@@ -28,6 +28,5 @@ public class Score {
     private MaxOwner student;
     @Column(nullable = false)
     private Double score;
-
-
+    private String teacherComment ;
 }

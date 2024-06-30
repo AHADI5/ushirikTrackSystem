@@ -3,24 +3,19 @@ package com.ushirikeduc.courseservice.controller;
 import Dto.ClassWorkEvent;
 import Dto.CourseEvent;
 import Dto.HomeWorkEvent;
-import Dto.StudentEvent;
 
+import com.ushirikeduc.courseservice.dto.Workers;
 import com.ushirikeduc.courseservice.model.ClassWork;
 import com.ushirikeduc.courseservice.model.ClassworkType;
 import com.ushirikeduc.courseservice.model.Course;
 
 import com.ushirikeduc.courseservice.model.Homework;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.management.ObjectName;
-import java.util.Map;
-
-
+import java.util.List;
 
 
 @Service
@@ -70,6 +65,7 @@ public class MessageController {
             classWorkEvent.setEndTime(classWork.getEndTime().toString());
             classWorkEvent.setDateToBeDone(classWork.getDateToBeDone().toString());
             classWorkEvent.setDescription(classWork.getDescription());
+            classWorkEvent.setMaxScore(classWork.getMaxScore());
             classWorkEvent.setTitle(createClassWorkTitle(classWork.getClassworkType() , classWork.getCourse().getName() ,classWork.getMaxScore()));
 
 
@@ -97,14 +93,14 @@ public class MessageController {
     }
 
 
-    public void publishNewHomework(Homework homework) {
-        HomeWorkEvent  HomeworkEvent = new HomeWorkEvent();
-        homework.setHomeWorkID(homework.getHomeWorkID());
-        homework.setTitle(homework.getTitle());
-        homework.setDateToBeDone(homework.getDateToBeDone());
+    public void publishNewHomework(Homework homework , List<Integer> studentIDs) {
+        HomeWorkEvent  homeworkEvent = new HomeWorkEvent();
+        homeworkEvent.setHomeWorkID((int) homework.getHomeWorkID());
+        homeworkEvent.setTitle(homework.getTitle());
+        homeworkEvent.setDateToBeDone(homework.getDateToBeDone().toString());
+        homeworkEvent.setStudentIDs(studentIDs);
 
-
-        kafkaTemplateHomework.send("homework-created" , HomeworkEvent);
+        kafkaTemplateHomework.send("homework-created" , homeworkEvent);
 //        KafkaProducer<String , ClassWorkEvent> producer = createKafkaProducer();
 //        producer.send(new ProducerRecord<String, ClassWorkEvent>("classwork-created", classWorkEvent));
 //        producer.close();

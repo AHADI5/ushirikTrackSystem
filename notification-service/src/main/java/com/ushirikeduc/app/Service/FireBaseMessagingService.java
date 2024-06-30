@@ -2,25 +2,29 @@ package com.ushirikeduc.app.Service;
 
 import com.google.firebase.messaging.*;
 import com.ushirikeduc.app.Dto.NotificationMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public record FireBaseMessagingService(
         FirebaseMessaging firebaseMessaging
 
 ) {
 
-    public void sendNotificationByToken(List<NotificationMessage> notificationMessages) throws FirebaseMessagingException {
+    public void sendNotificationsByToken(List<NotificationMessage> notificationMessages) throws FirebaseMessagingException {
         List<Message> messages = notificationMessages.stream().map(notificationMessage ->
                 Message.builder()
                         .setToken(notificationMessage.recipientToken())
                         .setNotification(Notification.builder()
                                 .setTitle(notificationMessage.title())
                                 .setBody(notificationMessage.body())
+
                                 .build())
+                        .putAllData(notificationMessage.data())
                         .build()
         ).collect(Collectors.toList());
 
@@ -35,6 +39,8 @@ public record FireBaseMessagingService(
         int failureCount = response.getFailureCount();
 
         if (failureCount == 0) {
+            log.info("Message sent Successfully");
+
         } else {
             List<String> failedTokens = response.getResponses().stream()
                     .filter(r -> !r.isSuccessful())
@@ -44,24 +50,5 @@ public record FireBaseMessagingService(
             throw new RuntimeException("Failed to send notifications to some recipients: " + String.join(", ", failedTokens));
         }
     }
-    }
-
-//    public String sendNotificationByToken(NotificationMessage notificationMessage){
-//        Notification notification = Notification
-//                .builder()
-//                .setTitle(notificationMessage.title())
-//                .setBody(notificationMessage.body())
-//                .build();
-//        Message message = Message.builder()
-//                .setToken(notificationMessage.recipientToken())
-//                .setNotification(notification)
-//                .build();
-//        try{
-//            firebaseMessaging.send(message);
-//            return  "Notification Sent";
-//        } catch (FirebaseMessagingException e) {
-//            throw new RuntimeException(e);
-//
-//        }
-//    }
+}
 

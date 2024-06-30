@@ -45,7 +45,7 @@ public record ClassWorkService (
        );
 
         ClassWork classWork = ClassWork.builder()
-                .classID(request.classID())
+                .classID(request.classRoomID())
                 .course(course)
                 .startTime(parseStringToLocalTime(request.startTime()))
                 .endTime(parseStringToLocalTime(request.endTime()))
@@ -53,7 +53,7 @@ public record ClassWorkService (
                 .classworkType(classworkType)
                 .createdAt(new Date())
                 .maxScore(request.maxScore())
-                .dateToBeDone(request.dateTobeDone())
+                .dateToBeDone(request.dateToBeDone())
                 .build();
         //saving the classwork
         ClassWork savedClassWork = classWorkRepository.save(classWork);
@@ -134,7 +134,8 @@ public record ClassWorkService (
     public static LocalTime parseStringToLocalTime(String timeString) {
         DateTimeFormatter[] formatters = {
                 DateTimeFormatter.ofPattern("HH:mm:ss"),
-                DateTimeFormatter.ofPattern("HH:mm")
+                DateTimeFormatter.ofPattern("HH:mm"),
+                DateTimeFormatter.ofPattern("h:mm a")
         };
 
         for (DateTimeFormatter formatter : formatters) {

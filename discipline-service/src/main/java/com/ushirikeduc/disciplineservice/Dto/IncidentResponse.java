@@ -1,5 +1,7 @@
 package com.ushirikeduc.disciplineservice.Dto;
 
+import com.ushirikeduc.disciplineservice.model.SanctionType;
+
 import java.util.Date;
 
 public record IncidentResponse (
@@ -8,6 +10,7 @@ public record IncidentResponse (
         Date date ,
         String disciplineDecision ,
         String rule ,
+        SanctionType sanctionType ,
 
         int occurrenceNumber
 

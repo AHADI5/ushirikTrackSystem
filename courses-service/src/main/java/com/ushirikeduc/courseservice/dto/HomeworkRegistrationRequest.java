@@ -12,6 +12,7 @@ public record HomeworkRegistrationRequest (
         Double maxScore ,
         int classRoomID ,
         Date dueDate,
-        List<QuestionRegistrationRequest> questions
+        List<QuestionRegistrationRequest> questions ,
+        Workers students
 ) {
 }

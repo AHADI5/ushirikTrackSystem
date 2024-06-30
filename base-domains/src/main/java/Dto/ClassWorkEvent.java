@@ -18,6 +18,7 @@ public class ClassWorkEvent {
     private String courseName ;
     private String description ;
     private String place ;
+    private long maxScore  ;
     private int classID ;
     private int classWorkID ;
     private String classWorkType ;

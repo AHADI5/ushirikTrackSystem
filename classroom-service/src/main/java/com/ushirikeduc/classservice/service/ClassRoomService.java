@@ -288,13 +288,13 @@ public class ClassRoomService{
         return enrolledStudentRepository.findTopByStudentClassSchoolIDOrderByDateEnrolledDesc(schoolID,PageRequest.of(0,5));
     }
 
-    public List<String> getParentEmailByStudentLevel(List<Long> levels) {
+    public List<String> getParentEmailByStudentLevel(List<Integer> levels) {
         /*
         *  Getting all parentEmail of student in a given classRoom
         **/
         List<String> parentEmailList = new ArrayList<>() ;
-        for (Long level : levels) {
-            List<ClassRoom> classRooms = classRepository.getClassRoomByLevel(level);
+        for (int level : levels) {
+            List<ClassRoom> classRooms = classRepository.getClassRoomByLevel((long) level);
             for (ClassRoom classRoom : classRooms) {
                 for (Student student : classRoom.getStudents()) {
                     parentEmailList.add(student.getParentEmail());
@@ -305,9 +305,9 @@ public class ClassRoomService{
         return parentEmailList;
     }
 
-    public List<String> getParentEmailBySection(List<Long> sectionIDs) {
+    public List<String> getParentEmailBySection(List<Integer> sectionIDs) {
         List<String> parentEmailList = new ArrayList<>() ;
-        for (Long sectionID : sectionIDs) {
+        for (int sectionID : sectionIDs) {
             ClassRoomOption classRoomOption = classRoomOptionRepository.findClassRoomOptionByClassOptionID(sectionID);
             List<ClassRoom> classRooms = classRepository.getClassRoomByClassRoomOption(classRoomOption);
             for (ClassRoom classRoom : classRooms) {
@@ -320,9 +320,9 @@ public class ClassRoomService{
         return  parentEmailList;
     }
 
-    public Set<Long> getAllSchoolLevels  (long schoolID) {
-        Set<ClassRoom> classRooms = classRepository.getAllBySchoolID(schoolID);
-        Set<Long> levels = new HashSet<>();
+    public List<Long> getAllSchoolLevels  (long schoolID) {
+        List<ClassRoom> classRooms = classRepository.getAllBySchoolID(schoolID);
+        List<Long> levels = new ArrayList<>();
         for(ClassRoom classRoom : classRooms) {
             levels.add(classRoom.getLevel());
         }
