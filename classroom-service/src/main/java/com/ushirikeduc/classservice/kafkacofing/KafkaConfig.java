@@ -7,13 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaConfig {
-    @Value("create-classroom")
-    private String classRoomTopic;
+
 
     //Spring bean for kafka topic
     @Bean
     public NewTopic classRoomTopic() {
-        return TopicBuilder.name(classRoomTopic)
+        return TopicBuilder.name("create-classroom")
                 .build();
     }
     @Bean

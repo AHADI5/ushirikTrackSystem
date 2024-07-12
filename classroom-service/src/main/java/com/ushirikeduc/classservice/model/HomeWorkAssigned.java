@@ -29,7 +29,7 @@ public class HomeWorkAssigned {
     String title ;
     Date dateToBeDone  ;
     HomeWorkStatus homeWorkStatus ;
-    @ManyToMany(mappedBy = "devoirs")
+    @ManyToMany(mappedBy = "homeWorks")
     private List<Student> students = new ArrayList<>();
 
 }

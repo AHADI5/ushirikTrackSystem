@@ -43,6 +43,8 @@ public class School {
     private SchoolAdmin administrator;
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL)
     private  List<ClassRoom> classRooms = new ArrayList<>();
+    @OneToMany(mappedBy = "school" , cascade = CascadeType.ALL)
+    private List<SchoolYear> schoolYears = new ArrayList<>();
 
 
 

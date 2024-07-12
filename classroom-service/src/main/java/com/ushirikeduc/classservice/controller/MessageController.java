@@ -57,7 +57,7 @@ public record MessageController(
         homeWorkAssignedEvent.setDueDate(homeWorkAssigned.getDateToBeDone().toString());
         homeWorkAssignedEvent.setRecipient(emails);
         homeWorkAssignedEvent.setStudentIDList(studentIDList);
-        homeWorkAssignedEvent.setStatus(homeWorkAssignedEvent.getStatus());
+        homeWorkAssignedEvent.setStatus(homeWorkAssigned.getHomeWorkStatus().name());
         kafkaTemplateHomeWorkAssigned.send("homework-assigned-created" , homeWorkAssignedEvent);
     }
 }

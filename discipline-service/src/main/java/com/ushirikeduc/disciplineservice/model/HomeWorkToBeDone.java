@@ -26,7 +26,7 @@ public class HomeWorkToBeDone {
     private String title ;
     private String status ;
 
-    @ManyToMany(mappedBy = "homeWorks")
+    @ManyToMany(mappedBy = "homeWorkToBeDone")
     List<Discipline> disciplines = new ArrayList<>();
 
 }

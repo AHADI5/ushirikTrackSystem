@@ -4,6 +4,7 @@ import com.ushirikeduc.users.config.JwtService;
 import com.ushirikeduc.users.dtoRequests.*;
 import com.ushirikeduc.users.model.Role;
 import com.ushirikeduc.users.service.AuthenticationService;
+import com.ushirikeduc.users.service.UsersService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,8 @@ import java.util.List;
 @RequestMapping("api/v1/auth")
 public record AuthenticationController(
         AuthenticationService authenticationService,
-        JwtService jwtService
+        JwtService jwtService,
+        UsersService usersService
 
 ) {
 //    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.POST, RequestMethod.OPTIONS})
@@ -99,4 +101,10 @@ public record AuthenticationController(
         return authenticationService.getUniDeviceKeyByUserName(userName);
 
     }
+
+    @GetMapping("{schoolID}/getUsersStats")
+    public UserStat getUsersStatsBySchoolID(@PathVariable int schoolID) {
+        return usersService.getUsersStatBySchoolID(schoolID) ;
+    }
+
 }

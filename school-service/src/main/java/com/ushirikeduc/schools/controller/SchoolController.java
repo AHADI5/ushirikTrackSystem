@@ -21,7 +21,8 @@ public record SchoolController(
         CommuniqueService communiqueService ,
         SchoolAdminService schoolAdminService,
 
-        ClassRoomService classRoomService
+        ClassRoomService classRoomService ,
+        SchoolYearService  schoolYearService
 
                              ) {
     @PostMapping("/register-school")
@@ -114,7 +115,6 @@ public record SchoolController(
 
     @GetMapping("/director/schoolID")
     public Integer getSchoolIDByDirectorEmail(@RequestHeader String userName) {
-        log.info("Director admin received in school successfully" + userName);
         return  schoolService.getSchoolIDByDirectorEmail (userName);
     }
 
@@ -163,6 +163,12 @@ public record SchoolController(
     public List<EventResponse> getListEventByStartingDate (@PathVariable int schoolID ,
                                                  @RequestBody EventDateRequest date){
         return  eventService.getEventListByStartingDate(schoolID , date.date());
+    }
+
+    //School years management
+    @PostMapping("{schoolID}/schoolYear")
+    public List<SchoolYearDto> createNewSchoolYear(@PathVariable int schoolID , List<SchoolYearDto> schoolYears) {
+        return  (schoolYearService.registerNewSchoolYears(schoolID , schoolYears) );
     }
 
 

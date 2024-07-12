@@ -180,7 +180,7 @@ public class KafkaListeners {
 
 
     @KafkaListener(
-            topics = "",
+            topics = "homework-created",
             groupId = "homework-classroom",
             containerFactory = "kafkaListenerContainerFactoryHomeWork"
     )

@@ -5,7 +5,7 @@ spring:
     name: communication-service
   datasource:
     username: ushirik-educ
-    url: jdbc:postgresql://localhost:5432/communications
+    url: jdbc:postgresql://localhost:5432/notifications
     password: 'password'
   jpa:
     properties:
