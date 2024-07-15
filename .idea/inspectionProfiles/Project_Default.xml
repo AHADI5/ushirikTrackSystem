@@ -18,6 +18,8 @@
       <option name="customHeaders">
         <set>
           <option value="  &quot;title&quot;" />
+          <option value="  &quot;date&quot;" />
+          <option value="}" />
         </set>
       </option>
     </inspection_tool>

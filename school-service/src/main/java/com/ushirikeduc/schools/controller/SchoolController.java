@@ -158,19 +158,18 @@ public record SchoolController(
                                                   @RequestBody EventDateRequest date){
         return  eventService.getEventByStartingDate(schoolID , date.date());
     }
-    @PostMapping("{schoolID}/schoolYear")
-    public List<SchoolYearDto> createNewSchoolYear(@PathVariable int schoolID , List<SchoolYearDto> schoolYears) {
-        return  schoolYearService.registerNewSchoolYears(schoolID , schoolYears) ;
-    }
+
 
     @PostMapping ("{schoolID}/getListEventByStartingDate")
     public List<EventResponse> getListEventByStartingDate (@PathVariable int schoolID ,
                                                  @RequestBody EventDateRequest date){
         return  eventService.getEventListByStartingDate(schoolID , date.date());
     }
-
     //School years management
 
-
+    @PostMapping("{schoolID}/schoolYear")
+    public List<SchoolYearDto> createNewSchoolYear(@PathVariable int schoolID ,@RequestBody List<SchoolYearDto> schoolYears) {
+        return  schoolYearService.registerNewSchoolYears(schoolID , schoolYears) ;
+    }
 }
 

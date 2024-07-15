@@ -27,7 +27,7 @@ public class SemesterPeriod {
     Date startingDate ;
     Date endingDate ;
     @ManyToOne
-    @JoinColumn(name = "smester_id")
+    @JoinColumn(name = "semester_id")
     private Semester semester ;
 
 }

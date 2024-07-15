@@ -28,10 +28,10 @@ public class Semester {
     private  int semesterID ;
     Date startingDate ;
     Date endingDate ;
-    @OneToMany(mappedBy = "semester")
+    @OneToMany(mappedBy = "semester", cascade = CascadeType.ALL)
     List<SemesterPeriod> semesterPeriodList = new ArrayList<>();
     @ManyToOne
-    @JoinColumn(name = "semester_ID")
+    @JoinColumn(name = "schoolyear_ID")
     SchoolYear schoolYear ;
 
 }
