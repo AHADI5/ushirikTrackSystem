@@ -8,7 +8,10 @@ import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.repository.SchoolYearRepository;
 import com.ushirikeduc.schools.repository.SemesterPeriodRepository;
 import com.ushirikeduc.schools.repository.SemesterRepository;
+import com.ushirikeduc.schools.requests.PeriodInSemester;
 import com.ushirikeduc.schools.requests.SchoolYearDto;
+import com.ushirikeduc.schools.requests.SchoolYearResponse;
+import com.ushirikeduc.schools.requests.SchoolYearSemesters;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.context.annotation.ScopeMetadata;
@@ -26,7 +29,7 @@ public record SchoolYearService (
         SemesterRepository semesterRepository,
         SemesterPeriodRepository semesterPeriodRepository
 ){
-    public List<SchoolYearDto> registerNewSchoolYears(int schoolID, List<SchoolYearDto> schoolYears) {
+    public List<SchoolYearResponse> registerNewSchoolYears(int schoolID, List<SchoolYearDto> schoolYears) {
         // Getting the school
         School school = schoolRepository.findById((long) schoolID)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found"));
@@ -93,17 +96,90 @@ public record SchoolYearService (
         }
 
         List<SchoolYear> savedSchoolYears = schoolYearRepository.saveAll(schoolYearList);
-        List<SchoolYearDto> schoolYearDtos = new ArrayList<>();
+        List<SchoolYearResponse> schoolYearResponses = new ArrayList<>();
         for (SchoolYear schoolYear : savedSchoolYears) {
-            SchoolYearDto schoolYearDto = new SchoolYearDto(
-                    schoolYear.getStartingDate(),
-                    schoolYear.getEndingDate(),
-                    schoolYear.getSemesters()
-            );
-            schoolYearDtos.add(schoolYearDto);
+//            SchoolYearDto schoolYearDto = new SchoolYearDto(
+//                    schoolYear.getSchoolYear(),
+//                    schoolYear.getStartingDate(),
+//                    schoolYear.getEndingDate(),
+//                    schoolYear.getSemesters()
+//            );
+            schoolYearResponses.add(schoolYearResponseListConstruct(schoolYear));
         }
-        return schoolYearDtos;
+        return schoolYearResponses;
     }
 
+    public SchoolYearResponse schoolYearResponseListConstruct(SchoolYear schoolYear) {
+        /*
+        *This method takes a schoolYear Object and then construct avery simple format
+        * in order to avoid recursive Json issues
+        * */
+
+        return new SchoolYearResponse(
+                "" ,
+                schoolYear.getStartingDate() ,
+                schoolYear.getEndingDate(),
+                schoolYearSemesterConstruct(schoolYear.getSemesters())
+        );
+
+    }
+
+    private List<SchoolYearSemesters> schoolYearSemesterConstruct(List<Semester> semesters) {
+        List<SchoolYearSemesters> schoolYearSemesters = new ArrayList<>();
+        for (Semester semester : semesters) {
+            SchoolYearSemesters schoolYearSemester = new SchoolYearSemesters(
+                    semester.getSemesterID(),
+                    semester.getStartingDate(),
+                    semester.getEndingDate(),
+                    semesterPeriodsConstruct(semester.getSemesterPeriodList())
+            );
+            schoolYearSemesters.add(schoolYearSemester);
+        }
+
+        return  schoolYearSemesters;
+    }
+    private List<PeriodInSemester> semesterPeriodsConstruct(List<SemesterPeriod> semesterPeriodList) {
+        List<PeriodInSemester> periodInSemesters = new ArrayList<>();
+        for (SemesterPeriod semesterPeriod: semesterPeriodList) {
+            PeriodInSemester periodInSemester = new PeriodInSemester(
+                    semesterPeriod.getSemesterPeriodID() ,
+                    semesterPeriod.getStartingDate(),
+                    semesterPeriod.getEndingDate()
+            );
+            periodInSemesters.add(periodInSemester);
+        }
+        return periodInSemesters;
+    }
+
+
+    public List<SchoolYearResponse> getSchoolYearsBySchoolID(int schoolID) {
+        // Getting the school
+        List<SchoolYearResponse> schoolYearResponseList = new ArrayList<>();
+        School school = schoolRepository.findById((long) schoolID)
+                .orElseThrow(() -> new ResourceNotFoundException("School not found"));
+        List<SchoolYear> schoolYearList = school.getSchoolYears();
+        for (SchoolYear schoolYear : schoolYearList) {
+            schoolYearResponseList.add(schoolYearResponseListConstruct(schoolYear));
+
+        }
+        return  schoolYearResponseList;
+
+    }
+
+    public SchoolYearResponse updateSchoolYear(int schoolYearID, SchoolYearDto schoolYearDto) {
+        SchoolYear schoolYear = schoolYearRepository.findById(schoolYearID)
+                .orElseThrow(()-> new ResourceNotFoundException("School not found"));
+        schoolYear.setStartingDate(schoolYearDto.startingDate());
+        schoolYear.setEndingDate(schoolYearDto.endingDate());
+        schoolYear.setSemesters(schoolYearDto.semesters());
+        schoolYear.setSchoolYear(schoolYearDto.schoolYear());
+
+        return schoolYearResponseListConstruct(schoolYearRepository.save(schoolYear));
+
+
+
+    }
+
+    //TODO UPDATE A SCHOOL YEAR !
 
 }

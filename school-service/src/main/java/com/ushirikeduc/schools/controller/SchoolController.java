@@ -168,8 +168,18 @@ public record SchoolController(
     //School years management
 
     @PostMapping("{schoolID}/schoolYear")
-    public List<SchoolYearDto> createNewSchoolYear(@PathVariable int schoolID ,@RequestBody List<SchoolYearDto> schoolYears) {
+    public List<SchoolYearResponse> createNewSchoolYear(@PathVariable int schoolID , @RequestBody List<SchoolYearDto> schoolYears) {
         return  schoolYearService.registerNewSchoolYears(schoolID , schoolYears) ;
+    }
+
+    @GetMapping("{schoolID}/getSchoolYears")
+    public List<SchoolYearResponse> getSchoolYears(@PathVariable int schoolID) {
+        return  schoolYearService.getSchoolYearsBySchoolID(schoolID);
+    }
+
+    @PutMapping("{schoolID}/updateSchoolYear")
+    public SchoolYearResponse updateSchoolYear(@PathVariable int schoolID ,@RequestBody SchoolYearDto year) {
+        return  schoolYearService.updateSchoolYear(schoolID , year);
     }
 }
 
