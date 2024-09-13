@@ -181,5 +181,16 @@ public record SchoolController(
     public SchoolYearResponse updateSchoolYear(@PathVariable int schoolID ,@RequestBody SchoolYearDto year) {
         return  schoolYearService.updateSchoolYear(schoolID , year);
     }
+
+    @PutMapping("/startSchoolYear/{schoolYearID}")
+    public  void startSchoolYear(@PathVariable int schoolYearID ) {
+        schoolYearService.startSchoolYear(schoolYearID);
+
+    }
+    @PutMapping("/stopSchoolYear/{schoolYearID}")
+    public  void stopSchoolYear( @PathVariable int schoolYearID ) {
+        schoolYearService.stopSchoolYear(schoolYearID);
+
+    }
 }
 

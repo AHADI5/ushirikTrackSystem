@@ -137,7 +137,6 @@ public record AuthenticationService(
             //Register Operations
             userOperationService.registerOperation(userName , Operation.DISABLE);
             userRepository.save(user);
-
             return ResponseEntity.ok(user.isEnabled());
         }
 

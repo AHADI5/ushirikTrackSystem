@@ -24,10 +24,8 @@ public class ClassRoomController {
     public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService, ClassRoomService classRoomOptionService, ClassRoomOptionService classRoomOptionService1, ClassRoomEventRepository classRoomEventRepository, ClassRoomEventService classRoomEventService, HomeWorkServices homeWorkServices) {
         this.classRoomService = classRoomService;
         this.coursesService = coursesService;
-
         this.classRoomOptionService = classRoomOptionService1;
         this.classRoomEventService = classRoomEventService;
-
         this.homeWorkServices = homeWorkServices;
     }
 

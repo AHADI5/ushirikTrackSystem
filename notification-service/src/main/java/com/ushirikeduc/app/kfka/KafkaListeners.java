@@ -48,8 +48,10 @@ public record KafkaListeners (
                 disciplineEvent.getContent(),
                 additionalData,
                 disciplineEvent.getRecipient()
-
         );
+
+        //TODO  : Check user preferences before sending the notification *
+
         sendNotification(notificationDto);
 
 

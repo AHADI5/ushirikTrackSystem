@@ -29,6 +29,8 @@ public class SchoolYear {
     Date startingDate ;
     Date endingDate ;
     private  String schoolYear;
+    private SchoolYearStatus schoolYearStatus;
+
     @ManyToOne
     @JoinColumn(name = "school_id")
     School school;

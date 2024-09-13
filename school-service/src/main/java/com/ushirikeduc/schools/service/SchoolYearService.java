@@ -1,9 +1,6 @@
 package com.ushirikeduc.schools.service;
 
-import com.ushirikeduc.schools.model.School;
-import com.ushirikeduc.schools.model.SchoolYear;
-import com.ushirikeduc.schools.model.Semester;
-import com.ushirikeduc.schools.model.SemesterPeriod;
+import com.ushirikeduc.schools.model.*;
 import com.ushirikeduc.schools.repository.SchoolRepository;
 import com.ushirikeduc.schools.repository.SchoolYearRepository;
 import com.ushirikeduc.schools.repository.SemesterPeriodRepository;
@@ -73,10 +70,10 @@ public record SchoolYearService (
 
             SchoolYear schoolYear = SchoolYear
                     .builder()
+                    .schoolYearStatus(SchoolYearStatus.NOT_STARTED)
+                    .schoolYear(schoolYearDto.schoolYear())
                     .startingDate(schoolYearDto.startingDate())
                     .endingDate(schoolYearDto.endingDate())
-                    .schoolYear(" " + String.valueOf(schoolYearDto.startingDate().getYear()) + " - " +
-                            String.valueOf(schoolYearDto.endingDate().getYear()))
                     .semesters(savedSemesters)
                     .school(school)
                     .build();
@@ -116,9 +113,11 @@ public record SchoolYearService (
         * */
 
         return new SchoolYearResponse(
-                "" ,
+                schoolYear.getSchoolYearID(),
+                schoolYear.getSchoolYear(),
                 schoolYear.getStartingDate() ,
                 schoolYear.getEndingDate(),
+                schoolYear.getSchoolYearStatus(),
                 schoolYearSemesterConstruct(schoolYear.getSemesters())
         );
 
@@ -176,8 +175,20 @@ public record SchoolYearService (
 
         return schoolYearResponseListConstruct(schoolYearRepository.save(schoolYear));
 
+    }
 
+    public void startSchoolYear(int schoolYearID) {
+        SchoolYear schoolYear = schoolYearRepository.findById(schoolYearID)
+                .orElseThrow(()-> new ResourceNotFoundException("School not found"));
+        schoolYear.setSchoolYearStatus(SchoolYearStatus.PROGRESS);
+        schoolYearRepository.save(schoolYear);
+    }
 
+    public void stopSchoolYear(int schoolYearID) {
+        SchoolYear schoolYear = schoolYearRepository.findById(schoolYearID)
+                .orElseThrow(()-> new ResourceNotFoundException("School not found"));
+        schoolYear.setSchoolYearStatus(SchoolYearStatus.ENDED);
+        schoolYearRepository.save(schoolYear);
     }
 
     //TODO UPDATE A SCHOOL YEAR !

@@ -24,7 +24,6 @@ public record ClassRoomOptionService(
                  .schoolID(schoolID)
                  .optionName(request.name())
                  .description(request.Description())
-                 .schoolID(request.schoolID())
                  .build();
         return ResponseEntity.ok(classRoomOptionRepository.save(classRoomOption));
 
