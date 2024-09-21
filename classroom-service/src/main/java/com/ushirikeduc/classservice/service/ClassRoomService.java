@@ -329,6 +329,26 @@ public class ClassRoomService{
         return  levels ;
     }
 
+    public Set<ClassRoomStat> getStudentNumberPerLevel(int schoolID) {
+        List<Long> schoolLevels = getAllSchoolLevels(schoolID);
+        Set<Long> schoolLevelSet = new HashSet<>(schoolLevels);
+        Set<ClassRoomStat> classRoomStats = new HashSet<>(); // Use a Set to eliminate duplicates
+        log.info("School level set is here  {}", schoolLevelSet);
+
+        for (Long level : schoolLevelSet) {
+            long studentNumber = 0;
+            for (ClassRoom classRoom : classRepository.getClassRoomByLevel(level)) {
+                studentNumber += classRoom.getStudents().size();
+            }
+
+            ClassRoomStat classRoomStat = new ClassRoomStat(level, studentNumber);
+            classRoomStats.add(classRoomStat); // Set will handle duplicates automatically
+        }
+
+        return classRoomStats;
+    }
+
+
 
     public List<Student> getAllSchoolStudent(long schoolID) {
         List<ClassRoom> classRooms = classRepository.getClassRoomsBySchoolID(schoolID);

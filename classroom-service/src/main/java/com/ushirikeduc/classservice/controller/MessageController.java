@@ -39,7 +39,7 @@ public record MessageController(
         classRoomEvent.setSchoolID(classRoom.getSchoolID());
 
         kafkaTemplateClassRoom.send("classroom-created",classRoomEvent);
-        log.info(String.format("Student Event created  => %s ", classRoomEvent));
+        log.info("Student Event created  => {} ", classRoomEvent);
     }
 
     public void publishHomeWork(HomeWorkAssigned homeWorkAssigned) {

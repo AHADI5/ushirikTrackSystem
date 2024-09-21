@@ -1,5 +1,6 @@
 package com.ushirikeduc.disciplineservice.service;
 
+import Dto.DisciplineCommuniqueEvent;
 import Dto.DisciplineEvent;
 import com.ushirikeduc.disciplineservice.Dto.IncidentRegisterRequest;
 import com.ushirikeduc.disciplineservice.Dto.IncidentResponse;
@@ -54,6 +55,7 @@ public record IncidentService(
             newOccurrenceNumber = 1; // Reset to 1 if exceeds maximum violation occurrence
         }
 
+
         // Create a new incident with the determined occurrence number
         Incident incident = Incident.builder()
                 .date(new Date())
@@ -83,6 +85,14 @@ public record IncidentService(
 
 
             //TODO PUBLISH COMMUNIQUE EVENT
+            //Creating a discipline communique event instance
+            DisciplineCommuniqueEvent disciplineCommuniqueEvent = new DisciplineCommuniqueEvent();
+            disciplineCommuniqueEvent.setContent(savedDisciplineCommunique.getContent());
+            disciplineCommuniqueEvent.setDisciplineClassRoomId(savedDisciplineCommunique.getClassRoomID()) ;
+            disciplineCommuniqueEvent.setTarget(savedDisciplineCommunique.getRecipient());
+            disciplineCommuniqueEvent.setTitle(savedDisciplineCommunique.getTitle());
+            //disciplineCommuniqueEvent.setDateCreated(savedDisciplineCommunique.getGeneratedDate().toString());
+            messageController.publishDisciplineCommunique(disciplineCommuniqueEvent);
         }
 
         // Publish a message related to the incident
@@ -145,7 +155,8 @@ public record IncidentService(
                             discipline.getOwner(), discipline.getClassRoomName(), "une semaine", incident.getDate(), incident.getDescription()
                     ))
                     .recipient(discipline.getParentEmail())
-
+                    .classRoomID(discipline.getClassRoomID())
+                    .generatedDate(new Date())
                     .build();
         }
 

@@ -4,6 +4,7 @@ import com.ushirikeduc.schools.controller.MessageController;
 import com.ushirikeduc.schools.model.*;
 import com.ushirikeduc.schools.repository.*;
 import com.ushirikeduc.schools.requests.*;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
@@ -19,17 +20,29 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public record CommuniqueService (
-        SchoolRepository schoolRepository ,
-        CommuniqueRepository communiqueRepository,
-        SchoolService schoolService ,
-        ClassRoomService classRoomService ,
 
-        RecipientRepository recipientRepository ,
-        CommuniqueReviewRepository communiqueReviewRepository ,
-        MessageController messageController
+@Transactional
+public class  CommuniqueService {
 
-) {
+    final SchoolRepository schoolRepository ;
+    final CommuniqueRepository communiqueRepository;
+    final SchoolService schoolService ;
+    final ClassRoomService classRoomService ;
+
+    final RecipientRepository recipientRepository ;
+    final CommuniqueReviewRepository communiqueReviewRepository ;
+    final MessageController messageController ;
+
+    public CommuniqueService(SchoolRepository schoolRepository, CommuniqueRepository communiqueRepository, SchoolService schoolService, ClassRoomService classRoomService, RecipientRepository recipientRepository, CommuniqueReviewRepository communiqueReviewRepository, MessageController messageController) {
+        this.schoolRepository = schoolRepository;
+        this.communiqueRepository = communiqueRepository;
+        this.schoolService = schoolService;
+        this.classRoomService = classRoomService;
+        this.recipientRepository = recipientRepository;
+        this.communiqueReviewRepository = communiqueReviewRepository;
+        this.messageController = messageController;
+    }
+
     public CommuniqueResponse registerCommunique(int schoolID,
                                                  CommuniqueRegisterRequest request , String token) {
         CommuniqueRecipientType communiqueRecipientTypeType = getRecipientType(request);
@@ -41,12 +54,15 @@ public record CommuniqueService (
         //this will contain all communique review
         List<CommuniqueReview> reviews = new ArrayList<>();
 
+        if(Objects.equals(token, "")) {
+           recipients =  getListRecipient(request.recipientIDs());
+        } else  {
+            assert communiqueRecipientTypeType != null;
+            recipients  = communiqueRecipientTypeType.equals(CommuniqueRecipientType.INDIVIDUAL_PARENTS) ?
+                    getListRecipient(request.recipientIDs()) :
+                    getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , (List<Long>) request.recipientIDs(), token));
+        }
 
-        assert communiqueRecipientTypeType != null;
-
-       recipients  = communiqueRecipientTypeType.equals(CommuniqueRecipientType.INDIVIDUAL_PARENTS) ?
-               getListRecipient(request.recipientIDs()) :
-               getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , (List<Long>) request.recipientIDs(), token));
         Communique communique = Communique.builder()
                 .title(request.title())
                 .content(request.content())

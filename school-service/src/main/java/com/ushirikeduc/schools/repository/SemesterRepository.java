@@ -4,4 +4,5 @@ import com.ushirikeduc.schools.model.Semester;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SemesterRepository extends JpaRepository<Semester, Integer> {
+    //Semester getSemesterByEndingDateAndStartingDate(String endingDate, String startingDate);
 }

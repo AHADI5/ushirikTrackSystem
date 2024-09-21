@@ -48,8 +48,6 @@
             <artifactId>base-domains</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-
     </dependencies>
 
 </project>

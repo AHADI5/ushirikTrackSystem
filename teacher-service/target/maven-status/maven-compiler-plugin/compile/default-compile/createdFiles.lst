@@ -1,0 +1,14 @@
+com\ushirikeduc\teacherservice\controller\Controller.class
+com\ushirikeduc\teacherservice\config\KafkaTopicConfig.class
+com\ushirikeduc\teacherservice\controller\MessageController.class
+com\ushirikeduc\teacherservice\config\KafkaProducerConfig.class
+com\ushirikeduc\teacherservice\config\TeacherSerializer.class
+com\ushirikeduc\teacherservice\model\Teacher.class
+com\ushirikeduc\teacherservice\repository\AddressRepository.class
+com\ushirikeduc\teacherservice\service\TeacherService.class
+com\ushirikeduc\teacherservice\model\Address$AddressBuilder.class
+com\ushirikeduc\teacherservice\model\Address.class
+com\ushirikeduc\teacherservice\TeacherApplication.class
+com\ushirikeduc\teacherservice\model\Teacher$TeacherBuilder.class
+com\ushirikeduc\teacherservice\repository\TeacherRepository.class
+com\ushirikeduc\teacherservice\request\TeacherRegistrationRequest.class

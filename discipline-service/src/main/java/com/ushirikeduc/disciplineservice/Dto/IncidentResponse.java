@@ -11,9 +11,7 @@ public record IncidentResponse (
         String disciplineDecision ,
         String rule ,
         SanctionType sanctionType ,
-
         int occurrenceNumber
-
 
 ) {
 }

@@ -25,6 +25,13 @@ public class KafkaTopicConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic disciplineCommuniqueStatusTopic() {
+        return TopicBuilder.name("discipline-communique-created")
+                .build();
+    }
+
+
 
 
 

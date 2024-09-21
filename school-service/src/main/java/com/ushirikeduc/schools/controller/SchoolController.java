@@ -177,9 +177,9 @@ public record SchoolController(
         return  schoolYearService.getSchoolYearsBySchoolID(schoolID);
     }
 
-    @PutMapping("{schoolID}/updateSchoolYear")
-    public SchoolYearResponse updateSchoolYear(@PathVariable int schoolID ,@RequestBody SchoolYearDto year) {
-        return  schoolYearService.updateSchoolYear(schoolID , year);
+    @PutMapping("{schoolYearID}/updateSchoolYear")
+    public SchoolYearResponse updateSchoolYear(@PathVariable int schoolYearID ,@RequestBody SchoolYearDto year) {
+        return  schoolYearService.updateSchoolYear(schoolYearID , year);
     }
 
     @PutMapping("/startSchoolYear/{schoolYearID}")

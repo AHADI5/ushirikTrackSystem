@@ -57,6 +57,8 @@ public class KafkaListeners {
         log.info("Homework Received in discipline  service %s" + homeWorkAssignedEvent.toString() );
         homeWorkService.registerHomeWorkToBeDone(homeWorkAssignedEvent);
     }
+
+
 }
 
 

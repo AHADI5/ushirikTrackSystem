@@ -28,8 +28,11 @@ public class Communique {
     )
     private long communiqueID ;
     private String title;
+    @Lob // Annotate with @Lob for long string data types
+    @Column(columnDefinition = "TEXT") // Adjust column definition based on your database
     private String content ;
     private Date dateCreated;
+    private CommuniqueCategory category;
 
 
     @ManyToOne

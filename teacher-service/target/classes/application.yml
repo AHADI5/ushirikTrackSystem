@@ -1,0 +1,33 @@
+server:
+  port: 8788
+
+spring:
+  application:
+    name: teacher-service
+  datasource:
+    username: ushirik-educ
+    url: jdbc:postgresql://localhost:5432/teacher
+    password: 'password'
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    #Kafka configurations ,as this is an Event Producer
+#  kafka:
+#    producer:
+#      bootstrap-servers: localhost:9092
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    topic:
+#      name: create-teacher
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+

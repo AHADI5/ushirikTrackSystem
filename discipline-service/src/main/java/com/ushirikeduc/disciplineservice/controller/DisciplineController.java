@@ -11,7 +11,6 @@ import java.util.List;
 public record DisciplineController(
 
         AttendanceService attendanceService ,
-
         IncidentService incidentService ,
         RuleService ruleService
 

@@ -48,11 +48,10 @@ public class ClassRoomController {
     public List<Course> getCoursesByClassRoom(@PathVariable  int classRoomId) {
         return  coursesService.courseByClassID(classRoomId);
     }
-
-//    @GetMapping("{schoolID}/get-students-stats")
-//    public List<StudentStatsByLevels> getStudentStatsByLevel (@PathVariable int schoolID) {
-//        return  classRoomService.getStudentStatByLevel(schoolID);
-//    }
+    @GetMapping("{schoolID}/get-students-stats")
+    public Set<ClassRoomStat> getStudentStatsByLevel (@PathVariable int schoolID) {
+      return  classRoomService.getStudentNumberPerLevel(schoolID);
+  }
 
 
     @GetMapping("/{classRoomId}/courses/{courseId}")

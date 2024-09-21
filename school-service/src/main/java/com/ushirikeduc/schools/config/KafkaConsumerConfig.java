@@ -3,7 +3,9 @@ package com.ushirikeduc.schools.config;
 import Dto.ClassRoomEvent;
 import Dto.ClassWorkEvent;
 
+import Dto.DisciplineCommuniqueEvent;
 import com.ushirikeduc.schools.config.Deserializers.ClassRoomDeserializer;
+import com.ushirikeduc.schools.config.Deserializers.DisciplineCommuniqueDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +44,28 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String , ClassRoomEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryClassRoom());
+        return factory;
+    }
+
+
+    private ConsumerFactory<String, DisciplineCommuniqueEvent> consumerFactoryCommuniqueEvent() {
+        Map<String, Object> propsClassRoom = new HashMap<>();
+        propsClassRoom.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
+        propsClassRoom.put(ConsumerConfig.GROUP_ID_CONFIG, "discipline_communique");
+        propsClassRoom.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Use ErrorHandlingDeserializer for value deserializer
+        ErrorHandlingDeserializer<DisciplineCommuniqueEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new DisciplineCommuniqueDeserializer());
+
+        return new DefaultKafkaConsumerFactory<>(propsClassRoom, new StringDeserializer(), errorHandlingDeserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String ,DisciplineCommuniqueEvent> kafkaListenerContainerFactoryDisciplineCom(){
+        ConcurrentKafkaListenerContainerFactory<String , DisciplineCommuniqueEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryCommuniqueEvent());
         return factory;
     }
 

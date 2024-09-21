@@ -1,7 +1,6 @@
 package Dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,4 +14,5 @@ public class DisciplineCommuniqueEvent {
     String dateCreated ;
     String content ;
     String target ;
+    long disciplineClassRoomId  ;
 }

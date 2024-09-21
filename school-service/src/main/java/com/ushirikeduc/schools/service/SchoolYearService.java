@@ -168,7 +168,9 @@ public record SchoolYearService (
     public SchoolYearResponse updateSchoolYear(int schoolYearID, SchoolYearDto schoolYearDto) {
         SchoolYear schoolYear = schoolYearRepository.findById(schoolYearID)
                 .orElseThrow(()-> new ResourceNotFoundException("School not found"));
+        //List<Semester> newSemesters = schoolYearDto.semesters() ;
         schoolYear.setStartingDate(schoolYearDto.startingDate());
+        schoolYear.setSchoolYearStatus(SchoolYearStatus.PROGRESS);
         schoolYear.setEndingDate(schoolYearDto.endingDate());
         schoolYear.setSemesters(schoolYearDto.semesters());
         schoolYear.setSchoolYear(schoolYearDto.schoolYear());

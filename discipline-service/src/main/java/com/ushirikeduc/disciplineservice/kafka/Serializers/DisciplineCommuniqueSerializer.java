@@ -1,12 +1,13 @@
 package com.ushirikeduc.disciplineservice.kafka.Serializers;
 
+import Dto.DisciplineCommuniqueEvent;
 import Dto.DisciplineEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
 
-public class DisciplineCommuniqueSerializer implements Serializer<DisciplineEvent> {
+public class DisciplineCommuniqueSerializer implements Serializer<DisciplineCommuniqueEvent> {
 
     /*
      *
@@ -16,7 +17,7 @@ public class DisciplineCommuniqueSerializer implements Serializer<DisciplineEven
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Override
-    public byte[] serialize(String topic, DisciplineEvent data) {
+    public byte[] serialize(String topic, DisciplineCommuniqueEvent data) {
 //        return new byte[0];
         try {
             if (data == null) {
