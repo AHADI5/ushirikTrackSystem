@@ -25,7 +25,6 @@ public class Course {
     private String category ;
     private int courseID ;
 
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "classroom_id")
@@ -33,5 +32,7 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+    @OneToMany(mappedBy = "course" , cascade = CascadeType.ALL , orphanRemoval = true)
+    private List<DayPeriods> dayPeriods  = new ArrayList<>();
 
 }
