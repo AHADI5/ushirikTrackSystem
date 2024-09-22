@@ -51,6 +51,10 @@ public class ClassRoom {
    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL)
    private  List<ClassRoomEvent> classRoomEvents = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL)
+    private List<TimeTable> timeTableList = new ArrayList<>();
+
 
 
 

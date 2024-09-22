@@ -14,13 +14,17 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseTimeTable {
+public class TimeTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long courseTimeTableId;
-    @OneToMany(mappedBy = "courseTimeTable" , cascade = CascadeType.ALL , orphanRemoval = true)
+    private TimeTableCategory  timeTableCategory;
+    @OneToMany(mappedBy = "timeTable" , cascade = CascadeType.ALL , orphanRemoval = true)
     private List<CourseDay> courseDayList  = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "classroomID")
+    private ClassRoom classRoom;
 
 
 

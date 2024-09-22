@@ -18,11 +18,10 @@ public class CourseDay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long courseDayID;
-    private String  weekDay ;
-
+    private WeekDay weekDay ;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "timeTableID")
-    private CourseTimeTable courseTimeTable  ;
+    private TimeTable timeTable;
     @OneToMany(mappedBy = "courseDay" , cascade = CascadeType.ALL , orphanRemoval = true)
     private List<DayPeriods> courseDayList  = new ArrayList<>();
 

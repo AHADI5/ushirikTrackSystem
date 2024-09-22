@@ -1,6 +1,7 @@
 package com.ushirikeduc.classservice.controller;
 
 import com.ushirikeduc.classservice.dto.*;
+import com.ushirikeduc.classservice.dto.TimeTable.TimeTableRequest;
 import com.ushirikeduc.classservice.model.*;
 import com.ushirikeduc.classservice.repository.ClassRoomEventRepository;
 import com.ushirikeduc.classservice.service.*;
@@ -20,13 +21,15 @@ public class ClassRoomController {
     private  final ClassRoomOptionService classRoomOptionService;
     private  final ClassRoomEventService classRoomEventService;
     private  final HomeWorkServices homeWorkServices ;
+    private final TimTableService timTableService;
 
-    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService, ClassRoomService classRoomOptionService, ClassRoomOptionService classRoomOptionService1, ClassRoomEventRepository classRoomEventRepository, ClassRoomEventService classRoomEventService, HomeWorkServices homeWorkServices) {
+    public ClassRoomController(ClassRoomService classRoomService, CoursesService coursesService, ClassRoomService classRoomOptionService, ClassRoomOptionService classRoomOptionService1, ClassRoomEventRepository classRoomEventRepository, ClassRoomEventService classRoomEventService, HomeWorkServices homeWorkServices, TimTableService timTableService) {
         this.classRoomService = classRoomService;
         this.coursesService = coursesService;
         this.classRoomOptionService = classRoomOptionService1;
         this.classRoomEventService = classRoomEventService;
         this.homeWorkServices = homeWorkServices;
+        this.timTableService = timTableService;
     }
 
     @PostMapping("/newClassRoom")
@@ -192,4 +195,13 @@ public class ClassRoomController {
     public void  reportHomeWork(@RequestBody ReportHomeWorkRequest request) {
         homeWorkServices.reportHomeWork(request);
     }
+
+
+   @PostMapping("{classRoomID}/registerTimeTable")
+   public TimeTable registerTimeTable(
+           @PathVariable long classRoomID ,
+           @RequestBody TimeTableRequest request) {
+       return timTableService.registerTimeTable(classRoomID, request);
+
+   }
 }
