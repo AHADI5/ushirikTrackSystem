@@ -450,12 +450,21 @@ public class ClassRoomService{
 //        List<ClassRoom> classRooms = classRepository.getAllBySchoolID(schoolID);
 
         for (ClassRoomOption classRoomOption : classRoomOptionList){
-            List<ClassRoom>  classRoomList  = classRepository.getClassRoomByClassRoomOption(classRoomOption);
-            //Getting levels per classroom option
-            List<Long> levelsPerOption = new ArrayList<>();
-            for(ClassRoom classRoom : classRoomList){
-                    levelsPerOption.add(classRoom.getLevel());
+            List<ClassRoom> classRoomList = classRepository.getClassRoomByClassRoomOption(classRoomOption);
+
+            // Using a Set to avoid duplicate levels
+            Set<Long> levelsPerOptionSet = new HashSet<>();
+
+            for (ClassRoom classRoom : classRoomList) {
+                levelsPerOptionSet.add(classRoom.getLevel());
             }
+
+            // Convert the Set back to a List (optional, if you need it as a List)
+            List<Long> levelsPerOption = new ArrayList<>(levelsPerOptionSet);
+
+            // Optionally, sort the list if needed
+            Collections.sort(levelsPerOption);
+
 
 
             //ClassRoom per level
