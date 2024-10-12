@@ -1,6 +1,7 @@
 package com.ushirikeduc.disciplineservice.service;
 
 import Dto.HomeWorkAssignedEvent;
+import Dto.HomeWorkStatusEvent;
 import com.ushirikeduc.disciplineservice.controller.MessageController;
 import com.ushirikeduc.disciplineservice.model.Discipline;
 import com.ushirikeduc.disciplineservice.model.HomeWorkToBeDone;
@@ -17,7 +18,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 public record HomeWorkService(
-        MessageController messageController ,
+        MessageController  messageController ,
         DisciplineRepository disciplineRepository ,
         HomeWorkToBeDoneRepository homeWorkToBeDoneRepository
 
@@ -55,7 +56,15 @@ public record HomeWorkService(
                     .disciplines(disciplineList)
                     .status(homeWorkAssignedEvent.getStatus())
                     .build();
-            homeWorkToBeDoneRepository.save(homeWorkToBeDone);
+            HomeWorkToBeDone savedHomeWorkTobeDone = homeWorkToBeDoneRepository.save(homeWorkToBeDone);
+
+            //Publishing the homework status
+
+            HomeWorkStatusEvent homeWorkStatusEvent =  new HomeWorkStatusEvent()  ;
+            homeWorkStatusEvent.setNewStatus(savedHomeWorkTobeDone.getStatus());
+            homeWorkStatusEvent.setConcern(savedHomeWorkTobeDone.getStatus());
+            homeWorkStatusEvent.setSender("Discipline");
+//            homeWorkStatusEvent.setRecipient(savedHomeWorkTobeDone);
 
         }
     }

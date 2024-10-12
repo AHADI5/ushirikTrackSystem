@@ -4,6 +4,9 @@ import Dto.ClassRoomEvent;
 import Dto.StudentEvent;
 import com.ushirikeduc.classservice.controller.MessageController;
 import com.ushirikeduc.classservice.dto.*;
+import com.ushirikeduc.classservice.dto.Communication.CommunicationCorrespondents;
+import com.ushirikeduc.classservice.dto.Communication.ParentPerClassRoom;
+import com.ushirikeduc.classservice.dto.Communication.ParentPerLevel;
 import com.ushirikeduc.classservice.model.*;
 import com.ushirikeduc.classservice.repository.*;
 import lombok.extern.slf4j.Slf4j;
@@ -234,8 +237,8 @@ public class ClassRoomService{
                     classRoom.getName(),
                     classRoom.getStudents().size(),
                     classRoom.getCourses().size(),
-                    classRoom.getClassRoomOption().getOptionName()
-//                    classRoom.getTeacher() == null ? " " : classRoom.getTeacher().getName()
+                    classRoom.getClassRoomOption().getOptionName() ,
+                    classRoom.getPrincipalTeacher() == null ? " " : classRoom.getPrincipalTeacher().getName()
             );
 
             classGeneralInformations.add(classGeneralInformation);
@@ -319,6 +322,18 @@ public class ClassRoomService{
         }
         return  parentEmailList;
     }
+
+    public List<String> getParentEmailByClassRoom(ClassRoom classRoom) {
+        List<String> parentEmailList = new ArrayList<>() ;
+        for (Student student : classRoom.getStudents()) {
+            parentEmailList.add(student.getParentEmail());
+
+        }
+
+        return  parentEmailList;
+    }
+
+
 
     public List<Long> getAllSchoolLevels  (long schoolID) {
         List<ClassRoom> classRooms = classRepository.getAllBySchoolID(schoolID);
@@ -425,6 +440,59 @@ public class ClassRoomService{
                 Objects.equals(teacher.getSchoolType(), "SECONDARY") ? simpleCourseFormList(teacher.getCourses()) : null
 
         );
+    }
+
+    public List<CommunicationCorrespondents> getCommunicationCorrespondent(int schoolID) {
+
+        //getting all classroom option
+        List<ClassRoomOption> classRoomOptionList  = classRoomOptionRepository.getClassRoomOptionBySchoolID(schoolID);
+        List<CommunicationCorrespondents> communicationCorrespondents = new ArrayList<>();
+//        List<ClassRoom> classRooms = classRepository.getAllBySchoolID(schoolID);
+
+        for (ClassRoomOption classRoomOption : classRoomOptionList){
+            List<ClassRoom>  classRoomList  = classRepository.getClassRoomByClassRoomOption(classRoomOption);
+            //Getting levels per classroom option
+            List<Long> levelsPerOption = new ArrayList<>();
+            for(ClassRoom classRoom : classRoomList){
+                    levelsPerOption.add(classRoom.getLevel());
+            }
+
+
+            //ClassRoom per level
+            List<ParentPerLevel> parentPerLevelList  = new ArrayList<>();
+            for(Long level  : levelsPerOption){
+                List<ClassRoom> classRoomPerLevel  = classRepository.getClassRoomByLevel(level) ;
+
+                List<ParentPerClassRoom> parentPerClassRoomList = new ArrayList<>();
+
+
+                for (ClassRoom classRoom : classRoomPerLevel) {
+                    ParentPerClassRoom parentPerClassRoom  = new ParentPerClassRoom(
+                            classRoom.getName() ,
+                            getParentEmailByClassRoom(classRoom)
+                    ) ;
+                    parentPerClassRoomList.add(parentPerClassRoom) ;
+                }
+
+                ParentPerLevel parentPerLevel = new ParentPerLevel(
+                        Math.toIntExact(level),
+                        parentPerClassRoomList
+                );
+                parentPerLevelList.add(parentPerLevel);
+
+            }
+
+            CommunicationCorrespondents communicationCorrespondent = new CommunicationCorrespondents(
+                    classRoomOption.getOptionName() ,
+                    parentPerLevelList
+            ) ;
+
+            communicationCorrespondents.add(communicationCorrespondent);
+
+
+        }
+
+        return  communicationCorrespondents ;
     }
 
 //    public List<CoursesAssigned> getCoursesAssignedByTeacherID(long teacherID) {

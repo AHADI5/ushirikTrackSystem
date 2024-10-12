@@ -8,8 +8,8 @@ public record ClassGeneralInformation(
 
         int courseNumber ,
 
-        String optionName
-//        String teacherName
+        String optionName ,
+        String teacherName
 
 ) {
 }

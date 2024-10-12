@@ -93,6 +93,7 @@ public record AuthenticationService(
         return AuthenticationResponse.builder()
                 .token(jwToken)
                 .refreshToken(refreshToken)
+                .schoolID(user.getSchoolID())
                 .build();
     }
 

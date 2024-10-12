@@ -10,7 +10,7 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: ["http://localhost:3000","http://localhost:3001" ,"http://localhost:3002"]
+            allowedOrigins: ["http://localhost:3000","http://localhost:3001" ,"http://localhost:3002" , "http://192.168.137.147:3000", "http://192.168.43.178:3000"]
             allowedHeaders: "*"
             allowedMethods: "*"
       routes:

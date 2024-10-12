@@ -5,8 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -20,6 +22,11 @@ import java.util.stream.Collectors;
 @Service
 public class JwtService {
     private static final String SECRET_KEY = "D76BA0C99405CDB23F0B18613970A7352A429E051344AF053523915D977B5DDDB5F5523800DCEEDF2317765ACEC9666EAE06975EE45CA9CD09DA200D209B24ADAF115AE937FD267E1C0AA7B76BDBC0EDE0A1FAB0AB4AC6BE3ABE2B4D8CED7A83205ABF3E8AAE0EEFFAF2F93DF9908C605654F31C686F4D05A5C2239F1770606C";
+    private final UserDetailsService userDetailsService;
+
+    public JwtService(@Qualifier("userDetailsService") UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -39,6 +46,7 @@ public class JwtService {
         String authorityString = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+
 
         return Jwts
                 .builder()

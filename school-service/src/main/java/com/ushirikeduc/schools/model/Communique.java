@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.Length;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,8 +29,7 @@ public class Communique {
     )
     private long communiqueID ;
     private String title;
-    @Lob // Annotate with @Lob for long string data types
-    @Column(columnDefinition = "TEXT") // Adjust column definition based on your database
+    @Column(length= Length.LONG32)
     private String content ;
     private Date dateCreated;
     private CommuniqueCategory category;

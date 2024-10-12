@@ -37,7 +37,7 @@ public record KafkaListeners (
     )
 
     void listener(DisciplineEvent disciplineEvent) throws FirebaseMessagingException {
-        log.info("ClassWork Received in Max management  service %s" + disciplineEvent.toString() );
+        log.info("Discipline event received in notification service   service %s" + disciplineEvent.toString() );
         //Make a notificationDto
         Map<String, String> additionalData = new HashMap<>();
         additionalData.put("ID" , String.valueOf(disciplineEvent.getId()) );

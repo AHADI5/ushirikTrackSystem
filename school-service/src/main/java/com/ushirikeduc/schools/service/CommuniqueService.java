@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 
-@Transactional
+
 public class  CommuniqueService {
 
     final SchoolRepository schoolRepository ;
@@ -42,7 +42,7 @@ public class  CommuniqueService {
         this.communiqueReviewRepository = communiqueReviewRepository;
         this.messageController = messageController;
     }
-
+    @Transactional
     public CommuniqueResponse registerCommunique(int schoolID,
                                                  CommuniqueRegisterRequest request , String token) {
         CommuniqueRecipientType communiqueRecipientTypeType = getRecipientType(request);

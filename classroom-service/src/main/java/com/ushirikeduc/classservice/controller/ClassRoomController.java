@@ -1,6 +1,7 @@
 package com.ushirikeduc.classservice.controller;
 
 import com.ushirikeduc.classservice.dto.*;
+import com.ushirikeduc.classservice.dto.Communication.CommunicationCorrespondents;
 import com.ushirikeduc.classservice.dto.TimeTable.TimeTableRequest;
 import com.ushirikeduc.classservice.model.*;
 import com.ushirikeduc.classservice.repository.ClassRoomEventRepository;
@@ -188,6 +189,14 @@ public class ClassRoomController {
         return coursesService.getCoursesAssignedByTeacherID(teacherID) ;
 
     }
+
+    //Communique Recipient
+    @GetMapping("/{schoolID}/communicationCorespondent")
+    public List<CommunicationCorrespondents> getCommunicationRespondents(@PathVariable long schoolID) {
+        return classRoomService.getCommunicationCorrespondent((int) schoolID) ;
+    }
+
+
 
     //HomeWorks end Point
 
