@@ -478,6 +478,7 @@ public class ClassRoomService{
                 for (ClassRoom classRoom : classRoomPerLevel) {
                     ParentPerClassRoom parentPerClassRoom  = new ParentPerClassRoom(
                             classRoom.getName() ,
+                            classRoom.getClassesID() ,
                             getParentEmailByClassRoom(classRoom)
                     ) ;
                     parentPerClassRoomList.add(parentPerClassRoom) ;
@@ -493,6 +494,7 @@ public class ClassRoomService{
 
             CommunicationCorrespondents communicationCorrespondent = new CommunicationCorrespondents(
                     classRoomOption.getOptionName() ,
+                    classRoomOption.getClassOptionID() ,
                     parentPerLevelList
             ) ;
 
