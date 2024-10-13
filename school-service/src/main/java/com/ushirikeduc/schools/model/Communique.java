@@ -33,6 +33,7 @@ public class Communique {
     private String content ;
     private Date dateCreated;
     private CommuniqueCategory category;
+    private String recipientGroupName ;
 
 
     @ManyToOne

@@ -58,6 +58,7 @@ public class KafkaListeners {
                 disciplineCommuniqueEvent.getTitle()  ,
                 disciplineCommuniqueEvent.getContent(),
                 "INDIVIDUAL" ,
+                disciplineCommuniqueEvent.getTarget(),
                 Collections.singletonList(disciplineCommuniqueEvent.getTarget())
         )  ;
 
@@ -66,7 +67,7 @@ public class KafkaListeners {
         //Get classroom
         ClassRoom  classRoom = classRoomService.getClassRoomByClassID((int) disciplineCommuniqueEvent.getDisciplineClassRoomId()) ;
 
-        communiqueService.registerCommunique(Math.toIntExact(classRoom.getSchoolID()),  communiqueRegisterRequest , "") ;
+        communiqueService.registerCommunique(Math.toIntExact(classRoom.getSchoolID()),  communiqueRegisterRequest) ;
     }
 
 

@@ -1,12 +1,7 @@
 package com.ushirikeduc.schools.model;
 
 public enum CommuniqueRecipientType {
-    ALL ,
-
-
-    SELECTED_SECTION ,
-
-    SELECTED_LEVELS ,
+    GROUP ,
     INDIVIDUAL_PARENTS ,
 
 }

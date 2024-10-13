@@ -60,7 +60,7 @@ public record SchoolController(
     public CommuniqueResponse registerCommunique(@PathVariable int schoolID ,
                                                  @RequestHeader String token,
                                                  @RequestBody CommuniqueRegisterRequest request) {
-        return  communiqueService.registerCommunique(schoolID , request , token);
+        return  communiqueService.registerCommunique(schoolID , request);
     }
 
     @PostMapping("{schoolID}/newEvent")

@@ -11,6 +11,7 @@ public record CommuniqueRegisterRequest(
         String title,
         String content,
         String recipientType,
+        String recipientGroupName  ,
         List<?> recipientIDs
 
 ) {

@@ -44,8 +44,9 @@ public class  CommuniqueService {
     }
     @Transactional
     public CommuniqueResponse registerCommunique(int schoolID,
-                                                 CommuniqueRegisterRequest request , String token) {
+                                                 CommuniqueRegisterRequest request) {
         CommuniqueRecipientType communiqueRecipientTypeType = getRecipientType(request);
+
 
         //getting the school by ID
         School school = schoolService.getSchool(schoolID);
@@ -53,15 +54,16 @@ public class  CommuniqueService {
 
         //this will contain all communique review
         List<CommuniqueReview> reviews = new ArrayList<>();
+        recipients =  getListRecipient(request.recipientIDs());
 
-        if(Objects.equals(token, "")) {
-           recipients =  getListRecipient(request.recipientIDs());
-        } else  {
-            assert communiqueRecipientTypeType != null;
-            recipients  = communiqueRecipientTypeType.equals(CommuniqueRecipientType.INDIVIDUAL_PARENTS) ?
-                    getListRecipient(request.recipientIDs()) :
-                    getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , (List<Long>) request.recipientIDs(), token));
-        }
+//        if(Objects.equals(token, "")) {
+//           recipients =  getListRecipient(request.recipientIDs());
+//        } else  {
+//            assert communiqueRecipientTypeType != null;
+//            recipients  = communiqueRecipientTypeType.equals(CommuniqueRecipientType.INDIVIDUAL_PARENTS) ?
+//                    getListRecipient(request.recipientIDs()) :
+//                    getListRecipient(getConcernedParentsIDs(communiqueRecipientTypeType , (List<Long>) request.recipientIDs(), token));
+//        }
 
         Communique communique = Communique.builder()
                 .title(request.title())
@@ -69,6 +71,7 @@ public class  CommuniqueService {
                 .dateCreated(new Date())
                 .recipientType(communiqueRecipientTypeType)
                 .school(school)
+                .recipientGroupName(request.recipientGroupName())
                 .isReviewed(false)
                 .recipientIDs(recipients)
                 .build();
@@ -128,10 +131,8 @@ public class  CommuniqueService {
         CommuniqueRecipientType communiqueRecipientTypeType = null ;
 
         switch (request.recipientType()) {
-            case  "ALL" -> communiqueRecipientTypeType = CommuniqueRecipientType.ALL;
-            case "LEVELS" -> communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_LEVELS;
+            case  "GROUP" -> communiqueRecipientTypeType = CommuniqueRecipientType.GROUP;
             case "INDIVIDUAL" -> communiqueRecipientTypeType = CommuniqueRecipientType.INDIVIDUAL_PARENTS;
-            case "SECTIONS" ->communiqueRecipientTypeType = CommuniqueRecipientType.SELECTED_SECTION;
         }
         return communiqueRecipientTypeType;
     }
@@ -227,67 +228,67 @@ public class  CommuniqueService {
         return getSimpleCommunique(communique);
     }
 
-    public List<String> getConcernedParentsIDs(
-            CommuniqueRecipientType recipientType,
-            List<Long> ids,
-            String token) {
-
-        RestTemplate restTemplate = new RestTemplate();
-        String baseUrl = "http://localhost:8080/api/v1";
-        List<String> parentsEmail = new ArrayList<>();
-
-        // Set up headers with authorization token
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        HttpEntity<List<Long>> requestEntity = new HttpEntity<>(ids, headers); // Include headers in the request
-
-        switch (recipientType) {
-            case ALL:
-                String allEndpoint = baseUrl + "/student/student/AllParentEmail";
-                ResponseEntity<String[]> allResponse = restTemplate.exchange(
-                        allEndpoint,
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers), // Use headers here
-                        String[].class
-                );
-                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(allResponse.getBody())));
-                break;
-            case SELECTED_LEVELS:
-                String levelEndpoint = baseUrl + "/classroom/studentLevel/parentEmail";
-                ResponseEntity<String[]> levelResponse = restTemplate.exchange(
-                        levelEndpoint,
-                        HttpMethod.POST,
-                        requestEntity, // Use requestEntity with headers
-                        String[].class
-                );
-                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(levelResponse.getBody())));
-                break;
-            case SELECTED_SECTION:
-                String sectionEndpoint = baseUrl + "/classroom/studentSection/parentEmail";
-                ResponseEntity<String[]> sectionResponse = restTemplate.exchange(
-                        sectionEndpoint,
-                        HttpMethod.POST,
-                        requestEntity, // Use requestEntity with headers
-                        String[].class
-                );
-                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(sectionResponse.getBody())));
-                break;
-//            case INDIVIDUAL_PARENTS:
-//                String individualEndpoint = baseUrl + "/student/studentIDs/parentEmail";
-//                ResponseEntity<String[]> individualResponse = restTemplate.exchange(
-//                        individualEndpoint,
+//    public List<String> getConcernedParentsIDs(
+//            CommuniqueRecipientType recipientType,
+//            List<Long> ids,
+//            String token) {
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        String baseUrl = "http://localhost:8080/api/v1";
+//        List<String> parentsEmail = new ArrayList<>();
+//
+//        // Set up headers with authorization token
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setBearerAuth(token);
+//        HttpEntity<List<Long>> requestEntity = new HttpEntity<>(ids, headers); // Include headers in the request
+//
+//        switch (recipientType) {
+//            case ALL:
+//                String allEndpoint = baseUrl + "/student/student/AllParentEmail";
+//                ResponseEntity<String[]> allResponse = restTemplate.exchange(
+//                        allEndpoint,
+//                        HttpMethod.GET,
+//                        new HttpEntity<>(headers), // Use headers here
+//                        String[].class
+//                );
+//                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(allResponse.getBody())));
+//                break;
+//            case SELECTED_LEVELS:
+//                String levelEndpoint = baseUrl + "/classroom/studentLevel/parentEmail";
+//                ResponseEntity<String[]> levelResponse = restTemplate.exchange(
+//                        levelEndpoint,
 //                        HttpMethod.POST,
 //                        requestEntity, // Use requestEntity with headers
 //                        String[].class
 //                );
-//                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(individualResponse.getBody())));
+//                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(levelResponse.getBody())));
 //                break;
-
-            // Add other cases if needed
-        }
-
-        return parentsEmail;
-    }
+//            case SELECTED_SECTION:
+//                String sectionEndpoint = baseUrl + "/classroom/studentSection/parentEmail";
+//                ResponseEntity<String[]> sectionResponse = restTemplate.exchange(
+//                        sectionEndpoint,
+//                        HttpMethod.POST,
+//                        requestEntity, // Use requestEntity with headers
+//                        String[].class
+//                );
+//                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(sectionResponse.getBody())));
+//                break;
+////            case INDIVIDUAL_PARENTS:
+////                String individualEndpoint = baseUrl + "/student/studentIDs/parentEmail";
+////                ResponseEntity<String[]> individualResponse = restTemplate.exchange(
+////                        individualEndpoint,
+////                        HttpMethod.POST,
+////                        requestEntity, // Use requestEntity with headers
+////                        String[].class
+////                );
+////                parentsEmail.addAll(Arrays.asList(Objects.requireNonNull(individualResponse.getBody())));
+////                break;
+//
+//            // Add other cases if needed
+//        }
+//
+//        return parentsEmail;
+//    }
 
 
     public List<Recipient> getListRecipient (List<?>  emails )  {
