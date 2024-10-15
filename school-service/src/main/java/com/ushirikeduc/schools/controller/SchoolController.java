@@ -82,6 +82,11 @@ public record SchoolController(
         return  communiqueService.getAllCommuniqueBySchoolID(schoolID);
     }
 
+    @GetMapping("{schoolID}/communicationsByGroupName/{name}")
+    public List<CommuniqueResponse> getCommuniqueByGroupName(@PathVariable  int schoolID, @PathVariable String name) {
+        return  communiqueService.getCommuniqueByGroupName(name , schoolID);
+    }
+
 
     @GetMapping("{schoolID}/events")
     public List<EventResponse> getAllEventsBySchoolID(@PathVariable int schoolID) {

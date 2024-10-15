@@ -140,11 +140,21 @@ public class  CommuniqueService {
     public List<CommuniqueResponse> getAllCommuniqueBySchoolID(int schoolID) {
         School school = schoolService.getSchool(schoolID);
         List<Communique> communiques = school.getCommuniques();
+        return getCommuniqueResponses(communiques);
+
+    }
+
+    public List<CommuniqueResponse> getCommuniqueByGroupName(String name , long schoolID) {
+        School school = schoolService.getSchool(schoolID);
+
+        List<Communique> communiquesByGroupName = communiqueRepository.findCommuniqueBySchoolAndRecipientGroupName(school, name);
+        return getCommuniqueResponses(communiquesByGroupName);
+
+    }
+
+    private List<CommuniqueResponse> getCommuniqueResponses(List<Communique> communiquesByGroupName) {
         List<CommuniqueResponse> communiqueResponses = new ArrayList<>();
-
-        //Creating a communique simple form
-
-        for (Communique communique : communiques)  {
+        for (Communique communique : communiquesByGroupName)  {
             CommuniqueResponse communiqueResponse = new CommuniqueResponse(
                     communique.getTitle(),
                     communique.getContent(),
@@ -157,8 +167,8 @@ public class  CommuniqueService {
             communiqueResponses.add(communiqueResponse);
         }
         return  communiqueResponses;
-
     }
+
 
     public List<CommuniqueResponse> getRecentCommunique(int schoolID) {
         List<CommuniqueResponse> communiqueResponses = new ArrayList<>();
