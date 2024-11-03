@@ -100,8 +100,7 @@ public class  CommuniqueService {
                 savedCommunique.getContent(),
                 savedCommunique.getDateCreated(),
                 savedCommunique.getCommuniqueID(),
-                savedCommunique.getRecipientType(),
-                getSimpleRecepientList(savedCommunique.getRecipientIDs())
+                getReviewList(savedCommunique)
         );
     }
 
@@ -139,8 +138,24 @@ public class  CommuniqueService {
 
     public List<CommuniqueResponse> getAllCommuniqueBySchoolID(int schoolID) {
         School school = schoolService.getSchool(schoolID);
-        List<Communique> communiques = school.getCommuniques();
-        return getCommuniqueResponses(communiques);
+        List<Communique> communiques = communiqueRepository.findCommuniqueBySchool(school);
+        List<CommuniqueResponse> communiqueAllResponses = new ArrayList<>();
+       // log.info("Communique {}" , communiques.toString());
+
+        //Creating a communique simple form
+
+        for (Communique communique : communiques)  {
+            CommuniqueResponse communiqueResponse = new CommuniqueResponse(
+                    communique.getTitle(),
+                    communique.getContent(),
+                    communique.getDateCreated(),
+                    communique.getCommuniqueID(),
+                    getReviewList(communique)
+
+            );
+            communiqueAllResponses.add(communiqueResponse);
+        }
+        return  communiqueAllResponses;
 
     }
 
@@ -148,11 +163,6 @@ public class  CommuniqueService {
         School school = schoolService.getSchool(schoolID);
 
         List<Communique> communiquesByGroupName = communiqueRepository.findCommuniqueBySchoolAndRecipientGroupName(school, name);
-        return getCommuniqueResponses(communiquesByGroupName);
-
-    }
-
-    private List<CommuniqueResponse> getCommuniqueResponses(List<Communique> communiquesByGroupName) {
         List<CommuniqueResponse> communiqueResponses = new ArrayList<>();
         for (Communique communique : communiquesByGroupName)  {
             CommuniqueResponse communiqueResponse = new CommuniqueResponse(
@@ -160,13 +170,13 @@ public class  CommuniqueService {
                     communique.getContent(),
                     communique.getDateCreated(),
                     communique.getCommuniqueID(),
-                    communique.getRecipientType(),
-                    getSimpleRecepientList(communique.getRecipientIDs())
+                    getReviewList(communique)
 
             );
             communiqueResponses.add(communiqueResponse);
         }
         return  communiqueResponses;
+
     }
 
 
@@ -192,10 +202,23 @@ public class  CommuniqueService {
                 communique.getDateCreated(),
 
                 communique.getCommuniqueID(),
-                communique.getRecipientType(),
-                getSimpleRecepientList(communique.getRecipientIDs())
+                getReviewList(communique)
         );
 
+    }
+
+    public List<CommuniqueReviewRegisterResponse> getReviewList(Communique  communique) {
+        List<CommuniqueReview> communiqueReviewList= communique.getReviews();
+        List<CommuniqueReviewRegisterResponse> communiqueReviewRegisterResponses = new ArrayList<>();
+        for (CommuniqueReview communiqueReview : communiqueReviewList) {
+            CommuniqueReviewRegisterResponse communiqueReviewRegisterResponse = new CommuniqueReviewRegisterResponse(
+                    communiqueReview.getReviewOwner()  ,
+                    communiqueReview.getDateReviewed()  ,
+                    communiqueReview.isReviewStatus()
+            );
+            communiqueReviewRegisterResponses.add(communiqueReviewRegisterResponse);
+        }
+        return communiqueReviewRegisterResponses ;
     }
 
     public List<ClassRoomSimpleForm> getClassRoomSimpleForm (List<ClassRoom> classRooms) {

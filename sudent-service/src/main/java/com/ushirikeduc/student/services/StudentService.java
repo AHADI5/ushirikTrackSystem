@@ -1,7 +1,5 @@
 package com.ushirikeduc.student.services;
 
-import Dto.ParentEvent;
-import Dto.StudentEvent;
 import com.ushirikeduc.student.controller.MessageController;
 //import com.ushirikeduc.student.kafka.ParentProducer;
 //import com.ushirikeduc.student.kafka.StudentProducer;
@@ -11,10 +9,7 @@ import com.ushirikeduc.student.model.Student;
 import com.ushirikeduc.student.repository.AddressRepository;
 import com.ushirikeduc.student.repository.ParentRepository;
 import com.ushirikeduc.student.repository.StudentRepository;
-import com.ushirikeduc.student.request.ClassStudentsResponse;
-import com.ushirikeduc.student.request.StudentByParentEmailRequest;
-import com.ushirikeduc.student.request.StudentRegistrationRequest;
-import com.ushirikeduc.student.request.StudentResponse;
+import com.ushirikeduc.student.request.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.http.HttpMethod;
@@ -26,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -219,8 +213,37 @@ public record StudentService(
         return ResponseEntity.ok(studentRepository.getStudentsByClassID(classID));
     }
 
+    public List<ParentResponse> getParentWithStudents(long schoolID) {
+        List<Parent> parents  = parentRepository.findParentBySchoolID((int) schoolID)  ;
+        List<ParentResponse> parentResponseList  = new ArrayList<>();
 
-//    public ResponseEntity<List<String>> getParentsByChildrenLevel(int classRoomLevel) {
-//
-//    }
+        for (Parent parent : parents) {
+            ParentResponse  parentResponse = new ParentResponse(
+                    parent.getFirstName()  ,
+                    parent.getLastName(),
+                    parent.getEmail()  ,
+                    parent.getPhone() ,
+                    getParentsByChildren(parent.getStudents())
+
+            ) ;
+            parentResponseList.add(parentResponse);
+        }
+
+        return  parentResponseList ;
+    }
+
+
+    public List<ParentStudentList> getParentsByChildren(List<Student>  students) {
+        List<ParentStudentList> studentSimpleList  = new ArrayList<>();
+        for (Student student : students) {
+            ParentStudentList  parentStudentList = new ParentStudentList(
+                    student.getName()  ,
+                    student.getLastName()  ,
+                    student.getStudentID() ,
+                    student.getGender()
+            ) ;
+            studentSimpleList.add(parentStudentList);
+        }
+        return studentSimpleList ;
+    }
 }

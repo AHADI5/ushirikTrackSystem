@@ -1,12 +1,10 @@
 package com.ushirikeduc.student.controller;
 
-import com.ushirikeduc.student.model.Score;
 import com.ushirikeduc.student.model.Student;
 import com.ushirikeduc.student.request.*;
 import com.ushirikeduc.student.services.ClassWorkAssignedService;
 import com.ushirikeduc.student.services.ScoreService;
 import com.ushirikeduc.student.services.StudentService;
-import jakarta.ws.rs.Path;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -81,6 +79,11 @@ public record StudentController(
         }
         return ResponseEntity.ok( studentWithClassInfo);
 
+    }
+
+    @GetMapping("{schoolID}/parents")
+    public List<ParentResponse> getParentWithStudent(@PathVariable long schoolID) {
+        return studentService.getParentWithStudents(schoolID) ;
     }
 
 

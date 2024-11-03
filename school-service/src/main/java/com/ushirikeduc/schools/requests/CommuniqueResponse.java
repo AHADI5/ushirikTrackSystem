@@ -10,8 +10,6 @@ public record CommuniqueResponse(
         String content,
         Date publishedDate,
         long communiqueID,
-
-        CommuniqueRecipientType recipientType,
-        List<SimpleRecipient> recipients
+        List<CommuniqueReviewRegisterResponse> reviewRegisterResponses
 ) {
 }

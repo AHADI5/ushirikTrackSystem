@@ -7,7 +7,6 @@ import java.util.Date;
 public record CommuniqueReviewRegisterResponse(
         String recipient ,
         Date date  ,
-        boolean status ,
-        Communique communique
+        boolean status
 ) {
 }

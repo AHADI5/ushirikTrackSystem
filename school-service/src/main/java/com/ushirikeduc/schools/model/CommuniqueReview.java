@@ -27,6 +27,7 @@ public class CommuniqueReview {
     private String reviewOwner  ;
     private Date  dateReviewed ;
     private boolean reviewStatus  = false ;
+
     @ManyToOne
     @JoinColumn(name = "communique_id")
     private Communique communique ;
