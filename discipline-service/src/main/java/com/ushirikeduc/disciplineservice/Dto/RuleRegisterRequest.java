@@ -8,6 +8,6 @@ public record RuleRegisterRequest (
         String title ,
         int schoolID ,
         String content ,
-        List<ViolationRegisterRequest>  violationType
+        List<ViolationRegisterRequest>  violation
 ){
 }

@@ -10,4 +10,5 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<Student , Integer> {
 List<Student> getStudentsByClassID(long classID) ;
 
+    Student findByStudentID(long studentID) ;
 }

@@ -34,7 +34,7 @@ public record RuleService(
             Rule savedRule = ruleRepository.save(rule);
 
             List<ViolationType> violationList = new ArrayList<>(); // Créer une nouvelle liste à chaque itération
-            for (ViolationRegisterRequest violationRegisterRequest : ruleRegisterRequest.violationType()) {
+            for (ViolationRegisterRequest violationRegisterRequest : ruleRegisterRequest.violation()) {
                 SanctionType sanctionType = getSanctionType(violationRegisterRequest);
                 ViolationType violationType = ViolationType.builder()
                         .rule(savedRule)  // Utiliser la règle enregistrée

@@ -246,4 +246,26 @@ public record StudentService(
         }
         return studentSimpleList ;
     }
+
+    public StudentDetailsResponse getStudentByID(long studentID) {
+        Student  student = studentRepository.findByStudentID(studentID) ;
+        return new StudentDetailsResponse(
+                student.getStudentID() ,
+                student.getName() ,
+                student.getLastName()  ,
+                student.getFirstName() ,
+                student.getGender(),
+                student.getClassID()  ,
+                new SimpleParentResponse(
+                        student.getParent().getFirstName() ,
+                        student.getParent().getLastName() ,
+                        student.getParent().getEmail()  ,
+                        student.getParent().getPhone()  ,
+                        student.getParent().getParentID()
+                ),
+                student.getAddress()
+
+
+        ) ;
+    }
 }

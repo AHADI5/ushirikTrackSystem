@@ -41,6 +41,13 @@ public record StudentController(
         return  studentService.getStudentParent(parentId);
     }
 
+    @GetMapping("/{studentID}")
+    public StudentDetailsResponse getStudentByID(@PathVariable long studentID) {
+        return studentService.getStudentByID( studentID) ;
+
+    }
+
+
     @PostMapping("parent/students")
     public List<Student> getStudentByParent (@RequestBody StudentByParentEmailRequest request) {
         return studentService.getStudentByParentEmail(request);
