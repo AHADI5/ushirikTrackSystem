@@ -28,9 +28,10 @@ public record SchoolAdminService (
         SchoolAdmin savedSchoolAdmin = adminRepository.save(schoolAdmin);
 
         RestTemplate restTemplate = new RestTemplate();
-        log.info("Admin is " + savedSchoolAdmin.toString());
+        log.info("Admin is {}", savedSchoolAdmin.toString());
 
         //Post to UserManagement Service
+        //TODO::publish , instead of
 
         return restTemplate.postForObject("http://localhost:8080/api/v1/auth/admin",
                 savedSchoolAdmin,

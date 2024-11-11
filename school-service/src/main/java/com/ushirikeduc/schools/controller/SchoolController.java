@@ -58,7 +58,6 @@ public record SchoolController(
 
     @PostMapping("/{schoolID}/newCommunique")
     public CommuniqueResponse registerCommunique(@PathVariable int schoolID ,
-                                                 @RequestHeader String token,
                                                  @RequestBody CommuniqueRegisterRequest request) {
         return  communiqueService.registerCommunique(schoolID , request);
     }
@@ -68,6 +67,11 @@ public record SchoolController(
                                         @RequestBody EventRegisterRequest request) {
         return  eventService.registerNewEvent(schoolID , request);
 
+    }
+
+    @PostMapping("{schoolID}/getCommuniqueByParentEmail")
+    public List<CommuniqueResponse> getCommuniqueByParentEmail(@PathVariable long schoolID ,  @RequestBody ParentUserName email) {
+        return communiqueService.getCommuniqueByParentEmail( email , schoolID) ;
     }
 
     @PutMapping("{schoolID}/newEvent/{eventID}")
@@ -81,6 +85,7 @@ public record SchoolController(
     public List<CommuniqueResponse> getCommuniqueBySchoolID(@PathVariable  int schoolID) {
         return  communiqueService.getAllCommuniqueBySchoolID(schoolID);
     }
+
 
     @GetMapping("{schoolID}/communicationsByGroupName/{name}")
     public List<CommuniqueResponse> getCommuniqueByGroupName(@PathVariable  int schoolID, @PathVariable String name) {

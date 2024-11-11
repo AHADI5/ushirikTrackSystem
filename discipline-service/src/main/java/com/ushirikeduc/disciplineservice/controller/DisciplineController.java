@@ -12,7 +12,8 @@ public record DisciplineController(
 
         AttendanceService attendanceService ,
         IncidentService incidentService ,
-        RuleService ruleService
+        RuleService ruleService  ,
+        DisciplineService disciplineService
 
 ) {
     @PostMapping("{classRoomID}/attendance")
@@ -52,6 +53,11 @@ public record DisciplineController(
     @GetMapping("{schoolID}/getRulesBySchoolID")
     public  List<RuleResponse> getRulesBySchoolID (@PathVariable int schoolID) {
         return  ruleService.getRulesBySchoolID (schoolID) ;
+    }
+
+    @GetMapping("/{studentID}")
+    public DisciplineResponse getStudentDiscipline(@PathVariable int studentID) {
+        return disciplineService.getStudentDiscipline(studentID) ;
     }
 
 }

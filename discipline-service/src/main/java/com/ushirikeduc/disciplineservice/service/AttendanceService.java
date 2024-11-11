@@ -4,6 +4,7 @@ import Dto.DisciplineEvent;
 import com.ushirikeduc.disciplineservice.Dto.*;
 import com.ushirikeduc.disciplineservice.controller.MessageController;
 import com.ushirikeduc.disciplineservice.model.Attendance;
+import com.ushirikeduc.disciplineservice.model.AttendanceStatus;
 import com.ushirikeduc.disciplineservice.model.Discipline;
 import com.ushirikeduc.disciplineservice.repository.AttendanceRepository;
 import com.ushirikeduc.disciplineservice.repository.DisciplineRepository;
@@ -39,12 +40,15 @@ public record AttendanceService(
                 // Update existing attendance
                 attendance = existingAttendanceOpt.get();
                 attendance.setPresent(attendanceRegisterRequest.isPresent());
+                attendance.setAttendanceStatus(AttendanceStatus.valueOf(attendanceRegisterRequest.attendanceStatus()));
+
             } else {
                 // Create new attendance
                 attendance = Attendance.builder()
                         .discipline(discipline)
                         .isPresent(attendanceRegisterRequest.isPresent())
                         .date(attendanceRegisterRequestList.date())
+                        .attendanceStatus(AttendanceStatus.valueOf(attendanceRegisterRequest.attendanceStatus()))
                         .build();
             }
 
@@ -56,7 +60,8 @@ public record AttendanceService(
                     savedAttendance.getDate(),
                     (int) savedAttendance.getDiscipline().getOwnerID(),
                     savedAttendance.getDiscipline().getOwner(),
-                    savedAttendance.isPresent()
+                    savedAttendance.isPresent() ,
+                    savedAttendance.getAttendanceStatus()
             ));
         }
 
@@ -80,7 +85,8 @@ public record AttendanceService(
                         attendance.date() ,
                         (int) discipline.getOwnerID() ,
                         discipline.getOwner() ,
-                        false
+                        false ,
+                        AttendanceStatus.ABSENT
                 );
                 attendanceResponses.add(attendanceResponse);
             }
@@ -91,7 +97,8 @@ public record AttendanceService(
                         attendanceItem.getDate() ,
                         (int) attendanceItem.getDiscipline().getOwnerID(),
                         attendanceItem.getDiscipline().getOwner(),
-                        attendanceItem.isPresent()
+                        attendanceItem.isPresent() ,
+                        attendanceItem.getAttendanceStatus()
                 );
                 attendanceResponses.add(attendanceResponse);
             }
@@ -101,6 +108,10 @@ public record AttendanceService(
                  attendanceResponses
          );
     }
+
+
+
+
 
 
     public DisciplineEvent createAttendanceEvent(Attendance attendance) {

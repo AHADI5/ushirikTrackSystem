@@ -20,6 +20,7 @@
           <option value="  &quot;title&quot;" />
           <option value="  &quot;date&quot;" />
           <option value="}" />
+          <option value="{" />
         </set>
       </option>
     </inspection_tool>

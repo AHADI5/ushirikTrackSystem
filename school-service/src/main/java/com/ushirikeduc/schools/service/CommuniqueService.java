@@ -380,4 +380,13 @@ public class  CommuniqueService {
     }
 
 
+    public List<CommuniqueResponse> getCommuniqueByParentEmail(ParentUserName email, long schoolID) {
+        List<CommuniqueResponse> communiqueResponses = getAllCommuniqueBySchoolID((int) schoolID);
+
+        return communiqueResponses.stream()
+                .filter(communiqueResponse -> communiqueResponse.reviewRegisterResponses().stream()
+                        .anyMatch(communiqueReview ->  communiqueReview.recipient().equals(email.parentUserName())))
+                .collect(Collectors.toList());
+    }
+
 }

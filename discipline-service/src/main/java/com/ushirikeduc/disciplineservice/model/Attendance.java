@@ -23,9 +23,8 @@ public class Attendance {
     private Long attendanceID;
     private Date date ;
     private boolean isPresent;
+    AttendanceStatus attendanceStatus ;
     @ManyToOne
     private Discipline discipline;
-
-
 
 }
